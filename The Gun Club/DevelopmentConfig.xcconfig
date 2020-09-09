@@ -1,0 +1,14 @@
+//
+//  DevelopmentConfig.xcconfig
+//  The Gun Club
+//
+//  Created by Chuck Zumbaugh on 8/5/20.
+//  Copyright © 2020 Chuck Zumbaugh. All rights reserved.
+//
+
+// Configuration settings file format documentation can be found at:
+// https://help.apple.com/xcode/#/dev745c5c974
+
+BASE_URL = https:\/\/api.propublica.org/congress/v1/bills/search.json
+BASE_MEMBER_URL = https:\/\/api.propublica.org/congress/v1/members/
+API_KEY = azYX08cQYJkFJ7mBvXq22sIkLmE5fLhuRlNJVZ6g

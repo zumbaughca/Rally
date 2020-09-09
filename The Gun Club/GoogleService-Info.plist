@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>216756841883-s45elnniemh4skt6jqe9iih5e9bh6eup.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.216756841883-s45elnniemh4skt6jqe9iih5e9bh6eup</string>
+	<key>API_KEY</key>
+	<string>AIzaSyAweImxcSvUijnigx7XC-qa134EhuEYvlc</string>
+	<key>GCM_SENDER_ID</key>
+	<string>216756841883</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.cazumbaugh.TheGunClub</string>
+	<key>PROJECT_ID</key>
+	<string>the-gun-club-d7270</string>
+	<key>STORAGE_BUCKET</key>
+	<string>the-gun-club-d7270.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:216756841883:ios:0c13d3e4a1d9788a22853e</string>
+	<key>DATABASE_URL</key>
+	<string>https://the-gun-club-d7270.firebaseio.com</string>
+</dict>
+</plist>
