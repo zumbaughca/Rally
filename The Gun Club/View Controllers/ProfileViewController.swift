@@ -32,7 +32,8 @@ class ProfileViewController: UITableViewController {
     }
     
     func fetchUser(_ reference: DatabaseReference) {
-        firebaseRequests.queryUserName(reference: reference, completion: {(user, error) in
+        firebaseRequests.queryUserName(reference: reference, completion: {[weak self] (user, error) in
+            guard let self = self else {return}
             if let error = error {
                 print("error")
                 print(error.localizedDescription)
@@ -74,13 +75,13 @@ class ProfileViewController: UITableViewController {
     }
     
     @IBAction func logoutButtonTapped(_ sender: Any) {
-        firebaseRequests.signOutUser(completion: {(error) in
+        firebaseRequests.signOutUser(completion: {[weak self] (error) in
             if error == nil {
                 let storyboard = UIStoryboard(name: "Main", bundle: Bundle.main)
                 let loginController = storyboard.instantiateViewController(identifier: "LoginController")
-                self.view.window!.rootViewController = loginController
+                self?.view.window!.rootViewController = loginController
             } else {
-                self.presentLogoutErrorAlert()
+                self?.presentLogoutErrorAlert()
             }
         })
     }

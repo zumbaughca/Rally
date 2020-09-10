@@ -10,7 +10,10 @@ import UIKit
 import SafariServices
 
 class BillDetailViewController: UITableViewController {
-
+    deinit {
+        print("Bill detail deinit")
+    }
+    
     @IBOutlet weak var titleLabel: UILabel!
     @IBOutlet weak var idLabel: UILabel!
     @IBOutlet weak var sponsorLabel: UILabel!
@@ -62,7 +65,8 @@ class BillDetailViewController: UITableViewController {
         guard let url = URL(string: memberUrl) else {return}
         var request = URLRequest(url: url)
         request.addValue(apiKey, forHTTPHeaderField: "X-API-Key")
-        restRequests.querySponsorById(request, completion: {(member, error) in
+        restRequests.querySponsorById(request, completion: {[weak self] (member, error) in
+            guard let self = self else {return}
             if let member = member {
                 self.sponsor = member.results[0]
                 DispatchQueue.main.async {

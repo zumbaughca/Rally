@@ -12,7 +12,7 @@ import Firebase
 import CoreLocation
 
 class RallyDetailTableViewController: UITableViewController, MKMapViewDelegate {
-
+    
     @IBOutlet weak var mapView: MKMapView!
     @IBOutlet weak var nameLabel: UILabel!
     @IBOutlet weak var dateAndTimeLabel: UILabel!
@@ -78,7 +78,8 @@ class RallyDetailTableViewController: UITableViewController, MKMapViewDelegate {
                  }
              }
          })
-        firebaseRequests.attachRallyAttendanceObserver(rally.key, completion: {(value, error) in
+        firebaseRequests.attachRallyAttendanceObserver(rally.key, completion: {[weak self] (value, error) in
+            guard let self = self else {return}
             if let value = value {
                 self.numberOfAttendees.text = "\(value) people are attending"
             }

@@ -41,7 +41,8 @@ class ForumViewController: UIViewController, UITableViewDelegate, UITableViewDat
     func fetchThreads() {
         guard let selectedCategory = selectedCategory else {return}
         let firebaseRequests = FirebaseRequests()
-        firebaseRequests.observeChildAdded(reference: reference.child(selectedCategory), completion: {(thread: Thread?, error) in
+        firebaseRequests.observeChildAdded(reference: reference.child(selectedCategory), completion: {[weak self] (thread: Thread?, error) in
+            guard let self = self else {return}
             if error != nil {
                 //Handle error
                 DispatchQueue.main.async {

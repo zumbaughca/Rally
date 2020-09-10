@@ -10,7 +10,7 @@ import UIKit
 import Firebase
 
 class ThreadViewController: UIViewController, UITextViewDelegate, UITableViewDelegate, UITableViewDataSource{
-
+    
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var commentTextField: UITextView!
     @IBOutlet weak var threadLockedButton: UIBarButtonItem!
@@ -68,7 +68,8 @@ class ThreadViewController: UIViewController, UITextViewDelegate, UITableViewDel
     }
     
     func fetchModerators() {
-        firebaseRequests.queryModerators(completion: {(moderators, error) in
+        firebaseRequests.queryModerators(completion: {[weak self] (moderators, error) in
+            guard let self = self else {return}
             if let moderators = moderators {
                 self.moderators = moderators
                 DispatchQueue.main.async {
@@ -80,7 +81,8 @@ class ThreadViewController: UIViewController, UITextViewDelegate, UITableViewDel
     
     func fetchLockedStatus() {
         guard let thread = thread else {return}
-        firebaseRequests.observeThreadLockedStatus(reference: reference.child(thread.category).child(thread.key).child("Locked"), completion: {(bool, error) in
+        firebaseRequests.observeThreadLockedStatus(reference: reference.child(thread.category).child(thread.key).child("Locked"), completion: {[weak self](bool, error) in
+            guard let self = self else {return}
             if let bool = bool {
                 self.thread!.locked = bool
                 self.threadLockedStatusDidChange()
@@ -125,7 +127,8 @@ class ThreadViewController: UIViewController, UITextViewDelegate, UITableViewDel
     func fetchThreadComments() {
         guard let thread = thread else {return}
         let firebaseRequests = FirebaseRequests()
-        firebaseRequests.observeChildAdded(reference: reference.child(thread.category).child(thread.key).child("comments"), completion: {(comment: Comment?, error) in
+        firebaseRequests.observeChildAdded(reference: reference.child(thread.category).child(thread.key).child("comments"), completion: {[weak self] (comment: Comment?, error) in
+            guard let self = self else {return}
             if error != nil {
                 //handle error
             }

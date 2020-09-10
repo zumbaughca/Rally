@@ -95,6 +95,7 @@ class Rally: Codable, Comparable, Equatable {
         let date = Date()
         return self.formatDate() < date
     }
+    
 }
 
 

@@ -50,7 +50,8 @@ class RallyViewController: UIViewController,UITableViewDelegate, UITableViewData
     
     func fetchRallys() {
         let jsonDecoder = JSONDecoder()
-        reference.observe(.childAdded, with: {(snapshot) in
+        reference.observe(.childAdded, with: {[weak self] (snapshot) in
+            guard let self = self else {return}
             if let dictionary = snapshot.value as? [String: Any] {
                     do {
                        let data = try JSONSerialization.data(withJSONObject: dictionary, options: [])

@@ -9,7 +9,9 @@
 import UIKit
 
 class BillTableViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
-
+    deinit {
+        print("Bill table deinit")
+    }
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var splashScreen: UIView!
     @IBOutlet weak var loadingActivityIndicator: UIActivityIndicatorView!
@@ -41,7 +43,8 @@ class BillTableViewController: UIViewController, UITableViewDataSource, UITableV
         queries.forEach({
             var request = URLRequest(url: url.withQueries(["query": $0])!)
             request.addValue("azYX08cQYJkFJ7mBvXq22sIkLmE5fLhuRlNJVZ6g", forHTTPHeaderField: "X-API-Key")
-            restRequests.retreiveCurrentBills(request, completion: {(bills, error) in
+            restRequests.retreiveCurrentBills(request, completion: {[weak self] (bills, error) in
+                guard let self = self else {return}
                 if let bills = bills {
                     bills.forEach({
                         if !self.bills.contains($0) && self.validateBillTitle($0.title) {
