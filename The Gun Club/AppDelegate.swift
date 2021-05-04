@@ -9,44 +9,13 @@
 import UIKit
 import CoreData
 import Firebase
-import BackgroundTasks
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
-    //Added background fetch to fetch current rallys and remove those that have been canceled from favorites list. Need to add notification for this.
-    func scheduleAppRefresh() {
-        let request = BGAppRefreshTaskRequest(identifier: "com.rallys.refresh")
-        request.earliestBeginDate = Date(timeIntervalSinceNow: 15 * 60)
-        
-        do {
-            try BGTaskScheduler.shared.submit(request)
-        } catch {
-            print("Could not schedule app refresh: \(error)")
-        }
-    }
-    
-    func handleAppRefresh(task: BGAppRefreshTask) {
-        scheduleAppRefresh()
-        let operationQueue = OperationQueue()
-        let operation = BackgroundRefreshOperation(rallys: [], requests: FirebaseRequests())
-        
-        task.expirationHandler = {
-            operation.cancel()
-        }
-    
-        operation.completionBlock = {
-            task.setTaskCompleted(success: !operation.isCancelled)
-        }
-        
-        operationQueue.addOperation(operation)
-    }
      
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        BGTaskScheduler.shared.register(forTaskWithIdentifier: "com.rallys.refresh", using: nil, launchHandler: {task in
-            
-            self.handleAppRefresh(task: task as! BGAppRefreshTask)
-        })
         FirebaseApp.configure()
+
         return true
     }
 

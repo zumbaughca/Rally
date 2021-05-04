@@ -12,23 +12,27 @@ import Firebase
 class ThreadViewController: UIViewController, UITextViewDelegate, UITableViewDelegate, UITableViewDataSource{
     
     @IBOutlet weak var tableView: UITableView!
-    @IBOutlet weak var commentTextField: UITextView!
+    @IBOutlet weak var commentTextView: UITextView!
     @IBOutlet weak var threadLockedButton: UIBarButtonItem!
     @IBOutlet weak var postCommentButton: UIButton!
+    @IBOutlet var contentView: UIView!
     
     var thread: Thread?
     var moderators: [String]?
+    var commentTextViewHeightConstraint: NSLayoutConstraint!
+    
     let reference = Database.database().reference().child("Threads")
-    let firebaseRequests = FirebaseRequests()
+    let firebaseRequests = Network()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         fetchModerators()
         fetchThreadComments()
-        self.commentTextField.delegate = self
+        self.commentTextView.delegate = self
         self.tableView.delegate = self
         self.tableView.dataSource = self
-
+        self.commentTextViewHeightConstraint = commentTextView.heightAnchor.constraint(equalToConstant: 40)
+        commentTextViewHeightConstraint.isActive = true
         tableView.register(MainPostTableViewCell.self, forCellReuseIdentifier: "mainPost")
         tableView.register(CommentTableViewCell.self, forCellReuseIdentifier: "comment")
 
@@ -44,11 +48,14 @@ class ThreadViewController: UIViewController, UITextViewDelegate, UITableViewDel
     func updateUI() {
         guard let user = Auth.auth().currentUser, let thread = thread else {return}
         tableView.separatorStyle = .none
-        commentTextField.layer.borderColor = UIColor.black.cgColor
-        commentTextField.layer.borderWidth = 1
-        commentTextField.layer.cornerRadius = 15
-        commentTextField.isScrollEnabled = false
-        commentTextField.textContainer.heightTracksTextView = true
+        commentTextView.layer.borderColor = UIColor.black.cgColor
+        commentTextView.layer.borderWidth = 1
+        commentTextView.layer.cornerRadius = 15
+        commentTextView.isScrollEnabled = false
+        commentTextView.textContainer.heightTracksTextView = true
+        postCommentButton.layer.borderColor = UIColor(red255: 65, green: 105, blue: 225, alpha: 1).cgColor
+        postCommentButton.layer.borderWidth = CGFloat(1)
+        postCommentButton.layer.cornerRadius = 15
         if user.uid != thread.ownerUid {
             threadLockedButton.isEnabled = false
         }
@@ -92,41 +99,44 @@ class ThreadViewController: UIViewController, UITextViewDelegate, UITableViewDel
     
     func threadLockedStatusDidChange() {
         if thread!.locked == true {
-            commentTextField.isEditable = false
+            commentTextView.isEditable = false
             postCommentButton.isEnabled = false
-            commentTextField.text = "This thread is locked."
+            commentTextView.text = "This thread is locked."
         } else if thread!.locked == false {
-            commentTextField.isEditable = true
+            commentTextView.isEditable = true
             postCommentButton.isEnabled = true
-            commentTextField.text = "New comment..."
+            commentTextView.text = "New comment..."
         }
     }
     
     func adjustTextViewHeight() {
-        let width = commentTextField.frame.width
-        let adjustedSize = commentTextField.sizeThatFits(CGSize(width: width, height: CGFloat.greatestFiniteMagnitude))
-        commentTextField.heightAnchor.constraint(equalToConstant: adjustedSize.height).isActive = true
-        commentTextField.layoutIfNeeded()
+        let width = commentTextView.frame.width
+        let adjustedSize = commentTextView.sizeThatFits(CGSize(width: width, height: CGFloat.greatestFiniteMagnitude))
+        if adjustedSize.height >= UIScreen.main.bounds.height / 3 {
+            commentTextView.isScrollEnabled = true
+        } else {
+            commentTextView.isScrollEnabled = false
+            commentTextView.textContainer.heightTracksTextView = true
+            commentTextViewHeightConstraint.constant = adjustedSize.height
+        }
+        commentTextView.layoutIfNeeded()
     }
     
     func textViewDidChange(_ textView: UITextView) {
+        adjustTextViewHeight()
         do {
-            textView.isScrollEnabled = false
-            textView.textContainer.heightTracksTextView = true
             try textView.validateTextViewCharacterCount()
-        } catch CharacterCountLimitError.characterCountExceedsLimit {
-            let alertController = UIAlertController(title: "Error", message: "Character count exceeds 1,000 character limit.", preferredStyle: .alert)
+        } catch {
+            let alertController = UIAlertController(title: "Error", message: "Character count exceeds 500 character limit.", preferredStyle: .alert)
             let cancelAction = UIAlertAction(title: "OK", style: .cancel, handler: nil)
             alertController.addAction(cancelAction)
             present(alertController, animated: true, completion: nil)
-        } catch {
-            
         }
     }
     
     func fetchThreadComments() {
         guard let thread = thread else {return}
-        let firebaseRequests = FirebaseRequests()
+        let firebaseRequests = Network()
         firebaseRequests.observeChildAdded(reference: reference.child(thread.category).child(thread.key).child("comments"), completion: {[weak self] (comment: Comment?, error) in
             guard let self = self else {return}
             if error != nil {
@@ -142,53 +152,61 @@ class ThreadViewController: UIViewController, UITextViewDelegate, UITableViewDel
             }
         })
     }
-    
+    //Need to fix keyboard bugs
     @objc func keyboard(notification: Notification) {
         guard let keyboardSize = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as AnyObject).cgRectValue else {return}
+        
         if notification.name == UIResponder.keyboardWillShowNotification || notification.name == UIResponder.keyboardWillChangeFrameNotification {
-            self.view.frame.origin.y = -keyboardSize.height
+            self.contentView.frame.origin.y -= keyboardSize.height
         } else {
-            self.view.frame.origin.y = 0
+            self.contentView.frame.origin.y = 0
         }
     }
     
     @objc func textViewEndEditing(_ sender: UITapGestureRecognizer) {
-        commentTextField.resignFirstResponder()
+        if commentTextView.isFirstResponder {
+            commentTextView.endEditing(true)
+            commentTextView.resignFirstResponder()
+        }
     }
     
     func setTextFieldPlaceholderText() {
-        commentTextField.text = "New comment..."
-        commentTextField.textColor = UIColor.lightGray
+        commentTextView.text = "New comment..."
+        commentTextView.textColor = UIColor.lightGray
     }
     
     func textViewDidBeginEditing(_ textView: UITextView) {
-        if commentTextField.textColor == UIColor.lightGray {
-            commentTextField.textColor = UIColor.black
-            commentTextField.text = nil
+        if commentTextView.textColor == UIColor.lightGray {
+            commentTextView.textColor = UIColor.black
+            commentTextView.text = nil
         }
     }
     
     func textViewDidEndEditing(_ textView: UITextView) {
-        if commentTextField.text == "" || commentTextField.text == nil {
+        if commentTextView.text == "" || commentTextView.text == nil {
             setTextFieldPlaceholderText()
         }
     }
     
     @IBAction func postCommentButtonPressed(_ sender: Any) {
         guard let thread = thread, thread.locked == false else {return}
+        if commentTextView.text == "New comment..." || commentTextView.text == "" {
+            return
+        }
         let threadReference = reference.child(thread.category).child(thread.key)
         let dateFormatter = DateFormatter()
         dateFormatter.dateStyle = .medium
         dateFormatter.timeStyle = .medium
         dateFormatter.locale = Locale(identifier: "en_US")
         let date = dateFormatter.string(from: Date())
-        if let postText = commentTextField.text, let user = Auth.auth().currentUser {
+        if let postText = commentTextView.text, let user = Auth.auth().currentUser {
             let commentRef = reference.child(thread.category).child(thread.key).child("comments").childByAutoId()
             commentRef.updateChildValues(["Post": postText, "Owner": user.displayName!, "OwnerUid": user.uid, "Date": date, "Key": commentRef.key!])
             threadReference.updateChildValues(["LastActivity": date])
         }
         setTextFieldPlaceholderText()
-        commentTextField.resignFirstResponder()
+        commentTextView.resignFirstResponder()
+        adjustTextViewHeight()
     }
     
     @IBAction func lockThreadButtonTapped(_ sender: Any) {
@@ -226,6 +244,7 @@ class ThreadViewController: UIViewController, UITextViewDelegate, UITableViewDel
         if indexPath.section == 0 {
             let cell = tableView.dequeueReusableCell(withIdentifier: "mainPost", for: indexPath) as! MainPostTableViewCell
             cell.titleLabel.text = thread?.title
+            cell.postLabel.text = thread?.post
             cell.ownerLabel.text = "By: \(thread!.owner)"
             cell.dateLabel.text = thread?.date
             cell.translatesAutoresizingMaskIntoConstraints = false

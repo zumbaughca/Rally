@@ -14,6 +14,7 @@ class ForumViewController: UIViewController, UITableViewDelegate, UITableViewDat
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var splashScreen: UIView!
     @IBOutlet weak var splashScreenActivityIndicator: UIActivityIndicatorView!
+    @IBOutlet var contentView: UIView!
     
     var threads: [Thread] = []
     let reference = Database.database().reference().child("Threads")
@@ -40,7 +41,7 @@ class ForumViewController: UIViewController, UITableViewDelegate, UITableViewDat
     
     func fetchThreads() {
         guard let selectedCategory = selectedCategory else {return}
-        let firebaseRequests = FirebaseRequests()
+        let firebaseRequests = Network()
         firebaseRequests.observeChildAdded(reference: reference.child(selectedCategory), completion: {[weak self] (thread: Thread?, error) in
             guard let self = self else {return}
             if error != nil {
@@ -57,11 +58,11 @@ class ForumViewController: UIViewController, UITableViewDelegate, UITableViewDat
                     } else {
                         self.threads.append(thread)
                     }
-                    DispatchQueue.main.async {
-                        self.contentHasLoaded()
-                        self.tableView.reloadData()
-                    }
                 }
+            }
+            DispatchQueue.main.async {
+                self.contentHasLoaded()
+                self.tableView.reloadData()
             }
         })
     }
@@ -92,6 +93,10 @@ class ForumViewController: UIViewController, UITableViewDelegate, UITableViewDat
             let thread = threads[indexPath.row]
             let destinationViewController = segue.destination as? ThreadViewController
             destinationViewController?.thread = thread
+        }
+        if segue.identifier == "newThreadSegue" {
+            let destinationViewController = segue.destination as? NewThreadViewController
+            destinationViewController?.category = selectedCategory
         }
     }
     

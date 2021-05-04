@@ -27,7 +27,7 @@ extension URL {
 
 extension UITextView {
     func validateTextViewCharacterCount() throws {
-        if self.text.count > 1000 {
+        if self.text.count > 500 {
             self.text.removeLast()
             throw CharacterCountLimitError.characterCountExceedsLimit
         }
@@ -37,5 +37,11 @@ extension UITextView {
 extension CLLocationDistance {
     func toMiles() -> Double {
         return self / 1609.34
+    }
+}
+
+extension UIColor {
+    convenience init(red255 red: CGFloat, green: CGFloat, blue: CGFloat, alpha: CGFloat) {
+        self.init(red: red / 255, green: green / 255, blue: blue / 255, alpha: alpha)
     }
 }

@@ -25,6 +25,8 @@ struct Bill: Codable, Equatable {
     let dateIntroduced: String
     let isActive: Bool
     var summary: String
+    let latestAction: String
+    let lastActionDate: String
     
     private enum CodingKeys: String, CodingKey {
         case billId = "number"
@@ -35,6 +37,8 @@ struct Bill: Codable, Equatable {
         case dateIntroduced = "introduced_date"
         case isActive = "active"
         case summary
+        case latestAction = "latest_major_action"
+        case lastActionDate = "latest_major_action_date"
     }
     
     private func formatSummary(_ summary: String) -> String {
@@ -59,6 +63,8 @@ struct Bill: Codable, Equatable {
         self.dateIntroduced = try valueContainer.decode(String.self, forKey: .dateIntroduced)
         self.isActive = try valueContainer.decode(Bool.self, forKey: .isActive)
         self.summary = try valueContainer.decode(String.self, forKey: .summary)
+        self.latestAction = try valueContainer.decode(String.self, forKey: .latestAction)
+        self.lastActionDate = try valueContainer.decode(String.self, forKey: .lastActionDate)
         self.summary = formatSummary(self.summary)
     }
 }

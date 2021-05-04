@@ -15,6 +15,7 @@ enum CharacterCountLimitError: Error {
 enum NetworkError: Error {
     case childAddedError
     case dataNotSerialized
+    case noDataReturned
     case logoutError
     case rallyObserverError
     case restError

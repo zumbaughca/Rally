@@ -9,14 +9,14 @@ import UIKit
 import Firebase
 
 class ProfileViewController: UITableViewController {
-
+    
     @IBOutlet weak var nameLabel: UILabel!
     @IBOutlet weak var screenNameLabel: UILabel!
     @IBOutlet weak var locationLabel: UILabel!
     @IBOutlet weak var emailLabel: UILabel!
+    @IBOutlet weak var tableViewFooter: UIView!
     
-    let firebaseRequests = FirebaseRequests()
-    let restRequests = RestApiCalls()
+    let networkRequests = Network()
     let reference = Database.database().reference().child("Users")
     var bills: [Bill] = []
     var user: User?
@@ -29,15 +29,12 @@ class ProfileViewController: UITableViewController {
             let userReference = reference.child(user.uid)
             fetchUser(userReference)
         }
+        self.tableView.tableFooterView = tableViewFooter
     }
     
     func fetchUser(_ reference: DatabaseReference) {
-        firebaseRequests.queryUserName(reference: reference, completion: {[weak self] (user, error) in
+        networkRequests.queryUserName(reference: reference, completion: {[weak self] (user, error) in
             guard let self = self else {return}
-            if let error = error {
-                print("error")
-                print(error.localizedDescription)
-            }
             if let user = user {
                 self.user = user
                 self.updateUI(user)
@@ -63,7 +60,7 @@ class ProfileViewController: UITableViewController {
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 7
+        return 5
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
@@ -75,7 +72,7 @@ class ProfileViewController: UITableViewController {
     }
     
     @IBAction func logoutButtonTapped(_ sender: Any) {
-        firebaseRequests.signOutUser(completion: {[weak self] (error) in
+        networkRequests.signOutUser(completion: {[weak self] (error) in
             if error == nil {
                 let storyboard = UIStoryboard(name: "Main", bundle: Bundle.main)
                 let loginController = storyboard.instantiateViewController(identifier: "LoginController")

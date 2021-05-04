@@ -10,6 +10,7 @@ import UIKit
 
 class CategorySelectorViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
 
+    @IBOutlet weak var contentView: UIView!
     @IBOutlet weak var tableView: UITableView!
     
     var categories: [String] = []

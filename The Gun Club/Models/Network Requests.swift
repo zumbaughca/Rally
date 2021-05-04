@@ -9,9 +9,7 @@
 import Foundation
 import Firebase
 
-
-
-struct RestApiCalls {
+struct Network {
     
     func retreiveCurrentBills(_ request: URLRequest, completion: @escaping ([Bill]?, Error?) -> Void) {
         let jsonDecoder = JSONDecoder()
@@ -45,9 +43,6 @@ struct RestApiCalls {
             }
             }).resume()
     }
-}
-
-struct FirebaseRequests {
     
     func queryModerators(completion: @escaping ([String]?, Error?) -> Void) {
         let reference = Database.database().reference().child("Moderators")
@@ -81,7 +76,7 @@ struct FirebaseRequests {
         })
     }
     
-    func observeChildAdded <T: Equatable & Codable> (reference: DatabaseReference, completion: @escaping (T?, Error?) -> Void) {
+    func observeChildAdded <T: Codable> (reference: DatabaseReference, completion: @escaping (T?, Error?) -> Void) {
         let jsonDecoder = JSONDecoder()
         reference.observe(.childAdded, with: {(snapshot) in
             if let dictionary = snapshot.value as? [String: Any] {
@@ -99,7 +94,7 @@ struct FirebaseRequests {
         })
     }
     
-    func observeSingleEvent <T: Equatable & Codable> (reference: DatabaseReference, completion: @escaping ([T]?, Error?) -> Void) {
+    func observeSingleEvent <T: Codable> (reference: DatabaseReference, completion: @escaping ([T]?, Error?) -> Void) {
         let jsonDecoder = JSONDecoder()
         reference.observeSingleEvent(of: .value, with: {(snapshot) in
             if let dictionary = snapshot.value as? [String: Any] {
@@ -138,40 +133,4 @@ struct FirebaseRequests {
         }
     }
     
-    func confirmRallyAttendance(_ key: String) {
-        let reference = Database.database().reference().child("Rallys").child(key).child("NumberOfAttendees")
-        reference.observeSingleEvent(of: .value, with: {(snapshot) in
-            if let value = snapshot.value as? Int {
-                let newValue = value + 1
-                reference.setValue(newValue)
-            }
-        })
-    }
-    
-    func unattendRally(_ key: String) {
-        let reference = Database.database().reference().child("Rallys").child(key).child("NumberOfAttendees")
-        reference.observeSingleEvent(of: .value, with: {(snapshot) in
-            if let value = snapshot.value as? Int {
-                let newValue = value - 1
-                reference.setValue(newValue)
-            }
-        })
-    }
-    
-    func attachRallyAttendanceObserver(_ key: String, completion: @escaping (Int?, Error?) -> Void) {
-        let reference = Database.database().reference().child("Rallys").child(key).child("NumberOfAttendees")
-        reference.observe(.value, with: {(snapshot) in
-            if let value = snapshot.value as? Int {
-                completion(value, nil)
-            } else {
-                completion(nil, NetworkError.rallyObserverError)
-            }
-            
-        })
-    }
-    
-    func confirmAttendingRallyExists(_ key: String, completion: @escaping (Bool?, Error?) -> Void) {
-        let jsonDecoder = JSONDecoder()
-        let reference = Database.database().reference().child("Rallys").child(key)
-    }
 }

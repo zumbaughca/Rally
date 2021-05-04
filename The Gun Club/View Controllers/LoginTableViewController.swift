@@ -24,10 +24,12 @@ class LoginTableViewController: UITableViewController {
     @IBOutlet weak var registerConfirmPasswordTextField: UITextField!
     @IBOutlet weak var registerPasswordTextField: UITextField!
     @IBOutlet weak var registerConfirmAgeSwitch: UISwitch!
-        
+    @IBOutlet weak var loginButton: UIButton!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         tableView.separatorStyle = .none
+        tableView.allowsSelection = false
         updateUI()
     }
     
@@ -46,6 +48,8 @@ class LoginTableViewController: UITableViewController {
             Auth.auth().signIn(withEmail: email, password: password, completion: { (authResult, error) in
                 if error != nil {
                     let alertController = UIAlertController()
+                    alertController.popoverPresentationController?.sourceView = self.view
+                    alertController.popoverPresentationController?.sourceRect = CGRect(x: self.view.bounds.midX, y: self.view.bounds.midY, width: self.view.bounds.width / 2, height: self.view.bounds.height / 4)
                     alertController.message = error?.localizedDescription
                     let cancelAction = UIAlertAction(title: "OK", style: .cancel, handler: nil)
                     alertController.addAction(cancelAction)
@@ -140,6 +144,7 @@ class LoginTableViewController: UITableViewController {
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return 4
     }
+    
 
     @IBAction func loginRegisterSegmentedControlChanged(_ sender: UISegmentedControl) {
         switch sender.selectedSegmentIndex {

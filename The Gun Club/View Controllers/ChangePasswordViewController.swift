@@ -19,7 +19,8 @@ class ChangePasswordViewController: UIViewController {
     @IBOutlet weak var requestCredentialPasswordTextField: UITextField!
     
     var credential: AuthCredential?
-    
+    let errorTitle = "There was an error changing your password"
+
     override func viewDidLoad() {
         super.viewDidLoad()
         requestCredentialStackView.isHidden = true
@@ -42,17 +43,21 @@ class ChangePasswordViewController: UIViewController {
             if let error = error as NSError? {
                 switch AuthErrorCode(rawValue: error.code) {
                 case .invalidCredential:
-                    self.createAlert("The username or password is incorrect.")
+                    self.createAlert(self.errorTitle, "The username or password is incorrect.", successAlert: false)
                 default:
-                    self.createAlert(error.localizedDescription)
+                    self.createAlert(self.errorTitle, error.localizedDescription, successAlert: false)
                 }
             }
         })
     }
     
-    func createAlert(_ message: String) {
-        let alertController = UIAlertController(title: "There was an error changing your password.", message: message, preferredStyle: .alert)
-        let cancelAction = UIAlertAction(title: "OK", style: .cancel, handler: nil)
+    func createAlert(_ title: String, _ message: String, successAlert: Bool) {
+        let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        let cancelAction = UIAlertAction(title: "OK", style: .cancel, handler: {(cancelAction) in
+            if successAlert == true {
+                self.dismiss(animated: true, completion: nil)
+            }
+        })
         alertController.addAction(cancelAction)
         present(alertController, animated: true, completion: nil)
     }
@@ -62,22 +67,21 @@ class ChangePasswordViewController: UIViewController {
         if let newPassword = newPasswordTextField.text {
             Auth.auth().currentUser?.updatePassword(to: newPassword, completion: {(error) in
                 if error == nil {
-                    self.dismiss(animated: true, completion: nil)
+                    self.createAlert("Your password was changed successfully.", "", successAlert: true)
                 } else {
                     if let error = error as NSError? {
-
                         switch AuthErrorCode(rawValue: error.code) {
                         case .userDisabled:
-                            self.createAlert("The user has been disabled by an administrator.")
+                            self.createAlert(self.errorTitle, "The user has been disabled by an administrator.", successAlert: false)
                         case .weakPassword:
-                            self.createAlert("The new password must be at least 6 characters long.")
+                            self.createAlert(self.errorTitle, "The new password must be at least 6 characters long.", successAlert: false)
                         case .operationNotAllowed:
-                            self.createAlert("Password changes have been disabled by the administrator.")
+                            self.createAlert(self.errorTitle, "Password changes have been disabled by the administrator.", successAlert: false)
                         case .requiresRecentLogin:
-                            self.createAlert("You must have signed in recently. Please provide your login credentials.")
+                            self.createAlert(self.errorTitle, "You must have signed in recently. Please provide your login credentials.", successAlert: false)
                             self.presentRequestCredentialView()
                         default:
-                            self.createAlert(error.localizedDescription)
+                            self.createAlert(self.errorTitle, error.localizedDescription, successAlert: false)
                         }
                     }
                 }

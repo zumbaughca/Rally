@@ -9,25 +9,30 @@
 import UIKit
 
 class BillTableViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
-    deinit {
-        print("Bill table deinit")
-    }
+
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var splashScreen: UIView!
     @IBOutlet weak var loadingActivityIndicator: UIActivityIndicatorView!
+    @IBOutlet weak var contentView: UIView!
     
     var bills: [Bill] = []
-    let restRequests = RestApiCalls()
+    let restRequests = Network()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         self.tableView.dataSource = self
         self.tableView.delegate = self
         self.tableView.isHidden = true
+        self.tableView.register(BillTableViewCell.self, forCellReuseIdentifier: "customBillCell")
         self.splashScreen.isHidden = false
         loadingActivityIndicator.style = .large
         loadingActivityIndicator.startAnimating()
         fetchBills()
+        setStyle()
+    }
+    
+    func setStyle() {
+        tableView.separatorStyle = .none
     }
     
     func stringForKey(_ key: String) -> String? {
@@ -75,15 +80,17 @@ class BillTableViewController: UIViewController, UITableViewDataSource, UITableV
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "billCell", for: indexPath)
+        let cell = tableView.dequeueReusableCell(withIdentifier: "customBillCell", for: indexPath) as! BillTableViewCell
         let bill = bills[indexPath.row]
-        cell.textLabel?.text = bill.title
-        cell.textLabel?.numberOfLines = 0
-        cell.detailTextLabel?.text = bill.isActive ? "Status: Active" : "Status: Introduced"
+        cell.billTitle.text = bill.title
+        cell.introducedLabel.text = "Introduced: \(bill.dateIntroduced)"
+        cell.lastActionDateLabel.text = "Last action: \(bill.lastActionDate)"
+        
         return cell
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        performSegue(withIdentifier: "billDetailSegue", sender: self)
         tableView.deselectRow(at: indexPath, animated: true)
     }
     

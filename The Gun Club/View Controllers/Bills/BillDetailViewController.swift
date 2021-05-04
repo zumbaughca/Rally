@@ -10,9 +10,6 @@ import UIKit
 import SafariServices
 
 class BillDetailViewController: UITableViewController {
-    deinit {
-        print("Bill detail deinit")
-    }
     
     @IBOutlet weak var titleLabel: UILabel!
     @IBOutlet weak var idLabel: UILabel!
@@ -22,11 +19,12 @@ class BillDetailViewController: UITableViewController {
     @IBOutlet weak var viewOnlineLabel: UILabel!
     @IBOutlet weak var viewOnlineCell: UITableViewCell!
     @IBOutlet weak var sponsorCell: UITableViewCell!
-    @IBOutlet weak var sponsorViewContactLabel: UILabel!
+    @IBOutlet weak var lastActionLabel: UILabel!
+    @IBOutlet weak var lastActionTitleLabel: UILabel!
     
     var bill: Bill?
     var sponsor: CongressPerson?
-    let restRequests = RestApiCalls()
+    let restRequests = Network()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -37,13 +35,14 @@ class BillDetailViewController: UITableViewController {
 
     func updateUI() {
         guard let bill = bill else {return}
-        sponsorViewContactLabel.isHidden = true
         titleLabel.text = bill.title
         titleLabel.font = UIFont.boldSystemFont(ofSize: 25)
         idLabel.text = bill.billId
         sponsorLabel.text = bill.sponsor
         dateIntroducedLabel.text = bill.dateIntroduced
         summaryLabel.text = bill.summary
+        lastActionLabel.text = bill.latestAction
+        lastActionTitleLabel.text = "Last action (\(bill.lastActionDate)):"
         if (URL(string: bill.billUrl) != nil) {
             viewOnlineCell.accessoryType = .disclosureIndicator
             viewOnlineLabel.isHidden = false
@@ -70,7 +69,6 @@ class BillDetailViewController: UITableViewController {
             if let member = member {
                 self.sponsor = member.results[0]
                 DispatchQueue.main.async {
-                    self.sponsorViewContactLabel.isHidden = false
                     self.sponsorCell.accessoryType = .disclosureIndicator
                 }
             } else {
@@ -86,7 +84,7 @@ class BillDetailViewController: UITableViewController {
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 5
+        return 6
     }
     
     @objc func presentBillWebpage() {
@@ -99,13 +97,12 @@ class BillDetailViewController: UITableViewController {
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         let webIndexPath = IndexPath(row: 1, section: 0)
-        let sponsorIndexPath = IndexPath(row: 2, section: 0)
         if indexPath == webIndexPath {
             presentBillWebpage()
         }
         tableView.deselectRow(at: indexPath, animated: true)
     }
-    
+        
     override func shouldPerformSegue(withIdentifier identifier: String, sender: Any?) -> Bool {
         guard identifier == "contactSegue" else {return true}
         if sponsor == nil {
@@ -124,7 +121,7 @@ class BillDetailViewController: UITableViewController {
             }
         }
     }
-    
+    //Done button unwind
     @IBAction func unwindFromSponsor(_ sender: UIStoryboardSegue) {
         
     }

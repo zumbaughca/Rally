@@ -20,20 +20,20 @@ class CommentTableViewCell: UITableViewCell {
     }()
     
     let ownerLabel: UILabel = {
-         let label = UILabel()
+        let label = UILabel()
         label.font = UIFont.systemFont(ofSize: 12)
-         label.translatesAutoresizingMaskIntoConstraints = false
-         return label
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
      }()
      
      let dateLabel: UILabel = {
-         let label = UILabel()
+        let label = UILabel()
         label.font = UIFont.systemFont(ofSize: 12)
-         label.translatesAutoresizingMaskIntoConstraints = false
-         return label
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
      }()
     
-    func configureLayout() {
+    private func configureLayout() {
         postLabel.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 10).isActive = true
         postLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 8).isActive = true
         postLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -8).isActive = true
@@ -42,6 +42,7 @@ class CommentTableViewCell: UITableViewCell {
         ownerLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -8).isActive = true
         dateLabel.leadingAnchor.constraint(equalTo: ownerLabel.trailingAnchor, constant: 8).isActive = true
         dateLabel.bottomAnchor.constraint(equalTo: ownerLabel.bottomAnchor).isActive = true
+        
      }
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
