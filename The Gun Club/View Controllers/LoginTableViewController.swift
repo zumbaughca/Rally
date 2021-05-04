@@ -47,13 +47,7 @@ class LoginTableViewController: UITableViewController {
             let password = loginPasswordTextField.text {
             Auth.auth().signIn(withEmail: email, password: password, completion: { (authResult, error) in
                 if error != nil {
-                    let alertController = UIAlertController()
-                    alertController.popoverPresentationController?.sourceView = self.view
-                    alertController.popoverPresentationController?.sourceRect = CGRect(x: self.view.bounds.midX, y: self.view.bounds.midY, width: self.view.bounds.width / 2, height: self.view.bounds.height / 4)
-                    alertController.message = error?.localizedDescription
-                    let cancelAction = UIAlertAction(title: "OK", style: .cancel, handler: nil)
-                    alertController.addAction(cancelAction)
-                    self.present(alertController, animated: true, completion: nil)
+                    self.createErrorAlert(for: error!.localizedDescription)
                 }
                 if authResult != nil {
                  if (authResult?.user) != nil {
@@ -75,11 +69,7 @@ class LoginTableViewController: UITableViewController {
             if registerConfirmAgeSwitch.isOn {
                 Auth.auth().createUser(withEmail: email, password: password, completion: {authResult, error in
                     if error != nil {
-                        let alertController = UIAlertController()
-                        alertController.message = error?.localizedDescription
-                        let cancelAction = UIAlertAction(title: "OK", style: .cancel, handler: nil)
-                        alertController.addAction(cancelAction)
-                        self.present(alertController, animated: true, completion: nil)
+                        self.createErrorAlert(for: error!.localizedDescription)
                     }
                     
                     if let authResult = authResult {
@@ -100,19 +90,11 @@ class LoginTableViewController: UITableViewController {
                 })
             } else {
                 //User is not 18
-                let alertController = UIAlertController()
-                alertController.message = "You must be 18 years of age or older to use this app."
-                let cancelAction = UIAlertAction(title: "OK", style: .cancel, handler: nil)
-                alertController.addAction(cancelAction)
-                present(alertController, animated: true, completion: nil)
+                self.createErrorAlert(for: "You must be 18 years of age or older to use this app.")
             }
         } else {
             //Passwords do not match
-            let alertController = UIAlertController()
-            alertController.message = "Passwords do not match."
-            let cancelAction = UIAlertAction(title: "OK", style: .cancel, handler: nil)
-            alertController.addAction(cancelAction)
-            present(alertController, animated: true, completion: nil)
+            self.createErrorAlert(for: "Passwords do not match.")
         }
     }
 

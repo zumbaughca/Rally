@@ -11,38 +11,22 @@ import Firebase
 
 struct Network {
     
-    func retreiveCurrentBills(_ request: URLRequest, completion: @escaping ([Bill]?, Error?) -> Void) {
+    func restApiCall<T: Codable>(_ request: URLRequest, completion: @escaping (T?, Error?) -> Void) {
         let jsonDecoder = JSONDecoder()
         URLSession.shared.dataTask(with: request, completionHandler: {(data, response, error) in
             if error != nil {
                 completion(nil, NetworkError.restError)
             }
             if let data = data {
-                if let decodedData = try? jsonDecoder.decode(BillTopLevel.self, from: data) {
-                    let bills = decodedData.results[0].bills
-                    completion(bills, nil)
-                } else {
-                    completion(nil, NetworkError.jsonDataNotDecoded)
+                if let decodedData = try? jsonDecoder.decode(T.self, from: data) {
+                    completion(decodedData, nil)
                 }
+            } else {
+                completion(nil, NetworkError.jsonDataNotDecoded)
             }
-            }).resume()
+        }).resume()
     }
-    
-    func querySponsorById(_ request: URLRequest, completion: @escaping (CongressPersonTopLevel?, Error?) -> Void) {
-        let jsonDecoder = JSONDecoder()
-        URLSession.shared.dataTask(with: request, completionHandler: {(data, response, error) in
-            if error != nil {
-                completion(nil, NetworkError.restError)
-            }
-            if let data = data {
-                if let result = try? jsonDecoder.decode(CongressPersonTopLevel.self, from: data) {
-                    completion(result, nil)
-                } else {
-                    completion(nil, NetworkError.jsonDataNotDecoded)
-                }
-            }
-            }).resume()
-    }
+
     
     func queryModerators(completion: @escaping ([String]?, Error?) -> Void) {
         let reference = Database.database().reference().child("Moderators")

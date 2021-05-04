@@ -64,15 +64,14 @@ class BillDetailViewController: UITableViewController {
         guard let url = URL(string: memberUrl) else {return}
         var request = URLRequest(url: url)
         request.addValue(apiKey, forHTTPHeaderField: "X-API-Key")
-        restRequests.querySponsorById(request, completion: {[weak self] (member, error) in
-            guard let self = self else {return}
+        restRequests.restApiCall(request, completion: {
+            [weak self] (member: CongressPersonTopLevel?, error: Error?) in
+            guard let self = self else { return }
             if let member = member {
                 self.sponsor = member.results[0]
                 DispatchQueue.main.async {
                     self.sponsorCell.accessoryType = .disclosureIndicator
                 }
-            } else {
-                
             }
         })
     }

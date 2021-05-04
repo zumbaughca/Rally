@@ -19,6 +19,8 @@
 		662F6A4324F7482900BDBB52 /* User Model.swift in Sources */ = {isa = PBXBuildFile; fileRef = 662F6A4224F7482900BDBB52 /* User Model.swift */; };
 		663B06ED24F73D24001D7205 /* Errors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 663B06EC24F73D24001D7205 /* Errors.swift */; };
 		663B3C5C24E4424C0008E32E /* Network Requests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 663B3C5B24E4424C0008E32E /* Network Requests.swift */; };
+		665EBFE42640DDE900D04AB8 /* CommentTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 665EBFE32640DDE900D04AB8 /* CommentTextView.swift */; };
+		665EBFE92640E6CD00D04AB8 /* PostCommentButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 665EBFE82640E6CD00D04AB8 /* PostCommentButton.swift */; };
 		668811A525FD13FA00525EDB /* BillTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 668811A425FD13FA00525EDB /* BillTableViewCell.swift */; };
 		66A8DD3E24E4A2F300A652C4 /* Extensions + Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66A8DD3D24E4A2F300A652C4 /* Extensions + Helpers.swift */; };
 		66B6C6AB24F180C10061C276 /* CongressPersonContactViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66B6C6AA24F180C10061C276 /* CongressPersonContactViewController.swift */; };
@@ -70,6 +72,8 @@
 		662F6A4224F7482900BDBB52 /* User Model.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "User Model.swift"; sourceTree = "<group>"; };
 		663B06EC24F73D24001D7205 /* Errors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Errors.swift; sourceTree = "<group>"; };
 		663B3C5B24E4424C0008E32E /* Network Requests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Network Requests.swift"; sourceTree = "<group>"; };
+		665EBFE32640DDE900D04AB8 /* CommentTextView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentTextView.swift; sourceTree = "<group>"; };
+		665EBFE82640E6CD00D04AB8 /* PostCommentButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostCommentButton.swift; sourceTree = "<group>"; };
 		668811A425FD13FA00525EDB /* BillTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BillTableViewCell.swift; sourceTree = "<group>"; };
 		66A8DD3D24E4A2F300A652C4 /* Extensions + Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Extensions + Helpers.swift"; sourceTree = "<group>"; };
 		66B6C6AA24F180C10061C276 /* CongressPersonContactViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CongressPersonContactViewController.swift; sourceTree = "<group>"; };
@@ -140,6 +144,8 @@
 				66EEEF8824DB874D007D2552 /* MainPostTableViewCell.swift */,
 				66EEEF8A24DB973A007D2552 /* CommentTableViewCell.swift */,
 				668811A425FD13FA00525EDB /* BillTableViewCell.swift */,
+				665EBFE32640DDE900D04AB8 /* CommentTextView.swift */,
+				665EBFE82640E6CD00D04AB8 /* PostCommentButton.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -507,6 +513,7 @@
 				662AF1B024F0710C007FAC65 /* CongressPerson Model.swift in Sources */,
 				66EEEF8924DB874D007D2552 /* MainPostTableViewCell.swift in Sources */,
 				66B6C6AB24F180C10061C276 /* CongressPersonContactViewController.swift in Sources */,
+				665EBFE92640E6CD00D04AB8 /* PostCommentButton.swift in Sources */,
 				663B3C5C24E4424C0008E32E /* Network Requests.swift in Sources */,
 				66D571F124CB449300930F46 /* ForumViewController.swift in Sources */,
 				66D571F324CB454800930F46 /* Thread Model.swift in Sources */,
@@ -514,6 +521,7 @@
 				668811A525FD13FA00525EDB /* BillTableViewCell.swift in Sources */,
 				66C07B3024F4765500CC2308 /* ChangePasswordViewController.swift in Sources */,
 				66DCB9E024CA2013005F2973 /* SceneDelegate.swift in Sources */,
+				665EBFE42640DDE900D04AB8 /* CommentTextView.swift in Sources */,
 				66EEEF8424DB70FF007D2552 /* CategorySelectorViewController.swift in Sources */,
 				66EEEF8724DB7C34007D2552 /* ThreadViewController.swift in Sources */,
 				66A8DD3E24E4A2F300A652C4 /* Extensions + Helpers.swift in Sources */,

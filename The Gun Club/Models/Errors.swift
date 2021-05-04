@@ -8,11 +8,18 @@
 
 import Foundation
 
-enum CharacterCountLimitError: Error {
+enum CharacterCountLimitError: Error, LocalizedError {
     case characterCountExceedsLimit
+    
+    var errorDescription: String? {
+        switch self {
+        case .characterCountExceedsLimit:
+            return "Character count exceeds 500 character limit."
+        }
+    }
 }
 
-enum NetworkError: Error {
+enum NetworkError: Error, LocalizedError {
     case childAddedError
     case dataNotSerialized
     case noDataReturned
@@ -20,11 +27,16 @@ enum NetworkError: Error {
     case rallyObserverError
     case restError
     case jsonDataNotDecoded
+    
+    var errorDescription: String? {
+        switch self {
+        case .noDataReturned:
+            return "No data was returned from the server."
+        case .logoutError:
+            return "There was an error logging you out. Check your internet connection and try again"
+        default:
+            return "An error occured. Please try again later."
+        }
+    }
 }
 
-enum RallyError: Error {
-    case nameIsEmpty
-    case dateNotSet
-    case locationNotSet
-    case descriptionIsEmpty
-}

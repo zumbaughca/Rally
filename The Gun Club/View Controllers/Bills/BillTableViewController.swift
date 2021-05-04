@@ -44,13 +44,14 @@ class BillTableViewController: UIViewController, UITableViewDataSource, UITableV
     }
     
     func fetchBills() {
-        guard let baseURL = stringForKey("Base Bill API URL"), let queries = arrayForKey("Bill API Queries"), let url = URL(string: baseURL) else {return}
+        guard let baseURL = stringForKey("Base Bill API URL"), let queries = arrayForKey("Bill API Queries"), let url = URL(string: baseURL),
+              let apiKey = stringForKey("Propublica API Key") else {return}
         queries.forEach({
             var request = URLRequest(url: url.withQueries(["query": $0])!)
-            request.addValue("azYX08cQYJkFJ7mBvXq22sIkLmE5fLhuRlNJVZ6g", forHTTPHeaderField: "X-API-Key")
-            restRequests.retreiveCurrentBills(request, completion: {[weak self] (bills, error) in
-                guard let self = self else {return}
-                if let bills = bills {
+            request.addValue(apiKey, forHTTPHeaderField: "X-API-Key")
+            restRequests.restApiCall(request, completion: {[weak self] (bills: BillTopLevel?, error: Error?) in
+                guard let self = self else { return }
+                if let bills = bills?.results[0].bills {
                     bills.forEach({
                         if !self.bills.contains($0) && self.validateBillTitle($0.title) {
                             self.bills.append($0)

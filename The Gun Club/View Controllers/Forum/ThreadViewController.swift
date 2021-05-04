@@ -12,15 +12,13 @@ import Firebase
 class ThreadViewController: UIViewController, UITextViewDelegate, UITableViewDelegate, UITableViewDataSource{
     
     @IBOutlet weak var tableView: UITableView!
-    @IBOutlet weak var commentTextView: UITextView!
+    @IBOutlet weak var commentTextView: CommentTextView!
     @IBOutlet weak var threadLockedButton: UIBarButtonItem!
-    @IBOutlet weak var postCommentButton: UIButton!
+    @IBOutlet weak var postCommentButton: PostCommentButton!
     @IBOutlet var contentView: UIView!
     
     var thread: Thread?
     var moderators: [String]?
-    var commentTextViewHeightConstraint: NSLayoutConstraint!
-    
     let reference = Database.database().reference().child("Threads")
     let firebaseRequests = Network()
     
@@ -31,31 +29,21 @@ class ThreadViewController: UIViewController, UITextViewDelegate, UITableViewDel
         self.commentTextView.delegate = self
         self.tableView.delegate = self
         self.tableView.dataSource = self
-        self.commentTextViewHeightConstraint = commentTextView.heightAnchor.constraint(equalToConstant: 40)
-        commentTextViewHeightConstraint.isActive = true
         tableView.register(MainPostTableViewCell.self, forCellReuseIdentifier: "mainPost")
         tableView.register(CommentTableViewCell.self, forCellReuseIdentifier: "comment")
-
-        setTextFieldPlaceholderText()
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(textViewEndEditing))
         self.view.addGestureRecognizer(tapGesture)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboard(notification:)), name: UIResponder.keyboardWillShowNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboard(notification:)), name: UIResponder.keyboardWillHideNotification, object: nil)
         updateUI()
         fetchLockedStatus()
+        commentTextView.setPlaceholderText()
     }
     
     func updateUI() {
         guard let user = Auth.auth().currentUser, let thread = thread else {return}
         tableView.separatorStyle = .none
-        commentTextView.layer.borderColor = UIColor.black.cgColor
-        commentTextView.layer.borderWidth = 1
-        commentTextView.layer.cornerRadius = 15
-        commentTextView.isScrollEnabled = false
-        commentTextView.textContainer.heightTracksTextView = true
-        postCommentButton.layer.borderColor = UIColor(red255: 65, green: 105, blue: 225, alpha: 1).cgColor
-        postCommentButton.layer.borderWidth = CGFloat(1)
-        postCommentButton.layer.cornerRadius = 15
+        
         if user.uid != thread.ownerUid {
             threadLockedButton.isEnabled = false
         }
@@ -64,9 +52,11 @@ class ThreadViewController: UIViewController, UITextViewDelegate, UITableViewDel
         } else {
             threadLockedButton.image = UIImage(systemName: "lock.fill")
         }
+        
         threadLockedStatusDidChange()
     }
     
+    // Only allow moderator privilages on thread if user is on mod list.
     func allowModeratorPrivileges() {
         guard let user = Auth.auth().currentUser, let moderators = moderators else {return}
         if moderators.contains(user.uid) {
@@ -99,38 +89,34 @@ class ThreadViewController: UIViewController, UITextViewDelegate, UITableViewDel
     
     func threadLockedStatusDidChange() {
         if thread!.locked == true {
-            commentTextView.isEditable = false
-            postCommentButton.isEnabled = false
-            commentTextView.text = "This thread is locked."
+            commentTextView.lock()
+            postCommentButton.lock()
         } else if thread!.locked == false {
-            commentTextView.isEditable = true
-            postCommentButton.isEnabled = true
-            commentTextView.text = "New comment..."
+            commentTextView.unlock()
+            postCommentButton.unlock()
         }
     }
     
+    /*
+     * The default height constraint on the comment text field is 40
+     * We want to adjust the height to increase as new lines are added
+     * until the text field occupies 1/3 of the screen
+     */
     func adjustTextViewHeight() {
-        let width = commentTextView.frame.width
-        let adjustedSize = commentTextView.sizeThatFits(CGSize(width: width, height: CGFloat.greatestFiniteMagnitude))
-        if adjustedSize.height >= UIScreen.main.bounds.height / 3 {
-            commentTextView.isScrollEnabled = true
-        } else {
-            commentTextView.isScrollEnabled = false
-            commentTextView.textContainer.heightTracksTextView = true
-            commentTextViewHeightConstraint.constant = adjustedSize.height
-        }
-        commentTextView.layoutIfNeeded()
+        commentTextView.adjustTextViewHeight(screenHeight: UIScreen.main.bounds.height / 3, heightConstraint: commentTextView.heightConstraint)
     }
     
+    /*
+     * Continue to adjust height as new lines are added
+     * At each change, determine if the character count exceeds the limit
+     * If it does, alert the user to reduce the count.
+     */
     func textViewDidChange(_ textView: UITextView) {
         adjustTextViewHeight()
         do {
             try textView.validateTextViewCharacterCount()
         } catch {
-            let alertController = UIAlertController(title: "Error", message: "Character count exceeds 500 character limit.", preferredStyle: .alert)
-            let cancelAction = UIAlertAction(title: "OK", style: .cancel, handler: nil)
-            alertController.addAction(cancelAction)
-            present(alertController, animated: true, completion: nil)
+            self.createErrorAlert(for: error.localizedDescription)
         }
     }
     
@@ -152,12 +138,22 @@ class ThreadViewController: UIViewController, UITextViewDelegate, UITableViewDel
             }
         })
     }
-    //Need to fix keyboard bugs
+    
+    /*
+     * First get the size of the keyboard
+     * If the notification is that the keyboard will show:
+     *      - Get the height of the tab bar
+     *      - Then adjust the frame to have a padding of 8 between keyboard and text field
+     * If the notification is that the keyboard will hide:
+     * Reset the origin back to 0.
+     */
     @objc func keyboard(notification: Notification) {
         guard let keyboardSize = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as AnyObject).cgRectValue else {return}
-        
-        if notification.name == UIResponder.keyboardWillShowNotification || notification.name == UIResponder.keyboardWillChangeFrameNotification {
-            self.contentView.frame.origin.y -= keyboardSize.height
+        if notification.name == UIResponder.keyboardWillShowNotification ||
+            notification.name == UIResponder.keyboardWillChangeFrameNotification {
+            let tabBarHeight = tabBarController?.tabBar.frame.height ?? 0
+            self.contentView.frame.origin.y = -8 - keyboardSize.height + tabBarHeight
+            
         } else {
             self.contentView.frame.origin.y = 0
         }
@@ -170,41 +166,37 @@ class ThreadViewController: UIViewController, UITextViewDelegate, UITableViewDel
         }
     }
     
-    func setTextFieldPlaceholderText() {
-        commentTextView.text = "New comment..."
-        commentTextView.textColor = UIColor.lightGray
-    }
-    
     func textViewDidBeginEditing(_ textView: UITextView) {
-        if commentTextView.textColor == UIColor.lightGray {
-            commentTextView.textColor = UIColor.black
-            commentTextView.text = nil
-        }
+        commentTextView.setEmptyText()
     }
     
     func textViewDidEndEditing(_ textView: UITextView) {
-        if commentTextView.text == "" || commentTextView.text == nil {
-            setTextFieldPlaceholderText()
+        if commentTextView.isFieldEmpty() {
+            commentTextView.setPlaceholderText()
         }
     }
     
+    /*
+     * First ensure the thread is not locked and that the text field is not empty.
+     * If we are good to proceed, grab the current date as a formatted string.
+     * Create a new reference for this comment with childByAutoId()
+     * Update the comments node to include the new comment
+     * Update the threads last activity
+     * Reset the UI
+     */
     @IBAction func postCommentButtonPressed(_ sender: Any) {
         guard let thread = thread, thread.locked == false else {return}
-        if commentTextView.text == "New comment..." || commentTextView.text == "" {
+        if commentTextView.isFieldEmpty() {
             return
         }
         let threadReference = reference.child(thread.category).child(thread.key)
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateStyle = .medium
-        dateFormatter.timeStyle = .medium
-        dateFormatter.locale = Locale(identifier: "en_US")
-        let date = dateFormatter.string(from: Date())
+        let date = DateFormatter().getFormattedStringFromCurrentDate()
         if let postText = commentTextView.text, let user = Auth.auth().currentUser {
             let commentRef = reference.child(thread.category).child(thread.key).child("comments").childByAutoId()
             commentRef.updateChildValues(["Post": postText, "Owner": user.displayName!, "OwnerUid": user.uid, "Date": date, "Key": commentRef.key!])
             threadReference.updateChildValues(["LastActivity": date])
         }
-        setTextFieldPlaceholderText()
+        commentTextView.setPlaceholderText()
         commentTextView.resignFirstResponder()
         adjustTextViewHeight()
     }
@@ -260,15 +252,4 @@ class ThreadViewController: UIViewController, UITextViewDelegate, UITableViewDel
         }
         
     }
-    
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
-    }
-    */
-
 }
