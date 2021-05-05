@@ -12,7 +12,8 @@
 		56F4177571607321668D9A6D /* libPods-The Gun ClubUITests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5F90E737AC92E7569567F9DC /* libPods-The Gun ClubUITests.a */; };
 		6600149A24F03D30001FF08D /* BillTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6600149924F03D30001FF08D /* BillTableViewController.swift */; };
 		66003A6924E6303500F53F50 /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66003A6824E6303500F53F50 /* ProfileViewController.swift */; };
-		660D285E24E704EE001F294C /* LoginTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 660D285D24E704EE001F294C /* LoginTableViewController.swift */; };
+		660D72B426422EAE00F57319 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 660D72B326422EAE00F57319 /* LoginViewController.swift */; };
+		660D72EE26424A2B00F57319 /* ProfileTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 660D72ED26424A2B00F57319 /* ProfileTableViewCell.swift */; };
 		661B7ACD24CB4CA400EBECF9 /* NewThreadViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 661B7ACC24CB4CA400EBECF9 /* NewThreadViewController.swift */; };
 		662AF1AE24F05EFF007FAC65 /* BillDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 662AF1AD24F05EFF007FAC65 /* BillDetailViewController.swift */; };
 		662AF1B024F0710C007FAC65 /* CongressPerson Model.swift in Sources */ = {isa = PBXBuildFile; fileRef = 662AF1AF24F0710C007FAC65 /* CongressPerson Model.swift */; };
@@ -65,7 +66,8 @@
 		65040A7D8DBC200612B84B78 /* Pods-The Gun ClubUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-The Gun ClubUITests.debug.xcconfig"; path = "Target Support Files/Pods-The Gun ClubUITests/Pods-The Gun ClubUITests.debug.xcconfig"; sourceTree = "<group>"; };
 		6600149924F03D30001FF08D /* BillTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BillTableViewController.swift; sourceTree = "<group>"; };
 		66003A6824E6303500F53F50 /* ProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
-		660D285D24E704EE001F294C /* LoginTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginTableViewController.swift; sourceTree = "<group>"; };
+		660D72B326422EAE00F57319 /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
+		660D72ED26424A2B00F57319 /* ProfileTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileTableViewCell.swift; sourceTree = "<group>"; };
 		661B7ACC24CB4CA400EBECF9 /* NewThreadViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewThreadViewController.swift; sourceTree = "<group>"; };
 		662AF1AD24F05EFF007FAC65 /* BillDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BillDetailViewController.swift; sourceTree = "<group>"; };
 		662AF1AF24F0710C007FAC65 /* CongressPerson Model.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CongressPerson Model.swift"; sourceTree = "<group>"; };
@@ -146,6 +148,7 @@
 				668811A425FD13FA00525EDB /* BillTableViewCell.swift */,
 				665EBFE32640DDE900D04AB8 /* CommentTextView.swift */,
 				665EBFE82640E6CD00D04AB8 /* PostCommentButton.swift */,
+				660D72ED26424A2B00F57319 /* ProfileTableViewCell.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -249,9 +252,9 @@
 			children = (
 				66C07B2E24F4747B00CC2308 /* Forum */,
 				66C07B2B24F4743300CC2308 /* Bills */,
-				660D285D24E704EE001F294C /* LoginTableViewController.swift */,
 				66003A6824E6303500F53F50 /* ProfileViewController.swift */,
 				66C07B2F24F4765500CC2308 /* ChangePasswordViewController.swift */,
+				660D72B326422EAE00F57319 /* LoginViewController.swift */,
 			);
 			path = "View Controllers";
 			sourceTree = "<group>";
@@ -509,8 +512,8 @@
 				661B7ACD24CB4CA400EBECF9 /* NewThreadViewController.swift in Sources */,
 				663B06ED24F73D24001D7205 /* Errors.swift in Sources */,
 				6600149A24F03D30001FF08D /* BillTableViewController.swift in Sources */,
-				660D285E24E704EE001F294C /* LoginTableViewController.swift in Sources */,
 				662AF1B024F0710C007FAC65 /* CongressPerson Model.swift in Sources */,
+				660D72EE26424A2B00F57319 /* ProfileTableViewCell.swift in Sources */,
 				66EEEF8924DB874D007D2552 /* MainPostTableViewCell.swift in Sources */,
 				66B6C6AB24F180C10061C276 /* CongressPersonContactViewController.swift in Sources */,
 				665EBFE92640E6CD00D04AB8 /* PostCommentButton.swift in Sources */,
@@ -525,6 +528,7 @@
 				66EEEF8424DB70FF007D2552 /* CategorySelectorViewController.swift in Sources */,
 				66EEEF8724DB7C34007D2552 /* ThreadViewController.swift in Sources */,
 				66A8DD3E24E4A2F300A652C4 /* Extensions + Helpers.swift in Sources */,
+				660D72B426422EAE00F57319 /* LoginViewController.swift in Sources */,
 				662F6A4324F7482900BDBB52 /* User Model.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

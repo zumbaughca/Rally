@@ -64,6 +64,7 @@ class ThreadViewController: UIViewController, UITextViewDelegate, UITableViewDel
         }
     }
     
+    // Get a list of the moderators when the thread is loaded.
     func fetchModerators() {
         firebaseRequests.queryModerators(completion: {[weak self] (moderators, error) in
             guard let self = self else {return}
@@ -125,8 +126,8 @@ class ThreadViewController: UIViewController, UITextViewDelegate, UITableViewDel
         let firebaseRequests = Network()
         firebaseRequests.observeChildAdded(reference: reference.child(thread.category).child(thread.key).child("comments"), completion: {[weak self] (comment: Comment?, error) in
             guard let self = self else {return}
-            if error != nil {
-                //handle error
+            if let error = error {
+                self.createErrorAlert(for: error.localizedDescription)
             }
             if let comment = comment {
                 if !(thread.comments?.contains(comment) ?? false) {
