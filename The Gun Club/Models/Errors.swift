@@ -19,6 +19,22 @@ enum CharacterCountLimitError: Error, LocalizedError {
     }
 }
 
+enum TextFieldValidationError: Error, LocalizedError {
+    case textFieldIsEmpty
+    case postTitleIsEmpty
+    
+    var errorDescription: String? {
+        switch self {
+        case .textFieldIsEmpty:
+            return "Your post must not be empty"
+        case .postTitleIsEmpty:
+            return "Your post must have a title"
+        default:
+            return "An error occured, please try again later"
+        }
+    }
+}
+
 enum NetworkError: Error, LocalizedError {
     case childAddedError
     case dataNotSerialized

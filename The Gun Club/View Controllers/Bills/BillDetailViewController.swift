@@ -51,15 +51,11 @@ class BillDetailViewController: UITableViewController {
             viewOnlineLabel.isHidden = true
         }
     }
-    
-    func stringForKey(_ key: String) -> String? {
-        return (Bundle.main.infoDictionary?[key] as? String)?.replacingOccurrences(of: "\\", with: "")
-    }
-    
+
     func retreiveSponsorInfo() {
         guard let bill = bill else {return}
-        guard let baseUrl = stringForKey("Base Member URL") else {return}
-        guard let apiKey = stringForKey("Propublica API Key") else {return}
+        guard let baseUrl = self.stringForKey("Base Member URL") else {return}
+        guard let apiKey = self.stringForKey("Propublica API Key") else {return}
         let memberUrl = baseUrl + bill.sponsorId + ".json"
         guard let url = URL(string: memberUrl) else {return}
         var request = URLRequest(url: url)

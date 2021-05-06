@@ -34,18 +34,14 @@ class BillTableViewController: UIViewController, UITableViewDataSource, UITableV
     func setStyle() {
         tableView.separatorStyle = .none
     }
-    
-    func stringForKey(_ key: String) -> String? {
-        return (Bundle.main.infoDictionary?[key] as? String)?.replacingOccurrences(of: "\\", with: "")
-    }
-    
+
     func arrayForKey(_ key: String) -> [String]? {
         return (Bundle.main.infoDictionary?[key] as? [String])
     }
     
     func fetchBills() {
-        guard let baseURL = stringForKey("Base Bill API URL"), let queries = arrayForKey("Bill API Queries"), let url = URL(string: baseURL),
-              let apiKey = stringForKey("Propublica API Key") else {return}
+        guard let baseURL = self.stringForKey("Base Bill API URL"), let queries = arrayForKey("Bill API Queries"), let url = URL(string: baseURL),
+              let apiKey = self.stringForKey("Propublica API Key") else {return}
         queries.forEach({
             var request = URLRequest(url: url.withQueries(["query": $0])!)
             request.addValue(apiKey, forHTTPHeaderField: "X-API-Key")

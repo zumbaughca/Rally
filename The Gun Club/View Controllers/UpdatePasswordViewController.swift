@@ -1,43 +1,61 @@
 //
-//  ChangePasswordViewController.swift
+//  UpdatePasswordViewController.swift
 //  The Gun Club
 //
-//  Created by Chuck Zumbaugh on 8/24/20.
-//  Copyright © 2020 Chuck Zumbaugh. All rights reserved.
+//  Created by Chuck Zumbaugh on 5/5/21.
+//  Copyright © 2021 Chuck Zumbaugh. All rights reserved.
 //
 
 import UIKit
 import Firebase
 
-class ChangePasswordViewController: UIViewController {
+class UpdatePasswordViewController: UIViewController {
 
+    @IBOutlet weak var updateCredentialsStackView: UIStackView!
+    @IBOutlet weak var changePasswordStackView: UIStackView!
+    @IBOutlet weak var scrollView: UIScrollView!
+    @IBOutlet weak var contentView: UIView!
+    
+    
+    @IBOutlet weak var emailTextField: UITextField!
+    @IBOutlet weak var oldPasswordTextField: UITextField!
     @IBOutlet weak var newPasswordTextField: UITextField!
     @IBOutlet weak var confirmNewPasswordTextField: UITextField!
-    @IBOutlet weak var requestCredentialStackView: UIStackView!
-    @IBOutlet weak var changePasswordStackView: UIStackView!
-    @IBOutlet weak var emailCredentialTextField: UITextField!
-    @IBOutlet weak var requestCredentialPasswordTextField: UITextField!
+    @IBOutlet weak var updateCredentialButton: UIButton!
+    @IBOutlet weak var changePasswordButton: UIButton!
     
     var credential: AuthCredential?
     let errorTitle = "There was an error changing your password"
 
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        requestCredentialStackView.isHidden = true
+        updateCredentialsStackView.isHidden = true
+        updateUI()
+    }
+    
+    func updateUI() {
+        scrollView.backgroundColor = UIColor(named: self.stringForKey("Background Color")!)
+        contentView.backgroundColor = UIColor(named: self.stringForKey("Background Color")!)
+        updateCredentialButton.backgroundColor = UIColor(named: self.stringForKey("Blue Color")!)
+        changePasswordButton.backgroundColor = UIColor(named: self.stringForKey("Blue Color")!)
+        updateCredentialButton.layer.cornerRadius = 15
+        changePasswordButton.layer.cornerRadius = 15
     }
     
     func presentRequestCredentialView() {
         changePasswordStackView.isHidden = true
-        requestCredentialStackView.isHidden = false
+        updateCredentialsStackView.isHidden = false
     }
     
     func reauthenticateUser() {
-        guard let email = emailCredentialTextField.text, let password = requestCredentialPasswordTextField.text else {return}
+        guard let email = emailTextField.text, let password = oldPasswordTextField.text else {return}
         credential = EmailAuthProvider.credential(withEmail: email, password: password)
         Auth.auth().signIn(with: credential!, completion: {(authResult, error) in
             if error == nil {
                 self.changePasswordStackView.isHidden = false
-                self.requestCredentialStackView.isHidden = true
+                self.updateCredentialsStackView.isHidden = true
                 self.changePassword()
             }
             if let error = error as NSError? {
@@ -89,11 +107,22 @@ class ChangePasswordViewController: UIViewController {
         }
     }
 
-    @IBAction func submitButtonPressed(_ sender: Any) {
+    
+    @IBAction func reauthenticateButtonPressed(_ sender: Any) {
+        reauthenticateUser()
+    }
+    @IBAction func changePasswordButtonPressed(_ sender: Any) {
         changePassword()
     }
     
-    @IBAction func reauthenticateSubmitButtonPressed(_ sender: Any) {
-        reauthenticateUser()
+    /*
+    // MARK: - Navigation
+
+    // In a storyboard-based application, you will often want to do a little preparation before navigation
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        // Get the new view controller using segue.destination.
+        // Pass the selected object to the new view controller.
     }
+    */
+
 }

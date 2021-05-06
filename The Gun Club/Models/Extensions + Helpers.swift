@@ -45,6 +45,22 @@ extension UITextView {
         }
         self.layoutIfNeeded()
     }
+    
+    func validateIsNotEmpty() throws {
+        let text = self.text?.replacingOccurrences(of: " ", with: "")
+        if text == nil || text == "" {
+            throw TextFieldValidationError.textFieldIsEmpty
+        }
+    }
+}
+
+extension UITextField {
+    func validateIsNotEmpty() throws {
+        let text = self.text?.replacingOccurrences(of: " ", with: "")
+        if text == nil || text == "" {
+            throw TextFieldValidationError.postTitleIsEmpty
+        }
+    }
 }
 
 extension UIColor {
@@ -68,5 +84,9 @@ extension UIViewController {
         let cancelAction = UIAlertAction(title: "OK", style: .cancel, handler: nil)
         alertController.addAction(cancelAction)
         present(alertController, animated: true, completion: nil)
+    }
+    
+    func stringForKey(_ key: String) -> String? {
+        return (Bundle.main.infoDictionary?[key] as? String)?.replacingOccurrences(of: "\\", with: "")
     }
 }

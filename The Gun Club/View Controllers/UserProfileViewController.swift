@@ -1,20 +1,21 @@
 //
-//  ProfileViewController.swift
+//  UserProfileViewController.swift
 //  The Gun Club
 //
-//  Created by Chuck Zumbaugh on 8/13/20.
-//  Copyright © 2020 Chuck Zumbaugh. All rights reserved.
+//  Created by Chuck Zumbaugh on 5/5/21.
+//  Copyright © 2021 Chuck Zumbaugh. All rights reserved.
 //
+
 import UIKit
 import Firebase
 
-class ProfileViewController: UITableViewController {
-    
+class UserProfileViewController: UIViewController {
     @IBOutlet weak var nameLabel: UILabel!
     @IBOutlet weak var screenNameLabel: UILabel!
-    @IBOutlet weak var locationLabel: UILabel!
-    @IBOutlet weak var emailLabel: UILabel!
-    @IBOutlet weak var tableViewFooter: UIView!
+    @IBOutlet weak var scrollView: UIScrollView!
+    @IBOutlet weak var contentView: UIView!
+    @IBOutlet weak var changePasswordButton: UIButton!
+    @IBOutlet weak var logoutButton: UIButton!
     
     let networkRequests = Network()
     let reference = Database.database().reference().child("Users")
@@ -28,8 +29,19 @@ class ProfileViewController: UITableViewController {
             navigationController?.navigationBar.topItem?.title = "Welcome, \(displayName)"
             let userReference = reference.child(user.uid)
             fetchUser(userReference)
+            updateUI()
         }
-        self.tableView.tableFooterView = tableViewFooter
+    }
+    
+    func updateUI() {
+        scrollView.backgroundColor = UIColor(named: self.stringForKey("Background Color")!)
+        contentView.backgroundColor = UIColor(named: self.stringForKey("Background Color")!)
+        changePasswordButton.backgroundColor = UIColor(named: self.stringForKey("Blue Color")!)
+        changePasswordButton.layer.cornerRadius = 15
+        logoutButton.backgroundColor = UIColor(named: self.stringForKey("Blue Color")!)
+        logoutButton.layer.cornerRadius = 15
+        navigationController?.navigationBar.barTintColor = UIColor(named: self.stringForKey("Background Color")!)
+        navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.white]
     }
     
     func fetchUser(_ reference: DatabaseReference) {
@@ -45,7 +57,6 @@ class ProfileViewController: UITableViewController {
     func updateUI(_ user: User) {
         nameLabel.text = user.name
         screenNameLabel.text = Auth.auth().currentUser?.displayName
-        locationLabel.text = user.location
     }
     
     func presentLogoutErrorAlert() {
@@ -54,23 +65,10 @@ class ProfileViewController: UITableViewController {
         alertController.addAction(cancelAction)
         present(alertController, animated: true, completion: nil)
     }
-
-    override func numberOfSections(in tableView: UITableView) -> Int {
-        return 1
-    }
-
-    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 5
-    }
     
-    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        tableView.deselectRow(at: indexPath, animated: true)
-    }
-    
+
     @IBAction func changePasswordButtonTapped(_ sender: Any) {
-
     }
-    
     @IBAction func logoutButtonTapped(_ sender: Any) {
         networkRequests.signOutUser(completion: {[weak self] (error) in
             if error == nil {
@@ -82,4 +80,15 @@ class ProfileViewController: UITableViewController {
             }
         })
     }
+    
+    /*
+    // MARK: - Navigation
+
+    // In a storyboard-based application, you will often want to do a little preparation before navigation
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        // Get the new view controller using segue.destination.
+        // Pass the selected object to the new view controller.
+    }
+    */
+
 }

@@ -6,6 +6,8 @@
 	<array>
 		<string>com.rallys.refresh</string>
 	</array>
+	<key>Background Color</key>
+	<string>$(BACKGROUND_COLOR)</string>
 	<key>Base Bill API URL</key>
 	<string>$(BASE_URL)</string>
 	<key>Base Member URL</key>
@@ -17,6 +19,8 @@
 		<string>assault weapon</string>
 		<string>gun violence</string>
 	</array>
+	<key>Blue Color</key>
+	<string>$(BLUE_COLOR)</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleExecutable</key>

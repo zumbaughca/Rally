@@ -15,6 +15,7 @@ class NewThreadViewController: UIViewController, UITextViewDelegate {
     @IBOutlet weak var postTextView: UITextView!
     @IBOutlet weak var newThreadLabel: UILabel!
     @IBOutlet weak var postButton: UIButton!
+    @IBOutlet weak var scrollView: UIScrollView!
     
     let reference = Database.database().reference().child("Threads")
     var category: String?
@@ -24,6 +25,8 @@ class NewThreadViewController: UIViewController, UITextViewDelegate {
         self.postTextView.delegate = self
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(textFieldResignFirstResponder))
         self.view.addGestureRecognizer(tapGesture)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboard(notification:)), name: UIResponder.keyboardWillShowNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboard(notification:)), name: UIResponder.keyboardWillHideNotification, object: nil)
         updateUI()
     }
     
@@ -59,21 +62,42 @@ class NewThreadViewController: UIViewController, UITextViewDelegate {
         return 1
       }
     
-    @IBAction func save(_ sender: Any) {
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateStyle = .medium
-        dateFormatter.timeStyle = .medium
-        dateFormatter.locale = Locale(identifier: "en_US")
-        let date = dateFormatter.string(from: Date())
-        if let title = threadTitleTextField.text,
-            let post = postTextView.text,
-            let category = category{
-            if let user = Auth.auth().currentUser {
-                let newPostReference = reference.child(category).childByAutoId()
-                newPostReference.updateChildValues(["Title": title, "Date": date, "Owner": user.displayName!, "OwnerUid": user.uid, "Category": category, "NumberOfComments": 0, "Post": post, "Key": newPostReference.key!, "LastActivity": date, "Locked": false])
-            }
+    @objc func keyboard(notification: Notification) {
+        guard let keyboardSize = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as AnyObject).cgRectValue else {return}
+        
+        let contentInsets = UIEdgeInsets(top: 0, left: 0, bottom: keyboardSize.height, right: 0)
+        if notification.name == UIResponder.keyboardWillShowNotification ||
+            notification.name == UIResponder.keyboardWillChangeFrameNotification {
+            self.scrollView.contentInset = contentInsets
+            self.scrollView.scrollIndicatorInsets = contentInsets
+            
+        } else {
+            self.scrollView.contentInset = UIEdgeInsets.zero
+            self.scrollView.scrollIndicatorInsets = UIEdgeInsets.zero
         }
-        dismiss(animated: true, completion: nil)
+    }
+    
+    @IBAction func save(_ sender: Any) {
+        do {
+            try postTextView.validateIsNotEmpty()
+            try threadTitleTextField.validateIsNotEmpty()
+            let dateFormatter = DateFormatter()
+            dateFormatter.dateStyle = .medium
+            dateFormatter.timeStyle = .medium
+            dateFormatter.locale = Locale(identifier: "en_US")
+            let date = dateFormatter.string(from: Date())
+            if let title = threadTitleTextField.text,
+                let post = postTextView.text,
+                let category = category{
+                if let user = Auth.auth().currentUser {
+                    let newPostReference = reference.child(category).childByAutoId()
+                    newPostReference.updateChildValues(["Title": title, "Date": date, "Owner": user.displayName!, "OwnerUid": user.uid, "Category": category, "NumberOfComments": 0, "Post": post, "Key": newPostReference.key!, "LastActivity": date, "Locked": false])
+                }
+            }
+            dismiss(animated: true, completion: nil)
+        } catch {
+            self.createErrorAlert(for: error.localizedDescription)
+        }
     }
 
 }
