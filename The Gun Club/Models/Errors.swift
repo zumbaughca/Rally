@@ -29,8 +29,6 @@ enum TextFieldValidationError: Error, LocalizedError {
             return "Your post must not be empty"
         case .postTitleIsEmpty:
             return "Your post must have a title"
-        default:
-            return "An error occured, please try again later"
         }
     }
 }
