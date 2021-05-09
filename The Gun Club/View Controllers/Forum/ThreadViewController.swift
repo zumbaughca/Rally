@@ -16,6 +16,7 @@ class ThreadViewController: UIViewController, UITextViewDelegate, UITableViewDel
     @IBOutlet weak var threadLockedButton: UIBarButtonItem!
     @IBOutlet weak var postCommentButton: PostCommentButton!
     @IBOutlet var contentView: UIView!
+    @IBOutlet weak var viewBottomConstraint: NSLayoutConstraint!
     
     var thread: Thread?
     var moderators: [String]?
@@ -145,20 +146,22 @@ class ThreadViewController: UIViewController, UITextViewDelegate, UITableViewDel
      * First get the size of the keyboard
      * If the notification is that the keyboard will show:
      *      - Get the height of the tab bar
-     *      - Then adjust the frame to have a padding of 8 between keyboard and text field
+     *      - Then adjust the bottom constraint of the view to account for the keyboard and      tab bar
      * If the notification is that the keyboard will hide:
-     * Reset the origin back to 0.
+     * Reset the constraint back to 0.
      */
     @objc func keyboard(notification: Notification) {
         guard let keyboardSize = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as AnyObject).cgRectValue else {return}
         if notification.name == UIResponder.keyboardWillShowNotification ||
             notification.name == UIResponder.keyboardWillChangeFrameNotification {
             let tabBarHeight = tabBarController?.tabBar.frame.height ?? 0
-            self.contentView.frame.origin.y = -8 - keyboardSize.height + tabBarHeight
-            
+            viewBottomConstraint.constant = 0 + keyboardSize.height - tabBarHeight
         } else {
-            self.contentView.frame.origin.y = 0
+            viewBottomConstraint.constant = 0
         }
+        UIView.animate(withDuration: 1, animations: {
+            self.view.layoutIfNeeded()
+        })
     }
     
     @objc func textViewEndEditing(_ sender: UITapGestureRecognizer) {

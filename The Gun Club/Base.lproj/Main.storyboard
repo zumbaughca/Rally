@@ -1053,6 +1053,7 @@
                         <outlet property="postCommentButton" destination="v10-pO-VXo" id="x4t-dc-d3T"/>
                         <outlet property="tableView" destination="9rD-WF-mKT" id="7S5-87-vmh"/>
                         <outlet property="threadLockedButton" destination="GVV-Kk-fU1" id="VxQ-XM-6dY"/>
+                        <outlet property="viewBottomConstraint" destination="X2q-Xb-lqj" id="fk8-er-Ogr"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="s3o-7g-tuN" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
