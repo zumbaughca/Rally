@@ -16,6 +16,7 @@ class UserProfileViewController: UIViewController {
     @IBOutlet weak var contentView: UIView!
     @IBOutlet weak var changePasswordButton: UIButton!
     @IBOutlet weak var logoutButton: UIButton!
+    @IBOutlet weak var logoImageView: UIImageView!
     
     let networkRequests = Network()
     let reference = Database.database().reference().child("Users")
@@ -34,14 +35,19 @@ class UserProfileViewController: UIViewController {
     }
     
     func updateUI() {
-        scrollView.backgroundColor = UIColor(named: self.stringForKey("Background Color")!)
-        contentView.backgroundColor = UIColor(named: self.stringForKey("Background Color")!)
-        changePasswordButton.backgroundColor = UIColor(named: self.stringForKey("Blue Color")!)
+        let screenWidth = UIScreen.main.bounds.width
+        changePasswordButton.backgroundColor = UIColor(named: self.stringForKey("Red Color")!)
         changePasswordButton.layer.cornerRadius = 15
-        logoutButton.backgroundColor = UIColor(named: self.stringForKey("Blue Color")!)
+        logoutButton.backgroundColor = UIColor(named: self.stringForKey("Red Color")!)
         logoutButton.layer.cornerRadius = 15
-        navigationController?.navigationBar.barTintColor = UIColor(named: self.stringForKey("Background Color")!)
-        navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.white]
+        navigationItem.leftBarButtonItem = UIBarButtonItem(customView: NavigationBarLogoView())
+        logoImageView.layer.cornerRadius = 20
+        logoImageView.backgroundColor = UIColor(named: "Red color")
+        logoImageView.widthAnchor.constraint(equalToConstant: screenWidth / 2).isActive = true
+        logoImageView.heightAnchor.constraint(equalToConstant: screenWidth / 2).isActive = true
+        changePasswordButton.widthAnchor.constraint(equalToConstant: screenWidth / 2).isActive = true
+        logoutButton.widthAnchor.constraint(equalToConstant: screenWidth / 2).isActive = true
+        print(logoutButton.frame)
     }
     
     func fetchUser(_ reference: DatabaseReference) {

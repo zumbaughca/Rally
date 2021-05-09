@@ -26,6 +26,7 @@ class ForumViewController: UIViewController, UITableViewDelegate, UITableViewDat
         self.tableView.dataSource = self
         self.tableView.delegate = self
         self.navigationItem.title = selectedCategory
+        self.navigationItem.titleView = NavigationBarLogoView()
         tableView.isHidden = true
         splashScreen.isHidden = false
         splashScreenActivityIndicator.style = .large

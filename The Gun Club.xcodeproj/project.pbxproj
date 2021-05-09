@@ -24,6 +24,7 @@
 		668811A525FD13FA00525EDB /* BillTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 668811A425FD13FA00525EDB /* BillTableViewCell.swift */; };
 		668F714C26436ED200F780C4 /* UserProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 668F714B26436ED200F780C4 /* UserProfileViewController.swift */; };
 		668F7151264386EB00F780C4 /* UpdatePasswordViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 668F7150264386EB00F780C4 /* UpdatePasswordViewController.swift */; };
+		66A28D0C264881160059752E /* NavigationBarLogoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66A28D0B264881160059752E /* NavigationBarLogoView.swift */; };
 		66A8DD3E24E4A2F300A652C4 /* Extensions + Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66A8DD3D24E4A2F300A652C4 /* Extensions + Helpers.swift */; };
 		66B6C6AB24F180C10061C276 /* CongressPersonContactViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66B6C6AA24F180C10061C276 /* CongressPersonContactViewController.swift */; };
 		66B96CF924EECDFF0047EA05 /* Bill Model.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66B96CF824EECDFE0047EA05 /* Bill Model.swift */; };
@@ -78,6 +79,7 @@
 		668811A425FD13FA00525EDB /* BillTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BillTableViewCell.swift; sourceTree = "<group>"; };
 		668F714B26436ED200F780C4 /* UserProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfileViewController.swift; sourceTree = "<group>"; };
 		668F7150264386EB00F780C4 /* UpdatePasswordViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdatePasswordViewController.swift; sourceTree = "<group>"; };
+		66A28D0B264881160059752E /* NavigationBarLogoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationBarLogoView.swift; sourceTree = "<group>"; };
 		66A8DD3D24E4A2F300A652C4 /* Extensions + Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Extensions + Helpers.swift"; sourceTree = "<group>"; };
 		66B6C6AA24F180C10061C276 /* CongressPersonContactViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CongressPersonContactViewController.swift; sourceTree = "<group>"; };
 		66B96CF824EECDFE0047EA05 /* Bill Model.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Bill Model.swift"; sourceTree = "<group>"; };
@@ -144,6 +146,7 @@
 			isa = PBXGroup;
 			children = (
 				66EEEF8824DB874D007D2552 /* MainPostTableViewCell.swift */,
+				66A28D0B264881160059752E /* NavigationBarLogoView.swift */,
 				66EEEF8A24DB973A007D2552 /* CommentTableViewCell.swift */,
 				668811A425FD13FA00525EDB /* BillTableViewCell.swift */,
 				665EBFE32640DDE900D04AB8 /* CommentTextView.swift */,
@@ -511,6 +514,7 @@
 				661B7ACD24CB4CA400EBECF9 /* NewThreadViewController.swift in Sources */,
 				663B06ED24F73D24001D7205 /* Errors.swift in Sources */,
 				6600149A24F03D30001FF08D /* BillTableViewController.swift in Sources */,
+				66A28D0C264881160059752E /* NavigationBarLogoView.swift in Sources */,
 				662AF1B024F0710C007FAC65 /* CongressPerson Model.swift in Sources */,
 				660D72EE26424A2B00F57319 /* ProfileTableViewCell.swift in Sources */,
 				66EEEF8924DB874D007D2552 /* MainPostTableViewCell.swift in Sources */,

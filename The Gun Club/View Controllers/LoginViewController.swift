@@ -15,6 +15,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
     @IBOutlet var registerTextFields: [UITextField]!
     @IBOutlet weak var registerStackView: UIStackView!
     
+    @IBOutlet weak var loginRegisterSegmentedControl: UISegmentedControl!
     
     @IBOutlet weak var nameTextField: UITextField!
     @IBOutlet weak var screenNameTextField: UITextField!
@@ -57,7 +58,6 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
         })
         
         registerStackView.isHidden = true
-        loginRegisterButton.setTitle("Login", for: .normal)
     }
     
     func configureUIForRegister() {
@@ -72,7 +72,6 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
         })
         
         registerStackView.isHidden = false
-        loginRegisterButton.setTitle("Register", for: .normal)
     }
     
     // Sign in with Firebase
@@ -182,10 +181,14 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
      * If it is register, then we need to register a new user in the system.
      */
     @IBAction func loginRegisterButtonPressed(_ sender: UIButton) {
-        if sender.titleLabel!.text == "Login" {
+        let selectedIndex = loginRegisterSegmentedControl.selectedSegmentIndex
+        switch selectedIndex {
+        case 0:
             signIn()
-        } else if sender.titleLabel!.text == "Register" {
+        case 1:
             registerNewUser()
+        default:
+            fatalError("Selected index out of bounds")
         }
     }
 }

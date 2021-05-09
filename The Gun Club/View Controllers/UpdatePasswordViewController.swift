@@ -36,8 +36,8 @@ class UpdatePasswordViewController: UIViewController {
     }
     
     func updateUI() {
-        scrollView.backgroundColor = UIColor(named: self.stringForKey("Background Color")!)
-        contentView.backgroundColor = UIColor(named: self.stringForKey("Background Color")!)
+        scrollView.backgroundColor = UIColor(named: self.stringForKey("Red Color")!)
+        contentView.backgroundColor = UIColor(named: self.stringForKey("Red Color")!)
         updateCredentialButton.backgroundColor = UIColor(named: self.stringForKey("Blue Color")!)
         changePasswordButton.backgroundColor = UIColor(named: self.stringForKey("Blue Color")!)
         updateCredentialButton.layer.cornerRadius = 15

@@ -6,8 +6,6 @@
 	<array>
 		<string>com.rallys.refresh</string>
 	</array>
-	<key>Background Color</key>
-	<string>$(BACKGROUND_COLOR)</string>
 	<key>Base Bill API URL</key>
 	<string>$(BASE_URL)</string>
 	<key>Base Member URL</key>
@@ -69,6 +67,8 @@
 	<string>Your current location will be used to find rallys near you.</string>
 	<key>Propublica API Key</key>
 	<string>$(API_KEY)</string>
+	<key>Red Color</key>
+	<string>$(RED_COLOR)</string>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>

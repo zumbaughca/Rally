@@ -25,6 +25,7 @@ class BillTableViewController: UIViewController, UITableViewDataSource, UITableV
         self.tableView.isHidden = true
         self.tableView.register(BillTableViewCell.self, forCellReuseIdentifier: "customBillCell")
         self.splashScreen.isHidden = false
+        navigationItem.titleView = NavigationBarLogoView()
         loadingActivityIndicator.style = .large
         loadingActivityIndicator.startAnimating()
         fetchBills()

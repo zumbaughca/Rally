@@ -23,6 +23,7 @@ class CategorySelectorViewController: UIViewController, UITableViewDelegate, UIT
         self.tableView.dataSource = self
         self.tableView.delegate = self
         self.navigationController?.navigationBar.prefersLargeTitles = true
+        self.navigationItem.titleView = NavigationBarLogoView()
     }
     
     func infoForKeyArray (_ key: String) -> Array<String>? {

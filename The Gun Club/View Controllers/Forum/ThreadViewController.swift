@@ -29,6 +29,7 @@ class ThreadViewController: UIViewController, UITextViewDelegate, UITableViewDel
         self.commentTextView.delegate = self
         self.tableView.delegate = self
         self.tableView.dataSource = self
+        self.navigationItem.titleView = NavigationBarLogoView()
         tableView.register(MainPostTableViewCell.self, forCellReuseIdentifier: "mainPost")
         tableView.register(CommentTableViewCell.self, forCellReuseIdentifier: "comment")
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(textViewEndEditing))
