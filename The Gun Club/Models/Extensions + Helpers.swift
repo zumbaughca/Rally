@@ -17,6 +17,14 @@ extension Double {
     }
 }
 
+extension String {
+    func getDateFromString() -> Date? {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd"
+        return dateFormatter.date(from: self)
+    }
+}
+
 extension URL {
     func withQueries(_ queries: [String: String]) -> URL? {
         var components = URLComponents(url: self, resolvingAgainstBaseURL: true)
@@ -44,6 +52,12 @@ extension UITextView {
             heightConstraint.constant = adjustedSize.height
         }
         self.layoutIfNeeded()
+    }
+    
+    func removePlaceholderText(text: String) {
+        if self.text == text {
+            self.text = ""
+        }
     }
     
     func validateIsNotEmpty() throws {

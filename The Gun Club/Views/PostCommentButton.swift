@@ -14,6 +14,9 @@ class PostCommentButton: UIButton {
     private func setUpView() {
         self.layer.borderWidth = CGFloat(1)
         self.layer.cornerRadius = 15
+        self.layer.borderColor = UIColor(named: "pastelBlue")?.cgColor
+        self.backgroundColor = UIColor(named: "pastelRed")
+        self.tintColor = UIColor.white
         unlock()
     }
     

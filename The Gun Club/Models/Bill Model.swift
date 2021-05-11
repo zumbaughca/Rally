@@ -16,7 +16,8 @@ struct BillResults: Codable {
     let bills: [Bill]
 }
 
-struct Bill: Codable, Equatable {
+struct Bill: Codable, Equatable, Comparable {
+    
     let billId: String
     let title: String
     let sponsor: String
@@ -51,6 +52,11 @@ struct Bill: Codable, Equatable {
     
     static func == (lhs: Bill, rhs: Bill) -> Bool {
         return lhs.billId == rhs.billId
+    }
+    
+    static func < (lhs: Bill, rhs: Bill) -> Bool {
+        guard let left = lhs.lastActionDate.getDateFromString(), let right = rhs.lastActionDate.getDateFromString() else { return false }
+        return left < right
     }
     
     init(from decoder: Decoder) throws {

@@ -58,6 +58,120 @@ class ThreadViewController: UIViewController, UITextViewDelegate, UITableViewDel
         threadLockedStatusDidChange()
     }
     
+    
+    
+
+    
+    func fetchThreadComments() {
+        guard let thread = thread else {return}
+        let firebaseRequests = Network()
+        firebaseRequests.observeChildAdded(reference: reference.child(thread.category).child(thread.key).child("comments"), completion: {[weak self] (comment: Comment?, error) in
+            guard let self = self else {return}
+            if let error = error {
+                self.createErrorAlert(for: error.localizedDescription)
+            }
+            if let comment = comment {
+                if !(thread.comments?.contains(comment) ?? false) {
+                    self.thread?.comments?.append(comment)
+                    DispatchQueue.main.async {
+                        self.tableView.reloadData()
+                    }
+                }
+            }
+        })
+    }
+    
+    /*
+     * First ensure the thread is not locked and that the text field is not empty.
+     * If we are good to proceed, grab the current date as a formatted string.
+     * Create a new reference for this comment with childByAutoId()
+     * Update the comments node to include the new comment
+     * Update the threads last activity
+     * Reset the UI
+     */
+    @IBAction func postCommentButtonPressed(_ sender: Any) {
+        guard let thread = thread, thread.locked == false else {return}
+        do {
+            commentTextView.removePlaceholderText(text: "New comment...")
+            try commentTextView.validateIsNotEmpty()
+            postComment(commentTextView.text, thread: thread)
+            commentTextView.setPlaceholderText()
+            commentTextView.resignFirstResponder()
+            adjustTextViewHeight()
+        } catch {
+            self.createErrorAlert(for: error.localizedDescription)
+        }
+    }
+    
+    func postComment(_ text: String, thread: Thread?) {
+        guard let thread = thread else { return }
+        let threadReference = reference.child(thread.category).child(thread.key)
+        let date = DateFormatter().getFormattedStringFromCurrentDate()
+        if let user = Auth.auth().currentUser {
+            let commentRef = reference.child(thread.category).child(thread.key).child("comments").childByAutoId()
+            commentRef.updateChildValues(["Post": text, "Owner": user.displayName!, "OwnerUid": user.uid, "Date": date, "Key": commentRef.key!])
+            threadReference.updateChildValues(["LastActivity": date])
+        }
+    }
+    
+    @IBAction func lockThreadButtonTapped(_ sender: Any) {
+        guard let thread = thread else {return}
+        let threadReference = reference.child(thread.category).child(thread.key)
+        if threadLockedButton.image == UIImage(systemName: "lock.open.fill") {
+            threadLockedButton.image = UIImage(systemName: "lock.fill")
+            threadReference.updateChildValues(["Locked": true])
+        } else if threadLockedButton.image == UIImage(systemName: "lock.fill") {
+            threadLockedButton.image = UIImage(systemName: "lock.open.fill")
+            threadReference.updateChildValues(["Locked": false])
+        }
+    }
+}
+
+// MARK: Table View
+extension ThreadViewController {
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return 2
+    }
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        switch  section {
+        case 0:
+            return 1
+        case 1:
+            return thread?.comments?.count ?? 0
+        default:
+            return 0
+        }
+    }
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return tableView.rowHeight
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        if indexPath.section == 0 {
+            let cell = tableView.dequeueReusableCell(withIdentifier: "mainPost", for: indexPath) as! MainPostTableViewCell
+            cell.titleLabel.text = thread?.title
+            cell.postLabel.text = thread?.post
+            cell.ownerLabel.text = "By: \(thread!.owner)"
+            cell.dateLabel.text = thread?.date
+            cell.translatesAutoresizingMaskIntoConstraints = false
+            return cell
+            
+        } else {
+            let cell = tableView.dequeueReusableCell(withIdentifier: "comment", for: indexPath) as! CommentTableViewCell
+            let comment = thread?.comments?[indexPath.row]
+            cell.postLabel.text = comment?.post
+            cell.ownerLabel.text = "By: \(comment!.owner)"
+            cell.dateLabel.text = comment?.date
+            return cell
+        }
+        
+    }
+}
+
+// MARK: Moderation and thread locked status
+extension ThreadViewController {
     // Only allow moderator privilages on thread if user is on mod list.
     func allowModeratorPrivileges() {
         guard let user = Auth.auth().currentUser, let moderators = moderators else {return}
@@ -99,6 +213,10 @@ class ThreadViewController: UIViewController, UITextViewDelegate, UITableViewDel
             postCommentButton.unlock()
         }
     }
+}
+
+//MARK: Comment text view associated methods
+extension ThreadViewController {
     
     /*
      * The default height constraint on the comment text field is 40
@@ -121,25 +239,6 @@ class ThreadViewController: UIViewController, UITextViewDelegate, UITableViewDel
         } catch {
             self.createErrorAlert(for: error.localizedDescription)
         }
-    }
-    
-    func fetchThreadComments() {
-        guard let thread = thread else {return}
-        let firebaseRequests = Network()
-        firebaseRequests.observeChildAdded(reference: reference.child(thread.category).child(thread.key).child("comments"), completion: {[weak self] (comment: Comment?, error) in
-            guard let self = self else {return}
-            if let error = error {
-                self.createErrorAlert(for: error.localizedDescription)
-            }
-            if let comment = comment {
-                if !(thread.comments?.contains(comment) ?? false) {
-                    self.thread?.comments?.append(comment)
-                    DispatchQueue.main.async {
-                        self.tableView.reloadData()
-                    }
-                }
-            }
-        })
     }
     
     /*
@@ -179,82 +278,5 @@ class ThreadViewController: UIViewController, UITextViewDelegate, UITableViewDel
         if commentTextView.isFieldEmpty() {
             commentTextView.setPlaceholderText()
         }
-    }
-    
-    /*
-     * First ensure the thread is not locked and that the text field is not empty.
-     * If we are good to proceed, grab the current date as a formatted string.
-     * Create a new reference for this comment with childByAutoId()
-     * Update the comments node to include the new comment
-     * Update the threads last activity
-     * Reset the UI
-     */
-    @IBAction func postCommentButtonPressed(_ sender: Any) {
-        guard let thread = thread, thread.locked == false else {return}
-        if commentTextView.isFieldEmpty() {
-            return
-        }
-        let threadReference = reference.child(thread.category).child(thread.key)
-        let date = DateFormatter().getFormattedStringFromCurrentDate()
-        if let postText = commentTextView.text, let user = Auth.auth().currentUser {
-            let commentRef = reference.child(thread.category).child(thread.key).child("comments").childByAutoId()
-            commentRef.updateChildValues(["Post": postText, "Owner": user.displayName!, "OwnerUid": user.uid, "Date": date, "Key": commentRef.key!])
-            threadReference.updateChildValues(["LastActivity": date])
-        }
-        commentTextView.setPlaceholderText()
-        commentTextView.resignFirstResponder()
-        adjustTextViewHeight()
-    }
-    
-    @IBAction func lockThreadButtonTapped(_ sender: Any) {
-        guard let thread = thread else {return}
-        let threadReference = reference.child(thread.category).child(thread.key)
-        if threadLockedButton.image == UIImage(systemName: "lock.open.fill") {
-            threadLockedButton.image = UIImage(systemName: "lock.fill")
-            threadReference.updateChildValues(["Locked": true])
-        } else if threadLockedButton.image == UIImage(systemName: "lock.fill") {
-            threadLockedButton.image = UIImage(systemName: "lock.open.fill")
-            threadReference.updateChildValues(["Locked": false])
-        }
-    }
-    
-    func numberOfSections(in tableView: UITableView) -> Int {
-        return 2
-    }
-    
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        switch  section {
-        case 0:
-            return 1
-        case 1:
-            return thread?.comments?.count ?? 0
-        default:
-            return 0
-        }
-    }
-    
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return tableView.rowHeight
-    }
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        if indexPath.section == 0 {
-            let cell = tableView.dequeueReusableCell(withIdentifier: "mainPost", for: indexPath) as! MainPostTableViewCell
-            cell.titleLabel.text = thread?.title
-            cell.postLabel.text = thread?.post
-            cell.ownerLabel.text = "By: \(thread!.owner)"
-            cell.dateLabel.text = thread?.date
-            cell.translatesAutoresizingMaskIntoConstraints = false
-            return cell
-            
-        } else {
-            let cell = tableView.dequeueReusableCell(withIdentifier: "comment", for: indexPath) as! CommentTableViewCell
-            let comment = thread?.comments?[indexPath.row]
-            cell.postLabel.text = comment?.post
-            cell.ownerLabel.text = "By: \(comment!.owner)"
-            cell.dateLabel.text = comment?.date
-            return cell
-        }
-        
     }
 }

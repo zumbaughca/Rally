@@ -15,9 +15,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "66DCB9D924CA2013005F2973"
-               BuildableName = "The Gun Club.app"
-               BlueprintName = "The Gun Club"
-               ReferencedContainer = "container:The Gun Club.xcodeproj">
+               BuildableName = "Rally.app"
+               BlueprintName = "Rally"
+               ReferencedContainer = "container:Rally.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -33,9 +33,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "66DCB9F224CA2014005F2973"
-               BuildableName = "The Gun ClubTests.xctest"
-               BlueprintName = "The Gun ClubTests"
-               ReferencedContainer = "container:The Gun Club.xcodeproj">
+               BuildableName = "RallyTests.xctest"
+               BlueprintName = "RallyTests"
+               ReferencedContainer = "container:Rally.xcodeproj">
             </BuildableReference>
          </TestableReference>
          <TestableReference
@@ -43,9 +43,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "66DCB9FD24CA2014005F2973"
-               BuildableName = "The Gun ClubUITests.xctest"
-               BlueprintName = "The Gun ClubUITests"
-               ReferencedContainer = "container:The Gun Club.xcodeproj">
+               BuildableName = "RallyUITests.xctest"
+               BlueprintName = "RallyUITests"
+               ReferencedContainer = "container:Rally.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
@@ -65,9 +65,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "66DCB9D924CA2013005F2973"
-            BuildableName = "The Gun Club.app"
-            BlueprintName = "The Gun Club"
-            ReferencedContainer = "container:The Gun Club.xcodeproj">
+            BuildableName = "Rally.app"
+            BlueprintName = "Rally"
+            ReferencedContainer = "container:Rally.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </LaunchAction>
@@ -82,9 +82,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "66DCB9D924CA2013005F2973"
-            BuildableName = "The Gun Club.app"
-            BlueprintName = "The Gun Club"
-            ReferencedContainer = "container:The Gun Club.xcodeproj">
+            BuildableName = "Rally.app"
+            BlueprintName = "Rally"
+            ReferencedContainer = "container:Rally.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

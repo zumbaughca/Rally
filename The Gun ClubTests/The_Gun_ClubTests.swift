@@ -7,7 +7,8 @@
 //
 
 import XCTest
-@testable import The_Gun_Club
+
+//@testable import The_Gun_Club
 
 class The_Gun_ClubTests: XCTestCase {
 

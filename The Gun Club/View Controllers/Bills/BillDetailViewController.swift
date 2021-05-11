@@ -29,6 +29,7 @@ class BillDetailViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.tableView.separatorStyle = .none
+        navigationItem.titleView = NavigationBarLogoView()
         updateUI()
         retreiveSponsorInfo()
     }
