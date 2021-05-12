@@ -22,6 +22,7 @@ enum CharacterCountLimitError: Error, LocalizedError {
 enum TextFieldValidationError: Error, LocalizedError {
     case textFieldIsEmpty
     case postTitleIsEmpty
+    case restrictedTitle
     
     var errorDescription: String? {
         switch self {
@@ -29,6 +30,8 @@ enum TextFieldValidationError: Error, LocalizedError {
             return "Your post must not be empty"
         case .postTitleIsEmpty:
             return "Your post must have a title"
+        case .restrictedTitle:
+            return "This title is restricted. Please use a different title."
         }
     }
 }

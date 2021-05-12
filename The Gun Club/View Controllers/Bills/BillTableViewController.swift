@@ -28,7 +28,16 @@ class BillTableViewController: UIViewController, UITableViewDataSource, UITableV
         navigationItem.leftBarButtonItem = UIBarButtonItem(customView: NavigationBarLogoView())
         loadingActivityIndicator.style = .large
         loadingActivityIndicator.startAnimating()
-        fetchBills()
+        fetchBills(completion: {
+            [weak self] in
+            guard let self = self else { return }
+            DispatchQueue.main.async {
+                self.tableView.isHidden = false
+                self.loadingActivityIndicator.stopAnimating()
+                self.splashScreen.isHidden = true
+                self.tableView.reloadData()
+            }
+        })
         setStyle()
     }
     
@@ -40,7 +49,12 @@ class BillTableViewController: UIViewController, UITableViewDataSource, UITableV
         return (Bundle.main.infoDictionary?[key] as? [String])
     }
     
-    func fetchBills() {
+    /*
+     * Bills are added in reverse order (Bill with latest action at top of table.
+     * Once all bills are added to the array, we call completion.
+     * Then need to update the UI on the main thread after method returns.
+     */
+    func fetchBills(completion: @escaping () -> Void) {
         guard let baseURL = self.stringForKey("Base Bill API URL"), let queries = arrayForKey("Bill API Queries"), let url = URL(string: baseURL),
               let apiKey = self.stringForKey("Propublica API Key") else {return}
         queries.forEach({
@@ -51,18 +65,14 @@ class BillTableViewController: UIViewController, UITableViewDataSource, UITableV
                 if let bills = bills?.results[0].bills {
                     bills.forEach({
                         if !self.bills.contains($0) && self.validateBillTitle($0.title) {
-                            self.bills.append($0)
-                        }
-                        DispatchQueue.main.async {
-                            self.tableView.isHidden = false
-                            self.loadingActivityIndicator.stopAnimating()
-                            self.splashScreen.isHidden = true
-                            self.tableView.reloadData()
+                            self.bills.insertInReverseOrder($0)
                         }
                     })
+                    completion()
                 }
             })
         })
+        
     }
     
     func validateBillTitle(_ title: String) -> Bool {

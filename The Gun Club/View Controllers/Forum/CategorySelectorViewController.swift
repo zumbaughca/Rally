@@ -20,8 +20,11 @@ class CategorySelectorViewController: UIViewController, UITableViewDelegate, UIT
         super.viewDidLoad()
         categories = infoForKeyArray("Categories")!
         categoryDescriptions = infoForKeyArray("Category Descriptions")!
+        
         self.tableView.dataSource = self
         self.tableView.delegate = self
+        self.tableView.register(CategoryTableViewCell.self, forCellReuseIdentifier: "category")
+        
         self.navigationController?.navigationBar.prefersLargeTitles = true
         self.navigationItem.leftBarButtonItem = UIBarButtonItem(customView: NavigationBarLogoView())
     }
@@ -35,14 +38,16 @@ class CategorySelectorViewController: UIViewController, UITableViewDelegate, UIT
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "category", for: indexPath)
+        let cell = tableView.dequeueReusableCell(withIdentifier: "category", for: indexPath) as! CategoryTableViewCell
         let category = categories[indexPath.row]
-        cell.textLabel?.text = category
-        cell.detailTextLabel?.text = categoryDescriptions[indexPath.row]
+        cell.titleLabel.text = category
+        cell.subtitleLabel.text = categoryDescriptions[indexPath.row]
+        cell.categoryImageView.image = UIImage(named: category.lowercased())
         return cell
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        performSegue(withIdentifier: "categorySegue", sender: self)
         tableView.deselectRow(at: indexPath, animated: true)
     }
     

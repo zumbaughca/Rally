@@ -18,7 +18,7 @@ class ThreadViewController: UIViewController, UITextViewDelegate, UITableViewDel
     @IBOutlet var contentView: UIView!
     @IBOutlet weak var viewBottomConstraint: NSLayoutConstraint!
     
-    var thread: Thread?
+    var thread: ForumThread?
     var moderators: [String]?
     let reference = Database.database().reference().child("Threads")
     let firebaseRequests = Network()
@@ -103,7 +103,7 @@ class ThreadViewController: UIViewController, UITextViewDelegate, UITableViewDel
         }
     }
     
-    func postComment(_ text: String, thread: Thread?) {
+    func postComment(_ text: String, thread: ForumThread?) {
         guard let thread = thread else { return }
         let threadReference = reference.child(thread.category).child(thread.key)
         let date = DateFormatter().getFormattedStringFromCurrentDate()

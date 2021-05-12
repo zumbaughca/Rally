@@ -9,7 +9,7 @@
 import UIKit
 import Firebase
 
-class UpdatePasswordViewController: UIViewController {
+class UpdatePasswordViewController: UIViewController, UITextFieldDelegate {
 
     @IBOutlet weak var updateCredentialsStackView: UIStackView!
     @IBOutlet weak var changePasswordStackView: UIStackView!
@@ -26,7 +26,7 @@ class UpdatePasswordViewController: UIViewController {
     
     var credential: AuthCredential?
     let errorTitle = "There was an error changing your password"
-
+    var currentTextField: UITextField?
     
     
     override func viewDidLoad() {
@@ -38,10 +38,15 @@ class UpdatePasswordViewController: UIViewController {
     func updateUI() {
         scrollView.backgroundColor = UIColor(named: self.stringForKey("Red Color")!)
         contentView.backgroundColor = UIColor(named: self.stringForKey("Red Color")!)
+        
         updateCredentialButton.backgroundColor = UIColor(named: self.stringForKey("Blue Color")!)
         changePasswordButton.backgroundColor = UIColor(named: self.stringForKey("Blue Color")!)
         updateCredentialButton.layer.cornerRadius = 15
         changePasswordButton.layer.cornerRadius = 15
+        
+        oldPasswordTextField.isSecureTextEntry = true
+        newPasswordTextField.isSecureTextEntry = true
+        confirmNewPasswordTextField.isSecureTextEntry = true
     }
     
     func presentRequestCredentialView() {

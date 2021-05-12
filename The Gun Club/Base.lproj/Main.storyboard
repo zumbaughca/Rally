@@ -13,7 +13,7 @@
         <!--Login View Controller-->
         <scene sceneID="eos-SP-V9P">
             <objects>
-                <viewController storyboardIdentifier="LoginController" id="ouA-y2-oEy" customClass="LoginViewController" customModule="The_Gun_Club" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="LoginController" id="ouA-y2-oEy" customClass="LoginViewController" customModule="Rally" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="LQG-ew-xOq">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -220,7 +220,7 @@
         <!--User Profile View Controller-->
         <scene sceneID="fYv-hR-y75">
             <objects>
-                <viewController id="ZB3-V1-oqq" customClass="UserProfileViewController" customModule="The_Gun_Club" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="ZB3-V1-oqq" customClass="UserProfileViewController" customModule="Rally" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="aqU-e9-yLH">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -263,38 +263,41 @@
                                                     </label>
                                                 </subviews>
                                             </stackView>
-                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="KqY-Xl-Pjg">
-                                                <rect key="frame" x="126" y="447" width="123" height="30"/>
-                                                <state key="normal" title="Change Password">
-                                                    <color key="titleColor" systemColor="systemBackgroundColor"/>
-                                                </state>
-                                                <connections>
-                                                    <action selector="changePasswordButtonTapped:" destination="ZB3-V1-oqq" eventType="touchUpInside" id="KP4-Uh-dno"/>
-                                                    <segue destination="fUQ-L2-roW" kind="presentation" id="rV0-C0-8LG"/>
-                                                </connections>
-                                            </button>
-                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="2Oj-iP-ZkY">
-                                                <rect key="frame" x="160" y="491" width="55" height="30"/>
-                                                <state key="normal" title="Log Out">
-                                                    <color key="titleColor" systemColor="systemBackgroundColor"/>
-                                                </state>
-                                                <connections>
-                                                    <action selector="logoutButtonTapped:" destination="ZB3-V1-oqq" eventType="touchUpInside" id="TY3-cx-ki1"/>
-                                                </connections>
-                                            </button>
+                                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="14" translatesAutoresizingMaskIntoConstraints="NO" id="hVK-Cj-VbW">
+                                                <rect key="frame" x="0.0" y="447" width="375" height="74"/>
+                                                <subviews>
+                                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="KqY-Xl-Pjg">
+                                                        <rect key="frame" x="126" y="0.0" width="123" height="30"/>
+                                                        <state key="normal" title="Change Password">
+                                                            <color key="titleColor" systemColor="systemBackgroundColor"/>
+                                                        </state>
+                                                        <connections>
+                                                            <action selector="changePasswordButtonTapped:" destination="ZB3-V1-oqq" eventType="touchUpInside" id="KP4-Uh-dno"/>
+                                                        </connections>
+                                                    </button>
+                                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="2Oj-iP-ZkY">
+                                                        <rect key="frame" x="160" y="44" width="55" height="30"/>
+                                                        <state key="normal" title="Log Out">
+                                                            <color key="titleColor" systemColor="systemBackgroundColor"/>
+                                                        </state>
+                                                        <connections>
+                                                            <action selector="logoutButtonTapped:" destination="ZB3-V1-oqq" eventType="touchUpInside" id="TY3-cx-ki1"/>
+                                                        </connections>
+                                                    </button>
+                                                </subviews>
+                                            </stackView>
                                         </subviews>
                                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                         <constraints>
-                                            <constraint firstItem="2Oj-iP-ZkY" firstAttribute="centerX" secondItem="cFb-oT-AYi" secondAttribute="centerX" id="2QZ-f9-4qR"/>
+                                            <constraint firstItem="hVK-Cj-VbW" firstAttribute="leading" secondItem="cFb-oT-AYi" secondAttribute="leading" id="0za-Ra-AvM"/>
+                                            <constraint firstAttribute="trailing" secondItem="hVK-Cj-VbW" secondAttribute="trailing" id="7dT-jG-ZhV"/>
                                             <constraint firstItem="4cF-qe-ClD" firstAttribute="top" secondItem="7qY-FX-NbF" secondAttribute="bottom" constant="53" id="DAy-nB-Gcm"/>
                                             <constraint firstAttribute="trailing" secondItem="4cF-qe-ClD" secondAttribute="trailing" constant="20" id="Ehe-Jn-xfP"/>
                                             <constraint firstItem="7qY-FX-NbF" firstAttribute="top" secondItem="cFb-oT-AYi" secondAttribute="top" constant="20" id="IgJ-BH-s4r"/>
-                                            <constraint firstItem="2Oj-iP-ZkY" firstAttribute="top" secondItem="4cF-qe-ClD" secondAttribute="bottom" constant="72" id="It5-cZ-KUO"/>
                                             <constraint firstItem="4cF-qe-ClD" firstAttribute="leading" secondItem="cFb-oT-AYi" secondAttribute="leading" constant="20" id="S9X-p3-Yz1"/>
+                                            <constraint firstItem="hVK-Cj-VbW" firstAttribute="top" secondItem="4cF-qe-ClD" secondAttribute="bottom" constant="28" id="gDw-Jx-2BN"/>
                                             <constraint firstItem="7qY-FX-NbF" firstAttribute="centerX" secondItem="cFb-oT-AYi" secondAttribute="centerX" id="gjT-Pq-wPi"/>
-                                            <constraint firstItem="KqY-Xl-Pjg" firstAttribute="top" secondItem="4cF-qe-ClD" secondAttribute="bottom" constant="28" id="iO5-yD-JbS"/>
-                                            <constraint firstAttribute="height" constant="600" id="jdG-nU-Sw8"/>
-                                            <constraint firstItem="KqY-Xl-Pjg" firstAttribute="centerX" secondItem="cFb-oT-AYi" secondAttribute="centerX" id="pAp-oC-URY"/>
+                                            <constraint firstAttribute="bottom" secondItem="hVK-Cj-VbW" secondAttribute="bottom" constant="79" id="j4U-Nk-2cb"/>
                                         </constraints>
                                     </view>
                                 </subviews>
@@ -327,6 +330,7 @@
                         <outlet property="nameLabel" destination="4hK-g4-4o4" id="9Tl-Ar-fqM"/>
                         <outlet property="screenNameLabel" destination="Gsc-nf-Y5e" id="tmv-pe-V7j"/>
                         <outlet property="scrollView" destination="wgY-l5-5oW" id="16l-u2-wWb"/>
+                        <segue destination="fUQ-L2-roW" kind="presentation" identifier="changePasswordSegue" id="hUw-EF-uL7"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="W68-Qu-LgW" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
@@ -336,7 +340,7 @@
         <!--Update Password View Controller-->
         <scene sceneID="6bM-hg-Yue">
             <objects>
-                <viewController id="fUQ-L2-roW" customClass="UpdatePasswordViewController" customModule="The_Gun_Club" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="updatePasswordViewController" id="fUQ-L2-roW" customClass="UpdatePasswordViewController" customModule="Rally" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="C2T-NG-y2c">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="647"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -472,6 +476,7 @@
                             <constraint firstItem="MZ4-8S-EDe" firstAttribute="trailing" secondItem="c1o-Nf-xi8" secondAttribute="trailing" id="spx-uQ-JBl"/>
                         </constraints>
                     </view>
+                    <navigationItem key="navigationItem" id="yAj-Vk-JyX"/>
                     <connections>
                         <outlet property="changePasswordButton" destination="XdB-aP-aDD" id="Zbc-67-LTC"/>
                         <outlet property="changePasswordStackView" destination="3RE-P0-TFb" id="Oxy-q6-tyz"/>
@@ -492,7 +497,7 @@
         <!--Federal Bills-->
         <scene sceneID="FN5-dU-MEJ">
             <objects>
-                <viewController id="ATh-TO-L2w" customClass="BillTableViewController" customModule="The_Gun_Club" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="ATh-TO-L2w" customClass="BillTableViewController" customModule="Rally" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="rcx-BD-WJC">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -522,7 +527,7 @@
                                 <rect key="frame" x="0.0" y="96" width="375" height="522"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <prototypes>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" reuseIdentifier="customBillCell" id="ewN-Ml-cE1" customClass="BillTableViewCell" customModule="The_Gun_Club" customModuleProvider="target">
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" reuseIdentifier="customBillCell" id="ewN-Ml-cE1" customClass="BillTableViewCell" customModule="Rally" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="28" width="375" height="43.5"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="ewN-Ml-cE1" id="PbY-PA-DeD">
@@ -564,7 +569,7 @@
         <!--Bill Detail View Controller-->
         <scene sceneID="2RU-1i-XOd">
             <objects>
-                <tableViewController id="XXh-Gk-OfY" customClass="BillDetailViewController" customModule="The_Gun_Club" customModuleProvider="target" sceneMemberID="viewController">
+                <tableViewController id="XXh-Gk-OfY" customClass="BillDetailViewController" customModule="Rally" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="static" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" id="E1G-yC-rhA">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -802,7 +807,7 @@
         <!--Categories-->
         <scene sceneID="7KZ-Z2-quW">
             <objects>
-                <viewController id="kFg-Y7-Xa0" customClass="CategorySelectorViewController" customModule="The_Gun_Club" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="kFg-Y7-Xa0" customClass="CategorySelectorViewController" customModule="Rally" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="z0B-Bk-psc">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -811,31 +816,15 @@
                                 <rect key="frame" x="0.0" y="44" width="375" height="574"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <prototypes>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" reuseIdentifier="category" textLabel="bwh-2Z-zhj" detailTextLabel="4bb-t0-kUH" style="IBUITableViewCellStyleSubtitle" id="nY7-Ij-EMz">
-                                        <rect key="frame" x="0.0" y="28" width="375" height="55.5"/>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" reuseIdentifier="category" id="nY7-Ij-EMz" customClass="CategoryTableViewCell" customModule="Rally" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="28" width="375" height="43.5"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="nY7-Ij-EMz" id="eUM-yL-vzL">
-                                            <rect key="frame" x="0.0" y="0.0" width="348" height="55.5"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="348" height="43.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
-                                            <subviews>
-                                                <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" insetsLayoutMarginsFromSafeArea="NO" text="Title" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="bwh-2Z-zhj">
-                                                    <rect key="frame" x="16" y="10" width="33" height="20.5"/>
-                                                    <autoresizingMask key="autoresizingMask"/>
-                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                                    <nil key="textColor"/>
-                                                    <nil key="highlightedColor"/>
-                                                </label>
-                                                <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" insetsLayoutMarginsFromSafeArea="NO" text="Subtitle" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="4bb-t0-kUH">
-                                                    <rect key="frame" x="16" y="31.5" width="44" height="14.5"/>
-                                                    <autoresizingMask key="autoresizingMask"/>
-                                                    <fontDescription key="fontDescription" type="system" pointSize="12"/>
-                                                    <nil key="textColor"/>
-                                                    <nil key="highlightedColor"/>
-                                                </label>
-                                            </subviews>
                                         </tableViewCellContentView>
                                         <connections>
-                                            <segue destination="yFs-ld-g1i" kind="show" identifier="categorySegue" id="oMB-RT-iPv"/>
+                                            <segue destination="yFs-ld-g1i" kind="show" identifier="categorySegue" id="e13-M5-cOR"/>
                                         </connections>
                                     </tableViewCell>
                                 </prototypes>
@@ -863,7 +852,7 @@
         <!--Forum View Controller-->
         <scene sceneID="3bV-kd-J3I">
             <objects>
-                <viewController id="yFs-ld-g1i" customClass="ForumViewController" customModule="The_Gun_Club" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="yFs-ld-g1i" customClass="ForumViewController" customModule="Rally" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="MLN-oa-oD3">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -897,8 +886,35 @@
                                 <rect key="frame" x="0.0" y="44" width="375" height="574"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <prototypes>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" reuseIdentifier="forumPost" textLabel="s6o-bM-m1O" detailTextLabel="3SS-kE-g7V" style="IBUITableViewCellStyleSubtitle" id="G0B-4C-txk">
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="readme" textLabel="144-9J-OJQ" detailTextLabel="8tB-pf-i5u" style="IBUITableViewCellStyleSubtitle" id="bsZ-tl-4Vt">
                                         <rect key="frame" x="0.0" y="28" width="375" height="55.5"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="bsZ-tl-4Vt" id="9Ht-Nd-hEz">
+                                            <rect key="frame" x="0.0" y="0.0" width="375" height="55.5"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" insetsLayoutMarginsFromSafeArea="NO" text="Title" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="144-9J-OJQ">
+                                                    <rect key="frame" x="16" y="10" width="33" height="20.5"/>
+                                                    <autoresizingMask key="autoresizingMask"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" insetsLayoutMarginsFromSafeArea="NO" text="Subtitle" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="8tB-pf-i5u">
+                                                    <rect key="frame" x="16" y="31.5" width="44" height="14.5"/>
+                                                    <autoresizingMask key="autoresizingMask"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="12"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                            </subviews>
+                                        </tableViewCellContentView>
+                                        <connections>
+                                            <segue destination="1Oi-z5-vy6" kind="show" identifier="showReadme" id="Jey-RI-mm7"/>
+                                        </connections>
+                                    </tableViewCell>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" reuseIdentifier="forumPost" textLabel="s6o-bM-m1O" detailTextLabel="3SS-kE-g7V" style="IBUITableViewCellStyleSubtitle" id="G0B-4C-txk">
+                                        <rect key="frame" x="0.0" y="83.5" width="375" height="55.5"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="G0B-4C-txk" id="lt9-rh-041">
                                             <rect key="frame" x="0.0" y="0.0" width="348" height="55.5"/>
@@ -961,7 +977,7 @@
         <!--Thread View Controller-->
         <scene sceneID="lzi-Kt-gfc">
             <objects>
-                <viewController id="1Oi-z5-vy6" customClass="ThreadViewController" customModule="The_Gun_Club" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="1Oi-z5-vy6" customClass="ThreadViewController" customModule="Rally" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="mlo-eR-ZjT">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -973,7 +989,7 @@
                                         <rect key="frame" x="0.0" y="0.0" width="375" height="508"/>
                                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                         <prototypes>
-                                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="mainPost" id="nQi-T4-byc" customClass="MainPostTableViewCell" customModule="The_Gun_Club" customModuleProvider="target">
+                                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="mainPost" id="nQi-T4-byc" customClass="MainPostTableViewCell" customModule="Rally" customModuleProvider="target">
                                                 <rect key="frame" x="0.0" y="28" width="375" height="43.5"/>
                                                 <autoresizingMask key="autoresizingMask"/>
                                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="nQi-T4-byc" id="p03-gU-ehA">
@@ -981,7 +997,7 @@
                                                     <autoresizingMask key="autoresizingMask"/>
                                                 </tableViewCellContentView>
                                             </tableViewCell>
-                                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="comment" id="icF-p8-SBe" customClass="CommentTableViewCell" customModule="The_Gun_Club" customModuleProvider="target">
+                                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="comment" id="icF-p8-SBe" customClass="CommentTableViewCell" customModule="Rally" customModuleProvider="target">
                                                 <rect key="frame" x="0.0" y="71.5" width="375" height="43.5"/>
                                                 <autoresizingMask key="autoresizingMask"/>
                                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="icF-p8-SBe" id="eAA-Xb-3MC">
@@ -994,7 +1010,7 @@
                                     <stackView opaque="NO" contentMode="scaleToFill" alignment="bottom" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="Hle-sC-kyj">
                                         <rect key="frame" x="8" y="516" width="359" height="50"/>
                                         <subviews>
-                                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" verticalHuggingPriority="249" verticalCompressionResistancePriority="749" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="df4-VF-Lyv" customClass="CommentTextView" customModule="The_Gun_Club" customModuleProvider="target">
+                                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" verticalHuggingPriority="249" verticalCompressionResistancePriority="749" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="df4-VF-Lyv" customClass="CommentTextView" customModule="Rally" customModuleProvider="target">
                                                 <rect key="frame" x="0.0" y="0.0" width="274" height="50"/>
                                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                                 <string key="text">Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Nam liber te conscient to factor tum poen legum odioque civiuda.</string>
@@ -1002,7 +1018,7 @@
                                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                 <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                                             </textView>
-                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="v10-pO-VXo" customClass="PostCommentButton" customModule="The_Gun_Club" customModuleProvider="target">
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="v10-pO-VXo" customClass="PostCommentButton" customModule="Rally" customModuleProvider="target">
                                                 <rect key="frame" x="284" y="20" width="75" height="30"/>
                                                 <constraints>
                                                     <constraint firstAttribute="width" constant="75" id="8ik-f3-QUR"/>
@@ -1063,7 +1079,7 @@
         <!--New Thread View Controller-->
         <scene sceneID="3XJ-Ay-8p1">
             <objects>
-                <viewController id="sDE-ov-Lmg" customClass="NewThreadViewController" customModule="The_Gun_Club" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="sDE-ov-Lmg" customClass="NewThreadViewController" customModule="Rally" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="NMc-pC-c5P">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="647"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -1224,7 +1240,7 @@
         <!--Congress Person Contact View Controller-->
         <scene sceneID="dw1-jp-ENQ">
             <objects>
-                <viewController id="Hvj-iW-cqP" customClass="CongressPersonContactViewController" customModule="The_Gun_Club" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="Hvj-iW-cqP" customClass="CongressPersonContactViewController" customModule="Rally" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="NMG-rM-CcQ">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="647"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -1373,6 +1389,9 @@
             <point key="canvasLocation" x="1084" y="1293"/>
         </scene>
     </scenes>
+    <inferredMetricsTieBreakers>
+        <segue reference="Jey-RI-mm7"/>
+    </inferredMetricsTieBreakers>
     <resources>
         <image name="globe" catalog="system" width="128" height="121"/>
         <image name="list.bullet.indent" catalog="system" width="128" height="74"/>

@@ -37,7 +37,7 @@ class Comment: Codable, Equatable {
     }
 }
 
-class Thread: Comment, Comparable {
+class ForumThread: Comment, Comparable {
     let title: String
     let category: String
     var lastActivityTime: String
@@ -61,11 +61,11 @@ class Thread: Comment, Comparable {
         return dateFormatter.date(from: self.lastActivityTime)!
     }
     
-    static func < (lhs: Thread, rhs: Thread) -> Bool {
+    static func < (lhs: ForumThread, rhs: ForumThread) -> Bool {
         return lhs.createTimestampFromDate() < rhs.createTimestampFromDate()
     }
     
-    static func > (lhs: Thread, rhs: Thread) -> Bool {
+    static func > (lhs: ForumThread, rhs: ForumThread) -> Bool {
         return lhs.createTimestampFromDate() > rhs.createTimestampFromDate()
     }
     

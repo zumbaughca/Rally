@@ -16,7 +16,8 @@ class ForumViewController: UIViewController, UITableViewDelegate, UITableViewDat
     @IBOutlet weak var splashScreenActivityIndicator: UIActivityIndicatorView!
     @IBOutlet var contentView: UIView!
     
-    var threads: [Thread] = []
+    var threads: [ForumThread] = []
+    var first: ForumThread?
     let reference = Database.database().reference().child("Threads")
     var isStartup = true
     var selectedCategory: String?
@@ -43,7 +44,7 @@ class ForumViewController: UIViewController, UITableViewDelegate, UITableViewDat
     func fetchThreads() {
         guard let selectedCategory = selectedCategory else {return}
         let firebaseRequests = Network()
-        firebaseRequests.observeChildAdded(reference: reference.child(selectedCategory), completion: {[weak self] (thread: Thread?, error) in
+        firebaseRequests.observeChildAdded(reference: reference.child(selectedCategory), completion: {[weak self] (thread: ForumThread?, error) in
             guard let self = self else {return}
             if error != nil {
                 //Handle error
@@ -54,6 +55,10 @@ class ForumViewController: UIViewController, UITableViewDelegate, UITableViewDat
             if let thread = thread {
                 thread.comments = []
                 if !self.threads.contains(thread) {
+                    guard thread.title != "README" else {
+                        self.first = thread
+                        return
+                    }
                     if let insertIndex = self.threads.firstIndex(where: {$0 < thread}) {
                         self.threads.insert(thread, at: insertIndex)
                     } else {
@@ -69,11 +74,18 @@ class ForumViewController: UIViewController, UITableViewDelegate, UITableViewDat
     }
  
     func numberOfSections(in tableView: UITableView) -> Int {
-        1
+        2
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return threads.count
+        switch section {
+        case 0:
+            return 1
+        case 1:
+            return threads.count
+        default:
+            return 0
+        }
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
@@ -81,11 +93,18 @@ class ForumViewController: UIViewController, UITableViewDelegate, UITableViewDat
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = self.tableView.dequeueReusableCell(withIdentifier: "forumPost", for: indexPath)
-        let thread = threads[indexPath.row]
-        cell.textLabel?.text = thread.title
-        cell.detailTextLabel?.text = "Last post: \(thread.lastActivityTime)"
-        return cell
+        if indexPath.section == 0 {
+            let cell = self.tableView.dequeueReusableCell(withIdentifier: "readme")!
+            cell.textLabel?.text = first?.title
+            cell.detailTextLabel?.text = "New users please read this before posting"
+            return cell
+        } else {
+            let thread = threads[indexPath.row]
+            let cell = self.tableView.dequeueReusableCell(withIdentifier: "forumPost")!
+            cell.textLabel?.text = thread.title
+            cell.detailTextLabel?.text = "Last post: \(thread.lastActivityTime)"
+            return cell
+        }
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -94,6 +113,10 @@ class ForumViewController: UIViewController, UITableViewDelegate, UITableViewDat
             let thread = threads[indexPath.row]
             let destinationViewController = segue.destination as? ThreadViewController
             destinationViewController?.thread = thread
+        }
+        if segue.identifier == "showReadme" {
+            let destinationViewController = segue.destination as? ThreadViewController
+            destinationViewController?.thread = first
         }
         if segue.identifier == "newThreadSegue" {
             let destinationViewController = segue.destination as? NewThreadViewController

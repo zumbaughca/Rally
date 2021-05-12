@@ -36,18 +36,21 @@ class UserProfileViewController: UIViewController {
     
     func updateUI() {
         let screenWidth = UIScreen.main.bounds.width
+        
         changePasswordButton.backgroundColor = UIColor(named: self.stringForKey("Red Color")!)
         changePasswordButton.layer.cornerRadius = 15
+        changePasswordButton.widthAnchor.constraint(equalToConstant: screenWidth / 2).isActive = true
+        
         logoutButton.backgroundColor = UIColor(named: self.stringForKey("Red Color")!)
         logoutButton.layer.cornerRadius = 15
+        logoutButton.widthAnchor.constraint(equalToConstant: screenWidth / 2).isActive = true
+        
         navigationItem.leftBarButtonItem = UIBarButtonItem(customView: NavigationBarLogoView())
+        
         logoImageView.layer.cornerRadius = 20
         logoImageView.backgroundColor = UIColor(named: "Red color")
         logoImageView.widthAnchor.constraint(equalToConstant: screenWidth / 2).isActive = true
         logoImageView.heightAnchor.constraint(equalToConstant: screenWidth / 2).isActive = true
-        changePasswordButton.widthAnchor.constraint(equalToConstant: screenWidth / 2).isActive = true
-        logoutButton.widthAnchor.constraint(equalToConstant: screenWidth / 2).isActive = true
-        print(logoutButton.frame)
     }
     
     func fetchUser(_ reference: DatabaseReference) {
@@ -74,6 +77,7 @@ class UserProfileViewController: UIViewController {
     
 
     @IBAction func changePasswordButtonTapped(_ sender: Any) {
+            performSegue(withIdentifier: "changePasswordSegue", sender: self)
     }
     @IBAction func logoutButtonTapped(_ sender: Any) {
         networkRequests.signOutUser(completion: {[weak self] (error) in

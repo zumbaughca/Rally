@@ -79,6 +79,7 @@ class NewThreadViewController: UIViewController, UITextViewDelegate {
     
     @IBAction func save(_ sender: Any) {
         do {
+            try threadTitleTextField.validatePostTitleIsValid()
             try postTextView.validateIsNotEmpty()
             try threadTitleTextField.validateIsNotEmpty()
             let dateFormatter = DateFormatter()

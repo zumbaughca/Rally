@@ -8,7 +8,6 @@
 
 import Foundation
 import UIKit
-import MapKit
 
 extension Double {
     func round(to places: Int) -> Double {
@@ -22,6 +21,24 @@ extension String {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd"
         return dateFormatter.date(from: self)
+    }
+}
+
+extension Array where Element: Comparable {
+    mutating func insertInReverseOrder(_ element: Element) {
+        guard self.count != 0 else {
+            self.append(element)
+            return
+        }
+        
+        for i in 0 ..< self.count {
+            if element >= self[i] {
+                self.insert(element, at: i)
+                return
+            }
+        }
+        self.append(element)
+        return
     }
 }
 
@@ -73,6 +90,17 @@ extension UITextField {
         let text = self.text?.replacingOccurrences(of: " ", with: "")
         if text == nil || text == "" {
             throw TextFieldValidationError.postTitleIsEmpty
+        }
+    }
+    
+    
+    func validatePostTitleIsValid() throws {
+        if self.text == "README" {
+            throw TextFieldValidationError.restrictedTitle
+        }
+        let text = self.text?.replacingOccurrences(of: " ", with: "")
+        if text == nil || text == "" {
+            throw TextFieldValidationError.textFieldIsEmpty
         }
     }
 }
