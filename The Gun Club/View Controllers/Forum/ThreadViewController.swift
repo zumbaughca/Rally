@@ -156,6 +156,7 @@ extension ThreadViewController {
             cell.ownerLabel.text = "By: \(thread!.owner)"
             cell.dateLabel.text = thread?.date
             cell.translatesAutoresizingMaskIntoConstraints = false
+            cell.selectionStyle = .none
             return cell
             
         } else {
@@ -164,6 +165,7 @@ extension ThreadViewController {
             cell.postLabel.text = comment?.post
             cell.ownerLabel.text = "By: \(comment!.owner)"
             cell.dateLabel.text = comment?.date
+            cell.selectionStyle = .none
             return cell
         }
         

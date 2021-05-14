@@ -90,6 +90,7 @@ class BillTableViewController: UIViewController, UITableViewDataSource, UITableV
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "customBillCell", for: indexPath) as! BillTableViewCell
         let bill = bills[indexPath.row]
+        cell.selectionStyle = .none
         cell.billTitle.text = bill.title
         cell.introducedLabel.text = "Introduced: \(bill.dateIntroduced)"
         cell.lastActionDateLabel.text = "Last action: \(bill.lastActionDate)"

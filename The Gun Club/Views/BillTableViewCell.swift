@@ -60,7 +60,17 @@ class BillTableViewCell: UITableViewCell {
         lastActionDateLabel.topAnchor.constraint(equalTo: billTitle.bottomAnchor, constant: 10).isActive = true
         lastActionDateLabel.leadingAnchor.constraint(equalTo: labelFrame.leadingAnchor, constant: 10).isActive = true
         lastActionDateLabel.trailingAnchor.constraint(equalTo: labelFrame.trailingAnchor, constant: -10).isActive = true
+                
+    }
+    
+    override func setHighlighted(_ highlighted: Bool, animated: Bool) {
+        super.setHighlighted(highlighted, animated: animated)
         
+        if highlighted {
+            self.labelFrame.backgroundColor = UIColor(red255: 178, green: 72, blue: 68, alpha: 0.5)
+        } else {
+            self.labelFrame.backgroundColor = .white
+        }
     }
     
     override func layoutSubviews() {
