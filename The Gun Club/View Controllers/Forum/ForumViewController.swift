@@ -55,14 +55,14 @@ class ForumViewController: UIViewController, UITableViewDelegate, UITableViewDat
             if let thread = thread {
                 thread.comments = []
                 if !self.threads.contains(thread) {
-                    guard thread.title != "README" else {
+                    if thread.title == "README" {
                         self.first = thread
-                        return
-                    }
-                    if let insertIndex = self.threads.firstIndex(where: {$0 < thread}) {
-                        self.threads.insert(thread, at: insertIndex)
                     } else {
-                        self.threads.append(thread)
+                        if let insertIndex = self.threads.firstIndex(where: {$0 < thread}) {
+                            self.threads.insert(thread, at: insertIndex)
+                        } else {
+                            self.threads.append(thread)
+                        }
                     }
                 }
             }
