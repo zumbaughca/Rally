@@ -92,7 +92,7 @@ class NewThreadViewController: UIViewController, UITextViewDelegate {
                 let category = category{
                 if let user = Auth.auth().currentUser {
                     let newPostReference = reference.child(category).childByAutoId()
-                    newPostReference.updateChildValues(["Title": title, "Date": date, "Owner": user.displayName!, "OwnerUid": user.uid, "Category": category, "NumberOfComments": 0, "Post": post, "Key": newPostReference.key!, "LastActivity": date, "Locked": false])
+                    newPostReference.updateChildValues(["Title": title, "Date": date, "Owner": user.displayName!, "OwnerUid": user.uid, "Category": category, "Post": post, "Key": newPostReference.key!, "LastActivity": date, "Locked": false])
                 }
             }
             dismiss(animated: true, completion: nil)

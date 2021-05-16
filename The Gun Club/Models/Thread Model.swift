@@ -41,7 +41,7 @@ class ForumThread: Comment, Comparable {
     let title: String
     let category: String
     var lastActivityTime: String
-    var numberOfComments: Int
+    var numberOfComments: Int = 0
     var locked: Bool
     var comments: [Comment]?
     
@@ -49,7 +49,6 @@ class ForumThread: Comment, Comparable {
         case title = "Title"
         case category = "Category"
         case lastActivityTime = "LastActivity"
-        case numberOfComments = "NumberOfComments"
         case comments = "Comments"
         case locked = "Locked"
     }
@@ -75,7 +74,6 @@ class ForumThread: Comment, Comparable {
         self.title = try valueContainer.decode(String.self, forKey: .title)
         self.category = try valueContainer.decode(String.self, forKey: .category)
         self.lastActivityTime = try valueContainer.decode(String.self, forKey: .lastActivityTime)
-        self.numberOfComments = try valueContainer.decode(Int.self, forKey: .numberOfComments)
         self.comments = try? valueContainer.decode([Comment].self, forKey: .comments)
         self.locked = try valueContainer.decode(Bool.self, forKey: .locked)
         try super.init(from: decoder)

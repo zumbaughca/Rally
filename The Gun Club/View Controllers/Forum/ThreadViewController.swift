@@ -21,6 +21,7 @@ class ThreadViewController: UIViewController, UITextViewDelegate, UITableViewDel
     var thread: ForumThread?
     var moderators: [String]?
     let reference = Database.database().reference().child("Threads")
+    let commentReference = Database.database().reference().child("Comments")
     let firebaseRequests = Network()
     
     override func viewDidLoad() {
@@ -65,7 +66,7 @@ class ThreadViewController: UIViewController, UITextViewDelegate, UITableViewDel
     func fetchThreadComments() {
         guard let thread = thread else {return}
         let firebaseRequests = Network()
-        firebaseRequests.observeChildAdded(reference: reference.child(thread.category).child(thread.key).child("comments"), completion: {[weak self] (comment: Comment?, error) in
+        firebaseRequests.observeChildAdded(reference: commentReference.child(thread.key), completion: {[weak self] (comment: Comment?, error) in
             guard let self = self else {return}
             if let error = error {
                 self.createErrorAlert(for: error.localizedDescription)
@@ -108,7 +109,8 @@ class ThreadViewController: UIViewController, UITextViewDelegate, UITableViewDel
         let threadReference = reference.child(thread.category).child(thread.key)
         let date = DateFormatter().getFormattedStringFromCurrentDate()
         if let user = Auth.auth().currentUser {
-            let commentRef = reference.child(thread.category).child(thread.key).child("comments").childByAutoId()
+            //let commentRef = reference.child(thread.category).child(thread.key).child("comments").childByAutoId()
+            let commentRef = commentReference.child(thread.key).childByAutoId()
             commentRef.updateChildValues(["Post": text, "Owner": user.displayName!, "OwnerUid": user.uid, "Date": date, "Key": commentRef.key!])
             threadReference.updateChildValues(["LastActivity": date])
         }
