@@ -86,10 +86,10 @@ extension UITextView {
 }
 
 extension UITextField {
-    func validateIsNotEmpty() throws {
+    func validateIsNotEmpty(with error: Error) throws {
         let text = self.text?.replacingOccurrences(of: " ", with: "")
         if text == nil || text == "" {
-            throw TextFieldValidationError.postTitleIsEmpty
+            throw error
         }
     }
     

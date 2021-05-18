@@ -31,6 +31,8 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
     
     weak var currentTextField: UITextField?
     
+    let network = Network()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         configureUIForLogin()
@@ -80,7 +82,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
             let password = passwordTextField.text {
             Auth.auth().signIn(withEmail: email, password: password, completion: { (authResult, error) in
                 if error != nil {
-                    self.createErrorAlert(for: error!.localizedDescription)
+                    self.createErrorAlert(for: "Either the password is incorrect or this user does not have an account.")
                 }
                 if authResult != nil {
                  if (authResult?.user) != nil {
@@ -94,45 +96,35 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
     }
     
     /*
-     * First make sure the password fields match.
+     * First validate the form.
      * Then get the values for each text field and ensure the user is over 18.
      * Then create a new user in Firebase
      */
     func registerNewUser() {
-        if passwordTextField.text == confirmPasswordTextField.text,
-            let email = emailTextField.text,
-            let password = passwordTextField.text,
-            let zipCode = zipCodeTextField.text, let name = nameTextField.text,
-            let displayName = screenNameTextField.text{
-            if registerAgeSwitch.isOn {
-                Auth.auth().createUser(withEmail: email, password: password, completion: {authResult, error in
-                    if error != nil {
-                        self.createErrorAlert(for: error!.localizedDescription)
-                    }
-                    
-                    if let authResult = authResult {
-                        let user = authResult.user
-                        let changeRequest = user.createProfileChangeRequest()
-                        changeRequest.displayName = displayName
-                        let database = Database.database().reference()
-                        database.child("Users").child(user.uid).updateChildValues(["ZipCode": zipCode])
-                        database.child("Users").child(user.uid).updateChildValues(["Name": name])
-                        changeRequest.commitChanges(completion: {error in
-                            if error == nil {
-                                let storyboard = UIStoryboard(name: "Main", bundle: Bundle.main)
-                                let tabBarController = storyboard.instantiateViewController(identifier: "TabBarController")
-                                self.view.window!.rootViewController = tabBarController
-                            }
-                        })
-                    }
-                })
-            } else {
-                //User is not 18
-                self.createErrorAlert(for: "You must be 18 years of age or older to use this app.")
+        do {
+            try validateRegistration()
+            if let email = emailTextField.text,
+               let password = passwordTextField.text,
+               let zipCode = zipCodeTextField.text,
+               let name = nameTextField.text,
+               let displayName = screenNameTextField.text{
+                if registerAgeSwitch.isOn {
+                    network.registerUserAndAddToDatabase(email: email, password: password, zipCode: zipCode, name: name, displayName: displayName, completion: {(error) in
+                        if let error = error {
+                            self.createErrorAlert(for: error.localizedDescription)
+                        } else {
+                            let storyboard = UIStoryboard(name: "Main", bundle: Bundle.main)
+                            let tabBarController = storyboard.instantiateViewController(identifier: "TabBarController")
+                            self.view.window!.rootViewController = tabBarController
+                        }
+                    })
+                } else {
+                    //User is not 18
+                    self.createErrorAlert(for: "You must be 18 years of age or older to use this app.")
+                }
             }
-        } else {
-            //Passwords do not match
-            self.createErrorAlert(for: "Passwords do not match.")
+        } catch {
+            self.createErrorAlert(for: error.localizedDescription)
         }
     }
     
@@ -189,6 +181,20 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
             registerNewUser()
         default:
             fatalError("Selected index out of bounds")
+        }
+    }
+}
+
+extension LoginViewController {
+    private func validateRegistration() throws {
+        do {
+            try nameTextField.validateIsNotEmpty(with: RegistrationErrors.noNameProvided)
+            try screenNameTextField.validateIsNotEmpty(with: RegistrationErrors.noScreenNameProvided)
+            try emailTextField.validateIsNotEmpty(with: RegistrationErrors.noEmailProvided)
+            try zipCodeTextField.validateIsNotEmpty(with: RegistrationErrors.noZipCodeProvided)
+            if passwordTextField.text != confirmPasswordTextField.text {
+                throw RegistrationErrors.passwordsDoNotMatch
+            }
         }
     }
 }

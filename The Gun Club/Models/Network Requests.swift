@@ -117,4 +117,26 @@ struct Network {
         }
     }
     
+    func registerUserAndAddToDatabase(email: String, password: String, zipCode: String, name: String, displayName: String, completion: @escaping (Error?) -> Void) {
+        Auth.auth().createUser(withEmail: email, password: password, completion: {authResult, error in
+            if error != nil {
+                completion(error)
+            }
+            
+            if let authResult = authResult {
+                let user = authResult.user
+                let changeRequest = user.createProfileChangeRequest()
+                changeRequest.displayName = displayName
+                let database = Database.database().reference()
+                database.child("Users").child(user.uid).updateChildValues(["ZipCode": zipCode])
+                database.child("Users").child(user.uid).updateChildValues(["Name": name])
+                changeRequest.commitChanges(completion: {error in
+                    if error == nil {
+                        completion(nil)
+                    }
+                })
+            }
+        })
+    }
+    
 }

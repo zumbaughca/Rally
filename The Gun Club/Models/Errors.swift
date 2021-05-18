@@ -57,3 +57,26 @@ enum NetworkError: Error, LocalizedError {
     }
 }
 
+enum RegistrationErrors: Error, LocalizedError {
+    case passwordsDoNotMatch
+    case noEmailProvided
+    case noScreenNameProvided
+    case noZipCodeProvided
+    case noNameProvided
+    
+    var errorDescription: String? {
+        switch self {
+        case .passwordsDoNotMatch:
+            return "The passwords do not match"
+        case .noEmailProvided:
+            return "You must provide a valid email"
+        case .noScreenNameProvided:
+            return "You must provide a screen name."
+        case .noZipCodeProvided:
+            return "You must provide a zip code"
+        case .noNameProvided:
+            return "You must provide a name"
+        }
+    }
+}
+

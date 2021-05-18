@@ -81,7 +81,7 @@ class NewThreadViewController: UIViewController, UITextViewDelegate {
         do {
             try threadTitleTextField.validatePostTitleIsValid()
             try postTextView.validateIsNotEmpty()
-            try threadTitleTextField.validateIsNotEmpty()
+            try threadTitleTextField.validateIsNotEmpty(with: TextFieldValidationError.postTitleIsEmpty)
             let dateFormatter = DateFormatter()
             dateFormatter.dateStyle = .medium
             dateFormatter.timeStyle = .medium
