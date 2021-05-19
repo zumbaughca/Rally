@@ -63,6 +63,8 @@ enum RegistrationErrors: Error, LocalizedError {
     case noScreenNameProvided
     case noZipCodeProvided
     case noNameProvided
+    case screenNameAlreadyExists
+    case unknownError
     
     var errorDescription: String? {
         switch self {
@@ -76,6 +78,10 @@ enum RegistrationErrors: Error, LocalizedError {
             return "You must provide a zip code"
         case .noNameProvided:
             return "You must provide a name"
+        case .screenNameAlreadyExists:
+            return "This screen name already exists"
+        case .unknownError:
+            return "An error occured, please try again later."
         }
     }
 }

@@ -17,6 +17,8 @@ class NavigationBarLogoView: UIView {
         imageView.contentMode = .scaleAspectFill
         imageView.layer.cornerRadius = 20
         imageView.layer.masksToBounds = true
+        imageView.layer.borderWidth = 1
+        imageView.layer.borderColor = UIColor.black.cgColor
         return imageView
     }()
     

@@ -36,7 +36,7 @@ class UserProfileViewController: UIViewController {
     
     func updateUI() {
         let screenWidth = UIScreen.main.bounds.width
-        
+
         changePasswordButton.backgroundColor = UIColor(named: self.stringForKey("Red Color")!)
         changePasswordButton.layer.cornerRadius = 15
         changePasswordButton.widthAnchor.constraint(equalToConstant: screenWidth / 2).isActive = true

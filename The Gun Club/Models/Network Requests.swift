@@ -129,12 +129,30 @@ struct Network {
                 changeRequest.displayName = displayName
                 let database = Database.database().reference()
                 database.child("Users").child(user.uid).updateChildValues(["ZipCode": zipCode])
+                database.child("Screennames").updateChildValues([displayName: user.uid])
+                database.child("Users").child(user.uid).updateChildValues(["screenname": displayName])
                 database.child("Users").child(user.uid).updateChildValues(["Name": name])
                 changeRequest.commitChanges(completion: {error in
                     if error == nil {
                         completion(nil)
                     }
                 })
+            }
+        })
+    }
+    
+    func validateUsername(_ name: String, completion: @escaping (Error?, Bool?) -> Void) {
+        let reference = Database.database().reference().child("Screennames")
+        
+        reference.observeSingleEvent(of: .value, with: {(snapshot) in
+            if let dict = snapshot.value as? [String: Any] {
+                if dict[name] != nil {
+                    completion(nil, false)
+                } else {
+                    completion(nil, true)
+                }
+            } else {
+                completion(NetworkError.restError, nil)
             }
         })
     }

@@ -76,58 +76,46 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
         registerStackView.isHidden = false
     }
     
-    // Sign in with Firebase
-    func signIn() {
-     if let email = emailTextField.text,
-            let password = passwordTextField.text {
-            Auth.auth().signIn(withEmail: email, password: password, completion: { (authResult, error) in
-                if error != nil {
-                    self.createErrorAlert(for: "Either the password is incorrect or this user does not have an account.")
-                }
-                if authResult != nil {
-                 if (authResult?.user) != nil {
-                        let storyboard = UIStoryboard(name: "Main", bundle: Bundle.main)
-                        let tabBarController = storyboard.instantiateViewController(identifier: "TabBarController")
-                        self.view.window!.rootViewController = tabBarController
-                    }
-                }
-            })
+    private func navigateToHomeVC() {
+        let storyboard = UIStoryboard(name: "Main", bundle: Bundle.main)
+        let tabBarController = storyboard.instantiateViewController(identifier: "TabBarController")
+        self.view.window!.rootViewController = tabBarController
+    }
+    
+    
+    
+
+    
+    @IBAction func loginRegisterSelectorChanged(_ sender: UISegmentedControl) {
+        switch sender.selectedSegmentIndex {
+        case 0:
+            configureUIForLogin()
+        case 1:
+            configureUIForRegister()
+        default:
+            configureUIForLogin()
         }
     }
     
     /*
-     * First validate the form.
-     * Then get the values for each text field and ensure the user is over 18.
-     * Then create a new user in Firebase
+     * If the button text is login, then the user is trying to log in.
+     * If it is register, then we need to register a new user in the system.
      */
-    func registerNewUser() {
-        do {
-            try validateRegistration()
-            if let email = emailTextField.text,
-               let password = passwordTextField.text,
-               let zipCode = zipCodeTextField.text,
-               let name = nameTextField.text,
-               let displayName = screenNameTextField.text{
-                if registerAgeSwitch.isOn {
-                    network.registerUserAndAddToDatabase(email: email, password: password, zipCode: zipCode, name: name, displayName: displayName, completion: {(error) in
-                        if let error = error {
-                            self.createErrorAlert(for: error.localizedDescription)
-                        } else {
-                            let storyboard = UIStoryboard(name: "Main", bundle: Bundle.main)
-                            let tabBarController = storyboard.instantiateViewController(identifier: "TabBarController")
-                            self.view.window!.rootViewController = tabBarController
-                        }
-                    })
-                } else {
-                    //User is not 18
-                    self.createErrorAlert(for: "You must be 18 years of age or older to use this app.")
-                }
-            }
-        } catch {
-            self.createErrorAlert(for: error.localizedDescription)
+    @IBAction func loginRegisterButtonPressed(_ sender: UIButton) {
+        let selectedIndex = loginRegisterSegmentedControl.selectedSegmentIndex
+        switch selectedIndex {
+        case 0:
+            signIn()
+        case 1:
+            validateAndRegister()
+        default:
+            fatalError("Selected index out of bounds")
         }
     }
-    
+}
+
+//MARK: Text Field and Keyboard methods
+extension LoginViewController {
     func textFieldDidBeginEditing(_ textField: UITextField) {
         currentTextField = textField
     }
@@ -156,36 +144,11 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
             self.scrollView.scrollIndicatorInsets = UIEdgeInsets.zero
         }
     }
-    
-    @IBAction func loginRegisterSelectorChanged(_ sender: UISegmentedControl) {
-        switch sender.selectedSegmentIndex {
-        case 0:
-            configureUIForLogin()
-        case 1:
-            configureUIForRegister()
-        default:
-            configureUIForLogin()
-        }
-    }
-    
-    /*
-     * If the button text is login, then the user is trying to log in.
-     * If it is register, then we need to register a new user in the system.
-     */
-    @IBAction func loginRegisterButtonPressed(_ sender: UIButton) {
-        let selectedIndex = loginRegisterSegmentedControl.selectedSegmentIndex
-        switch selectedIndex {
-        case 0:
-            signIn()
-        case 1:
-            registerNewUser()
-        default:
-            fatalError("Selected index out of bounds")
-        }
-    }
 }
 
+// MARK: Registration validation
 extension LoginViewController {
+    
     private func validateRegistration() throws {
         do {
             try nameTextField.validateIsNotEmpty(with: RegistrationErrors.noNameProvided)
@@ -194,6 +157,75 @@ extension LoginViewController {
             try zipCodeTextField.validateIsNotEmpty(with: RegistrationErrors.noZipCodeProvided)
             if passwordTextField.text != confirmPasswordTextField.text {
                 throw RegistrationErrors.passwordsDoNotMatch
+            }
+        }
+    }
+}
+
+// MARK: Sign in and User Registration
+extension LoginViewController {
+    // Sign in with Firebase
+    func signIn() {
+     if let email = emailTextField.text,
+            let password = passwordTextField.text {
+            Auth.auth().signIn(withEmail: email, password: password, completion: { [weak self ] (authResult, error) in
+                if error != nil {
+                    self?.createErrorAlert(for: "Either the password is incorrect or this user does not have an account.")
+                }
+                if authResult != nil {
+                 if (authResult?.user) != nil {
+                    self?.navigateToHomeVC()
+                    }
+                }
+            })
+        }
+    }
+    
+    /*
+     * First validate the form.
+     * Then ensure the screen name doesn't already exist.
+     * Then complete the registration
+     */
+    private func validateAndRegister() {
+        do {
+            try validateRegistration()
+            network.validateUsername(screenNameTextField.text!, completion: {[weak self] (error, bool) in
+                if let _ = error {
+                    self?.createErrorAlert(for: RegistrationErrors.unknownError.localizedDescription)
+                    return
+                }
+                if bool == true {
+                    self?.registerNewUser()
+                } else {
+                    self?.createErrorAlert(for: RegistrationErrors.screenNameAlreadyExists.localizedDescription)
+                }
+            })
+        } catch {
+            self.createErrorAlert(for: error.localizedDescription)
+        }
+    }
+    
+    /*
+     * Then get the values for each text field and ensure the user is over 18.
+     * Then create a new user in Firebase
+     */
+    func registerNewUser() {
+        if let email = emailTextField.text,
+           let password = passwordTextField.text,
+           let zipCode = zipCodeTextField.text,
+           let name = nameTextField.text,
+           let displayName = screenNameTextField.text{
+            if registerAgeSwitch.isOn {
+                network.registerUserAndAddToDatabase(email: email, password: password, zipCode: zipCode, name: name, displayName: displayName, completion: {[weak self](error) in
+                    if let error = error {
+                        self?.createErrorAlert(for: error.localizedDescription)
+                    } else {
+                        self?.navigateToHomeVC()
+                    }
+                })
+            } else {
+                //User is not 18
+                self.createErrorAlert(for: "You must be 18 years of age or older to use this app.")
             }
         }
     }
