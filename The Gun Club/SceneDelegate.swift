@@ -13,14 +13,26 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     var window: UIWindow?
 
-
+    private func instantiateViewController(identifier: String) {
+        let storyboard = UIStoryboard(name: "Main", bundle: Bundle.main)
+        let viewController = storyboard.instantiateViewController(identifier: identifier)
+        self.window?.rootViewController = viewController
+    }
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         self.window = self.window ?? UIWindow()
-        if Auth.auth().currentUser != nil {
-            let storyboard = UIStoryboard(name: "Main", bundle: Bundle.main)
-            let tabBarController = storyboard.instantiateViewController(identifier: "TabBarController")
-            self.window?.rootViewController = tabBarController
+        if Auth.auth().currentUser == nil {
+            instantiateViewController(identifier: "LoginController")
+        } else {
+            Auth.auth().currentUser?.reload(completion: {[weak self] (error) in
+                if error == nil {
+                    self?.instantiateViewController(identifier: "TabBarController")
+                } else {
+                    self?.instantiateViewController(identifier: "LoginController")
+                }
+            })
         }
+            
+        
         guard let _ = (scene as? UIWindowScene) else { return }
     }
 

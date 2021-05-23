@@ -13,7 +13,7 @@ class NavigationBarLogoView: UIView {
     
     let image: UIImageView = {
         let imageView = UIImageView(frame: CGRect(x: 0, y: 0, width: 40, height: 40))
-        imageView.image = UIImage(named: "logo")
+        imageView.image = UIImage(named: "logoWhite")
         imageView.contentMode = .scaleAspectFill
         imageView.layer.cornerRadius = 20
         imageView.layer.masksToBounds = true

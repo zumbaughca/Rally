@@ -8,8 +8,8 @@
 
 import UIKit
 import Firebase
-
-class ThreadViewController: UIViewController, UITextViewDelegate, UITableViewDelegate, UITableViewDataSource{
+// TODO: Add blocked post/user filtering methods
+class ThreadViewController: UIViewController, UITextViewDelegate, UITableViewDelegate, UITableViewDataSource, CommentTableViewCellDelegate {
     
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var commentTextView: CommentTextView!
@@ -22,7 +22,8 @@ class ThreadViewController: UIViewController, UITextViewDelegate, UITableViewDel
     var moderators: [String]?
     let reference = Database.database().reference().child("Threads")
     let commentReference = Database.database().reference().child("Comments")
-    let firebaseRequests = Network()
+    let networkRequests = Network()
+    var user: User?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -59,8 +60,14 @@ class ThreadViewController: UIViewController, UITextViewDelegate, UITableViewDel
         threadLockedStatusDidChange()
     }
     
-    
-    
+    func fetchUser(_ reference: DatabaseReference) {
+        networkRequests.queryUserName(reference: reference, completion: {[weak self] (user, error) in
+            guard let self = self else {return}
+            if let user = user {
+                self.user = user
+            }
+        })
+    }
 
     
     func fetchThreadComments() {
@@ -127,6 +134,29 @@ class ThreadViewController: UIViewController, UITextViewDelegate, UITableViewDel
             threadReference.updateChildValues(["Locked": false])
         }
     }
+
+}
+
+// MARK: CommentTableViewCellDelegate methods
+extension ThreadViewController {
+    
+    func didTapReportButton(_ sender: CommentTableViewCell) {
+        guard let indexPath = tableView.indexPath(for: sender), let post =  indexPath.section == 1 ? thread!.comments![indexPath.row] : thread else { return }
+        
+        Database.database().reference().child("ReportedUsers").child(post.ownerUid).updateChildValues([post.owner: post.post])
+    }
+    
+    func didTapBlockPostButton(_ sender: CommentTableViewCell) {
+        guard let indexPath = tableView.indexPath(for: sender), let post = indexPath.section == 1 ? thread!.comments![indexPath.row] : thread else { return }
+        
+        Database.database().reference().child("Users").child(Auth.auth().currentUser!.uid).child("BlockedPosts").updateChildValues([post.key: true])
+    }
+    
+    func didTapBlockUserButton(_ sender: CommentTableViewCell) {
+        guard let indexPath = tableView.indexPath(for: sender), let post = indexPath.section == 1 ? thread!.comments![indexPath.row] : thread else { return }
+        
+        Database.database().reference().child("Users").child(Auth.auth().currentUser!.uid).child("BlockedUsers").updateChildValues([post.ownerUid: true])
+    }
 }
 
 // MARK: Table View
@@ -167,6 +197,7 @@ extension ThreadViewController {
             cell.postLabel.text = comment?.post
             cell.ownerLabel.text = "By: \(comment!.owner)"
             cell.dateLabel.text = comment?.date
+            cell.delegate = self
             cell.selectionStyle = .none
             return cell
         }
@@ -186,7 +217,7 @@ extension ThreadViewController {
     
     // Get a list of the moderators when the thread is loaded.
     func fetchModerators() {
-        firebaseRequests.queryModerators(completion: {[weak self] (moderators, error) in
+        networkRequests.queryModerators(completion: {[weak self] (moderators, error) in
             guard let self = self else {return}
             if let moderators = moderators {
                 self.moderators = moderators
@@ -199,7 +230,7 @@ extension ThreadViewController {
     
     func fetchLockedStatus() {
         guard let thread = thread else {return}
-        firebaseRequests.observeThreadLockedStatus(reference: reference.child(thread.category).child(thread.key).child("Locked"), completion: {[weak self](bool, error) in
+        networkRequests.observeThreadLockedStatus(reference: reference.child(thread.category).child(thread.key).child("Locked"), completion: {[weak self](bool, error) in
             guard let self = self else {return}
             if let bool = bool {
                 self.thread!.locked = bool

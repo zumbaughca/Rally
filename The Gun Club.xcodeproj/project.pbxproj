@@ -83,11 +83,12 @@
 		668F7150264386EB00F780C4 /* UpdatePasswordViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdatePasswordViewController.swift; sourceTree = "<group>"; };
 		66A28D0B264881160059752E /* NavigationBarLogoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationBarLogoView.swift; sourceTree = "<group>"; };
 		66A8DD3D24E4A2F300A652C4 /* Extensions + Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Extensions + Helpers.swift"; sourceTree = "<group>"; };
+		66B4730F26585DA6003834D1 /* ReleaseConfig.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = ReleaseConfig.xcconfig; sourceTree = "<group>"; };
 		66B6C6AA24F180C10061C276 /* CongressPersonContactViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CongressPersonContactViewController.swift; sourceTree = "<group>"; };
 		66B96CF824EECDFE0047EA05 /* Bill Model.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Bill Model.swift"; sourceTree = "<group>"; };
 		66D571F024CB449300930F46 /* ForumViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForumViewController.swift; sourceTree = "<group>"; };
 		66D571F224CB454800930F46 /* Thread Model.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Thread Model.swift"; sourceTree = "<group>"; };
-		66DCB9DA24CA2013005F2973 /* Rally.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Rally.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		66DCB9DA24CA2013005F2973 /* The Gun Club.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "The Gun Club.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		66DCB9DD24CA2013005F2973 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		66DCB9DF24CA2013005F2973 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		66DCB9E424CA2013005F2973 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -95,10 +96,10 @@
 		66DCB9E924CA2014005F2973 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		66DCB9EC24CA2014005F2973 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		66DCB9EE24CA2014005F2973 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		66DCB9F324CA2014005F2973 /* RallyTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RallyTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		66DCB9F324CA2014005F2973 /* The Gun ClubTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "The Gun ClubTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		66DCB9F724CA2014005F2973 /* The_Gun_ClubTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = The_Gun_ClubTests.swift; sourceTree = "<group>"; };
 		66DCB9F924CA2014005F2973 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		66DCB9FE24CA2014005F2973 /* RallyUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RallyUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		66DCB9FE24CA2014005F2973 /* The Gun ClubUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "The Gun ClubUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		66DCBA0224CA2014005F2973 /* The_Gun_ClubUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = The_Gun_ClubUITests.swift; sourceTree = "<group>"; };
 		66DCBA0424CA2014005F2973 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		66DCBA1024CA20EA005F2973 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
@@ -195,9 +196,9 @@
 		66DCB9DB24CA2013005F2973 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				66DCB9DA24CA2013005F2973 /* Rally.app */,
-				66DCB9F324CA2014005F2973 /* RallyTests.xctest */,
-				66DCB9FE24CA2014005F2973 /* RallyUITests.xctest */,
+				66DCB9DA24CA2013005F2973 /* The Gun Club.app */,
+				66DCB9F324CA2014005F2973 /* The Gun ClubTests.xctest */,
+				66DCB9FE24CA2014005F2973 /* The Gun ClubUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -212,6 +213,7 @@
 				66F2910D24DDF80300B020F9 /* Models */,
 				663B06EF24F740BD001D7205 /* Views */,
 				66EEEF8524DB7134007D2552 /* DevelopmentConfig.xcconfig */,
+				66B4730F26585DA6003834D1 /* ReleaseConfig.xcconfig */,
 				66DCB9E924CA2014005F2973 /* Assets.xcassets */,
 				66DCB9EB24CA2014005F2973 /* LaunchScreen.storyboard */,
 				66DCB9EE24CA2014005F2973 /* Info.plist */,
@@ -291,11 +293,12 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		66DCB9D924CA2013005F2973 /* Rally */ = {
+		66DCB9D924CA2013005F2973 /* The Gun Club */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 66DCBA0724CA2014005F2973 /* Build configuration list for PBXNativeTarget "Rally" */;
+			buildConfigurationList = 66DCBA0724CA2014005F2973 /* Build configuration list for PBXNativeTarget "The Gun Club" */;
 			buildPhases = (
 				96E2B7DB6C2A56412EA0364C /* [CP] Check Pods Manifest.lock */,
+				5545103C769FD6D58D0F7533 /* [CP] Prepare Artifacts */,
 				66DCB9D624CA2013005F2973 /* Sources */,
 				66DCB9D724CA2013005F2973 /* Frameworks */,
 				66DCB9D824CA2013005F2973 /* Resources */,
@@ -305,14 +308,14 @@
 			);
 			dependencies = (
 			);
-			name = Rally;
+			name = "The Gun Club";
 			productName = "The Gun Club";
-			productReference = 66DCB9DA24CA2013005F2973 /* Rally.app */;
+			productReference = 66DCB9DA24CA2013005F2973 /* The Gun Club.app */;
 			productType = "com.apple.product-type.application";
 		};
-		66DCB9F224CA2014005F2973 /* RallyTests */ = {
+		66DCB9F224CA2014005F2973 /* The Gun ClubTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 66DCBA0A24CA2014005F2973 /* Build configuration list for PBXNativeTarget "RallyTests" */;
+			buildConfigurationList = 66DCBA0A24CA2014005F2973 /* Build configuration list for PBXNativeTarget "The Gun ClubTests" */;
 			buildPhases = (
 				73E4EE4038F55E4ECCF761F0 /* [CP] Check Pods Manifest.lock */,
 				66DCB9EF24CA2014005F2973 /* Sources */,
@@ -324,14 +327,14 @@
 			dependencies = (
 				66DCB9F524CA2014005F2973 /* PBXTargetDependency */,
 			);
-			name = RallyTests;
+			name = "The Gun ClubTests";
 			productName = "The Gun ClubTests";
-			productReference = 66DCB9F324CA2014005F2973 /* RallyTests.xctest */;
+			productReference = 66DCB9F324CA2014005F2973 /* The Gun ClubTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		66DCB9FD24CA2014005F2973 /* RallyUITests */ = {
+		66DCB9FD24CA2014005F2973 /* The Gun ClubUITests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 66DCBA0D24CA2014005F2973 /* Build configuration list for PBXNativeTarget "RallyUITests" */;
+			buildConfigurationList = 66DCBA0D24CA2014005F2973 /* Build configuration list for PBXNativeTarget "The Gun ClubUITests" */;
 			buildPhases = (
 				060E643B94AF2AEB7EC69857 /* [CP] Check Pods Manifest.lock */,
 				66DCB9FA24CA2014005F2973 /* Sources */,
@@ -343,9 +346,9 @@
 			dependencies = (
 				66DCBA0024CA2014005F2973 /* PBXTargetDependency */,
 			);
-			name = RallyUITests;
+			name = "The Gun ClubUITests";
 			productName = "The Gun ClubUITests";
-			productReference = 66DCB9FE24CA2014005F2973 /* RallyUITests.xctest */;
+			productReference = 66DCB9FE24CA2014005F2973 /* The Gun ClubUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
 		};
 /* End PBXNativeTarget section */
@@ -371,7 +374,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 66DCB9D524CA2013005F2973 /* Build configuration list for PBXProject "Rally" */;
+			buildConfigurationList = 66DCB9D524CA2013005F2973 /* Build configuration list for PBXProject "The Gun Club" */;
 			compatibilityVersion = "Xcode 9.3";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -384,9 +387,9 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				66DCB9D924CA2013005F2973 /* Rally */,
-				66DCB9F224CA2014005F2973 /* RallyTests */,
-				66DCB9FD24CA2014005F2973 /* RallyUITests */,
+				66DCB9D924CA2013005F2973 /* The Gun Club */,
+				66DCB9F224CA2014005F2973 /* The Gun ClubTests */,
+				66DCB9FD24CA2014005F2973 /* The Gun ClubUITests */,
 			);
 		};
 /* End PBXProject section */
@@ -457,6 +460,23 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-The Gun Club/Pods-The Gun Club-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		5545103C769FD6D58D0F7533 /* [CP] Prepare Artifacts */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-The Gun Club/Pods-The Gun Club-artifacts-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Prepare Artifacts";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-The Gun Club/Pods-The Gun Club-artifacts-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-The Gun Club/Pods-The Gun Club-artifacts.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		73E4EE4038F55E4ECCF761F0 /* [CP] Check Pods Manifest.lock */ = {
@@ -562,12 +582,12 @@
 /* Begin PBXTargetDependency section */
 		66DCB9F524CA2014005F2973 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 66DCB9D924CA2013005F2973 /* Rally */;
+			target = 66DCB9D924CA2013005F2973 /* The Gun Club */;
 			targetProxy = 66DCB9F424CA2014005F2973 /* PBXContainerItemProxy */;
 		};
 		66DCBA0024CA2014005F2973 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 66DCB9D924CA2013005F2973 /* Rally */;
+			target = 66DCB9D924CA2013005F2973 /* The Gun Club */;
 			targetProxy = 66DCB9FF24CA2014005F2973 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -655,6 +675,7 @@
 		};
 		66DCBA0624CA2014005F2973 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 66B4730F26585DA6003834D1 /* ReleaseConfig.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -731,6 +752,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 72FA3A1882770AC433228A2F /* Pods-The Gun Club.release.xcconfig */;
 			buildSettings = {
+				AD_UNIT_ID = "";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = QR565UAMQV;
@@ -766,7 +788,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Rally.app/Rally";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/The Gun Club.app/The Gun Club";
 			};
 			name = Debug;
 		};
@@ -789,7 +811,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Rally.app/Rally";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/The Gun Club.app/The Gun Club";
 			};
 			name = Release;
 		};
@@ -838,7 +860,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		66DCB9D524CA2013005F2973 /* Build configuration list for PBXProject "Rally" */ = {
+		66DCB9D524CA2013005F2973 /* Build configuration list for PBXProject "The Gun Club" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				66DCBA0524CA2014005F2973 /* Debug */,
@@ -847,7 +869,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		66DCBA0724CA2014005F2973 /* Build configuration list for PBXNativeTarget "Rally" */ = {
+		66DCBA0724CA2014005F2973 /* Build configuration list for PBXNativeTarget "The Gun Club" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				66DCBA0824CA2014005F2973 /* Debug */,
@@ -856,7 +878,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		66DCBA0A24CA2014005F2973 /* Build configuration list for PBXNativeTarget "RallyTests" */ = {
+		66DCBA0A24CA2014005F2973 /* Build configuration list for PBXNativeTarget "The Gun ClubTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				66DCBA0B24CA2014005F2973 /* Debug */,
@@ -865,7 +887,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		66DCBA0D24CA2014005F2973 /* Build configuration list for PBXNativeTarget "RallyUITests" */ = {
+		66DCBA0D24CA2014005F2973 /* Build configuration list for PBXNativeTarget "The Gun ClubUITests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				66DCBA0E24CA2014005F2973 /* Debug */,

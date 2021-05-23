@@ -10,6 +10,8 @@ import UIKit
 import Firebase
 
 class UserProfileViewController: UIViewController {
+
+    
     @IBOutlet weak var nameLabel: UILabel!
     @IBOutlet weak var screenNameLabel: UILabel!
     @IBOutlet weak var scrollView: UIScrollView!
@@ -22,6 +24,14 @@ class UserProfileViewController: UIViewController {
     let reference = Database.database().reference().child("Users")
     var bills: [Bill] = []
     var user: User?
+    var adLoader: GADAdLoader!
+    
+    var banner: GADBannerView = {
+        let banner = GADBannerView()
+        banner.load(GADRequest())
+        banner.backgroundColor = .secondarySystemBackground
+        return banner
+    }()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -31,7 +41,19 @@ class UserProfileViewController: UIViewController {
             let userReference = reference.child(user.uid)
             fetchUser(userReference)
             updateUI()
+        } else {
+            self.returnToLoginScreen()
         }
+        // AdMob Banner
+        banner.rootViewController = self
+        banner.adUnitID = self.stringForKey("AdMob ID")
+        view.addSubview(banner)
+    }
+    
+    // Set up Ad Mob banner view
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        banner.frame = CGRect(x: 0, y: scrollView.frame.minY, width: view.frame.width, height: 50).integral
     }
     
     func updateUI() {
@@ -75,6 +97,11 @@ class UserProfileViewController: UIViewController {
         present(alertController, animated: true, completion: nil)
     }
     
+    private func returnToLoginScreen() {
+        let storyboard = UIStoryboard(name: "Main", bundle: Bundle.main)
+        let loginController = storyboard.instantiateViewController(identifier: "LoginController")
+        self.view.window!.rootViewController = loginController
+    }
 
     @IBAction func changePasswordButtonTapped(_ sender: Any) {
             performSegue(withIdentifier: "changePasswordSegue", sender: self)
@@ -82,9 +109,7 @@ class UserProfileViewController: UIViewController {
     @IBAction func logoutButtonTapped(_ sender: Any) {
         networkRequests.signOutUser(completion: {[weak self] (error) in
             if error == nil {
-                let storyboard = UIStoryboard(name: "Main", bundle: Bundle.main)
-                let loginController = storyboard.instantiateViewController(identifier: "LoginController")
-                self?.view.window!.rootViewController = loginController
+                self?.returnToLoginScreen()
             } else {
                 self?.presentLogoutErrorAlert()
             }

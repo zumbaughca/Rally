@@ -11,15 +11,24 @@ import Foundation
 final class User: Codable {
     var name: String
     var location: String
+    let screenName: String
+    let blockedPosts: [String]?
+    let blockedUsers: [String]?
     
     private enum CodingKeys: String, CodingKey {
         case name = "Name"
         case location = "ZipCode"
+        case screenName = "screenname"
+        case blockedPosts = "BlockedPosts"
+        case blockedUsers = "BlockedUsers"
     }
     
     init(from decoder: Decoder) throws {
         let valueContainer = try decoder.container(keyedBy: CodingKeys.self)
         self.name = try valueContainer.decode(String.self, forKey: .name)
         self.location = try valueContainer.decode(String.self, forKey: .location)
+        self.screenName = try valueContainer.decode(String.self, forKey: .screenName)
+        self.blockedPosts = try? valueContainer.decode([String].self, forKey: .blockedPosts)
+        self.blockedUsers = try? valueContainer.decode([String].self, forKey: .blockedUsers)
     }
 }

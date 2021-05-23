@@ -12,6 +12,7 @@ pod 'Firebase/Database'
 pod 'Firebase/Auth'
 pod 'Firebase/Storage'
 pod 'Firebase/Functions'
+pod 'Google-Mobile-Ads-SDK'
 end
  
  target 'The Gun ClubTests' do
