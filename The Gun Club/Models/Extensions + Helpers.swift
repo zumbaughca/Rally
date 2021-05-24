@@ -128,6 +128,13 @@ extension UIViewController {
         present(alertController, animated: true, completion: nil)
     }
     
+    func createGenericAlert(title: String?, message: String?) {
+        let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        let cancelAction = UIAlertAction(title: "OK", style: .cancel, handler: nil)
+        alertController.addAction(cancelAction)
+        present(alertController, animated: true, completion: nil)
+    }
+    
     func createAlertToConfirmReport(message: String, handler: @escaping () -> Void) {
         let alertController = UIAlertController(title: nil, message: message, preferredStyle: .alert)
         let userAction = UIAlertAction(title: "Yes", style: .default, handler: {

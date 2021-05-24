@@ -41,10 +41,9 @@ class CommentTableViewCell: UITableViewCell {
     
     let reportButton: UIButton = {
         let button = UIButton()
-        button.setTitle("Report", for: .normal)
+        button.setImage(UIImage(systemName: "flag"), for: .normal)
         button.titleLabel?.font = UIFont.systemFont(ofSize: 10)
         button.layer.cornerRadius = 5
-        button.backgroundColor = UIColor.red.withAlphaComponent(0.2)
         button.setTitleColor(UIColor.black, for: .normal)
         button.translatesAutoresizingMaskIntoConstraints = false
         return button

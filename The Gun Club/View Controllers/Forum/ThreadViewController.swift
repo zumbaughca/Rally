@@ -8,7 +8,7 @@
 
 import UIKit
 import Firebase
-// TODO: Add blocked post/user filtering methods
+
 class ThreadViewController: UIViewController, UITextViewDelegate, UITableViewDelegate, UITableViewDataSource, CommentTableViewCellDelegate, MainPostTableViewCellDelegate {
     
     
@@ -124,7 +124,6 @@ class ThreadViewController: UIViewController, UITextViewDelegate, UITableViewDel
         let threadReference = reference.child(thread.category).child(thread.key)
         let date = DateFormatter().getFormattedStringFromCurrentDate()
         if let user = Auth.auth().currentUser {
-            //let commentRef = reference.child(thread.category).child(thread.key).child("comments").childByAutoId()
             let commentRef = commentReference.child(thread.key).childByAutoId()
             commentRef.updateChildValues(["Post": text, "Owner": user.displayName!, "OwnerUid": user.uid, "Date": date, "Key": commentRef.key!])
             threadReference.updateChildValues(["LastActivity": date])
@@ -152,32 +151,39 @@ extension ThreadViewController {
         Database.database().reference().child("ReportedUsers").child(post.ownerUid).updateChildValues([post.owner: post.post])
     }
     
-    private func blockUser(of post: Comment) {
+    private func blockUser(of post: Comment, at indexPath: IndexPath) {
         Database.database().reference().child("Users").child(Auth.auth().currentUser!.uid).child("BlockedUsers").updateChildValues([post.ownerUid: true])
+        guard indexPath.section == 1 else { return }
+        thread?.comments?.remove(at: indexPath.row)
+        tableView.reloadData()
     }
     
-    private func blockPost(of post: Comment) {
+    private func blockPost(of post: Comment, at indexPath: IndexPath) {
         Database.database().reference().child("Users").child(Auth.auth().currentUser!.uid).child("BlockedPosts").updateChildValues([post.key: true])
+        guard indexPath.section == 1 else { return }
+        thread?.comments?.remove(at: indexPath.row)
+        tableView.reloadData()
     }
     
-    private func createReportAlert(for post: Comment) {
+    private func createReportAlert(for post: Comment, at indexPath: IndexPath) {
         let alert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
         let reportAction = UIAlertAction(title: "Report User", style: .default, handler: {[unowned self] (action) in
             self.createAlertToConfirmReport(message: "You are reporting this user for the content of this post. This information will be reviewed by the moderators within 24 hours. If deemed necessary, disciplinary actions will be taken against this user. You will not be notified of any actions taken. To proceed with this report press Yes.", handler: {
                 [unowned self] in
                 self.reportUser(of: post)
+                self.createGenericAlert(title: nil, message: "Your report has been sent to the moderators for review.")
             })
         })
         let blockUserAction = UIAlertAction(title: "Block User", style: .default, handler: {[unowned self] action in
             self.createAlertToConfirmReport(message: "You are blocking the user of this post. You will no longer see any content from this user. Press Yes to proceed.", handler: {
                 [unowned self] in
-                self.blockUser(of: post)
+                self.blockUser(of: post, at: indexPath)
             })
         })
         let blockPostAction = UIAlertAction(title: "Block Post", style: .default, handler: {[unowned self] action in
             self.createAlertToConfirmReport(message: "You are blocking this post. You will no longer see this post, but you will still see other posts from this user. Press Yes to proceed.", handler: {
                 [unowned self] in
-                self.blockPost(of: post)
+                self.blockPost(of: post, at: indexPath)
             })
         })
         let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
@@ -185,18 +191,19 @@ extension ThreadViewController {
         alert.addAction(blockUserAction)
         alert.addAction(blockPostAction)
         alert.addAction(cancelAction)
+        alert.popoverPresentationController?.sourceView = self.tabBarController?.tabBar
         self.present(alert, animated: true, completion: nil)
     }
     
     func didTapReportButton(_ sender: CommentTableViewCell) {
         guard let indexPath = tableView.indexPath(for: sender), let post =  indexPath.section == 1 ? thread!.comments![indexPath.row] : thread else { return }
-        createReportAlert(for: post)
+        createReportAlert(for: post, at: indexPath)
     }
     
     func didTapMainPostReportButton(_ sender: MainPostTableViewCell) {
         guard let indexPath = tableView.indexPath(for: sender), let post =  indexPath.section == 1 ? thread!.comments![indexPath.row] : thread else { return }
         print(post.owner)
-        createReportAlert(for: post)
+        createReportAlert(for: post, at: indexPath)
     }
     
 }
