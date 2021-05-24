@@ -21,6 +21,8 @@ class ForumViewController: UIViewController, UITableViewDelegate, UITableViewDat
     let reference = Database.database().reference().child("Threads")
     var isStartup = true
     var selectedCategory: String?
+    var user: User?
+    let networkRequests = Network()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -32,13 +34,27 @@ class ForumViewController: UIViewController, UITableViewDelegate, UITableViewDat
         splashScreen.isHidden = false
         splashScreenActivityIndicator.style = .large
         splashScreenActivityIndicator.startAnimating()
-        fetchThreads()
+        fetchUser(Database.database().reference().child("Users").child(Auth.auth().currentUser!.uid), completion: {[unowned self] user in
+            self.user = user
+            self.fetchThreads()
+        })
+        
     }
     
     func contentHasLoaded() {
         splashScreenActivityIndicator.stopAnimating()
         splashScreen.isHidden = true
         tableView.isHidden = false
+    }
+    
+    func fetchUser(_ reference: DatabaseReference, completion: @escaping (_ user: User?) -> Void) {
+        networkRequests.queryUserName(reference: reference, completion: {(user, error) in
+            if let user = user {
+                completion(user)
+            } else {
+                completion(nil)
+            }
+        })
     }
     
     func fetchThreads() {
@@ -54,7 +70,7 @@ class ForumViewController: UIViewController, UITableViewDelegate, UITableViewDat
             }
             if let thread = thread {
                 thread.comments = []
-                if !self.threads.contains(thread) {
+                if !self.threads.contains(thread) && self.user!.shouldSeeContent(post: thread) {
                     if thread.title == "README" {
                         self.first = thread
                     } else {

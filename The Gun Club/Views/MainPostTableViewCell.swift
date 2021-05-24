@@ -9,7 +9,13 @@
 import Foundation
 import UIKit
 
+protocol MainPostTableViewCellDelegate {
+    func didTapMainPostReportButton(_ sender: MainPostTableViewCell)
+}
+
 class MainPostTableViewCell: UITableViewCell {
+    
+    var delegate: MainPostTableViewCellDelegate?
     
     let titleLabel: UILabel = {
        let label = UILabel()
@@ -48,21 +54,45 @@ class MainPostTableViewCell: UITableViewCell {
         return label
     }()
     
+    
+    let reportButton: UIButton = {
+        let button = UIButton()
+        button.setTitle("Report", for: .normal)
+        button.titleLabel?.font = UIFont.systemFont(ofSize: 10)
+        button.layer.cornerRadius = 5
+        button.backgroundColor = UIColor.red.withAlphaComponent(0.2)
+        button.setTitleColor(UIColor.black, for: .normal)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        return button
+    }()
+    
     private func configureLayout() {
         titleLabel.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 10).isActive = true
         titleLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 8).isActive = true
         titleLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: 8).isActive = true
+        
         postLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 8).isActive = true
         postLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 8).isActive = true
         postLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -8).isActive = true
+        
         ownerLabel.topAnchor.constraint(equalTo: postLabel.bottomAnchor, constant: 4).isActive = true
         ownerLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 8).isActive = true
-        ownerLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -8).isActive = true
+
+        
         dateLabel.leadingAnchor.constraint(equalTo: ownerLabel.trailingAnchor, constant: 8).isActive = true
         dateLabel.bottomAnchor.constraint(equalTo: ownerLabel.bottomAnchor).isActive = true
+        
         lastActivityLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -20).isActive = true
         lastActivityLabel.bottomAnchor.constraint(equalTo: ownerLabel.bottomAnchor).isActive = true
         
+        reportButton.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 8).isActive = true
+        reportButton.topAnchor.constraint(equalTo: ownerLabel.bottomAnchor, constant: 5).isActive = true
+        reportButton.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -5).isActive = true
+        
+    }
+    
+    @objc func reportButtonTapped(_ sender: UIButton) {
+        delegate?.didTapMainPostReportButton(self)
     }
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
@@ -72,6 +102,9 @@ class MainPostTableViewCell: UITableViewCell {
         self.contentView.addSubview(ownerLabel)
         self.contentView.addSubview(dateLabel)
         self.contentView.addSubview(lastActivityLabel)
+        self.contentView.addSubview(reportButton)
+        
+        reportButton.addTarget(self, action: #selector(reportButtonTapped(_:)), for: .touchUpInside)
         configureLayout()
     }
     

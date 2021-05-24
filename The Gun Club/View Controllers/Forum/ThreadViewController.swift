@@ -9,7 +9,8 @@
 import UIKit
 import Firebase
 // TODO: Add blocked post/user filtering methods
-class ThreadViewController: UIViewController, UITextViewDelegate, UITableViewDelegate, UITableViewDataSource, CommentTableViewCellDelegate {
+class ThreadViewController: UIViewController, UITextViewDelegate, UITableViewDelegate, UITableViewDataSource, CommentTableViewCellDelegate, MainPostTableViewCellDelegate {
+    
     
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var commentTextView: CommentTextView!
@@ -28,7 +29,14 @@ class ThreadViewController: UIViewController, UITextViewDelegate, UITableViewDel
     override func viewDidLoad() {
         super.viewDidLoad()
         fetchModerators()
-        fetchThreadComments()
+        fetchUser(Database.database().reference().child("Users").child(Auth.auth().currentUser!.uid)) {
+            [unowned self] user in
+            if let user = user {
+                self.user = user
+                self.fetchThreadComments()
+            }
+        }
+        //fetchThreadComments()
         self.commentTextView.delegate = self
         self.tableView.delegate = self
         self.tableView.dataSource = self
@@ -47,7 +55,6 @@ class ThreadViewController: UIViewController, UITextViewDelegate, UITableViewDel
     func updateUI() {
         guard let user = Auth.auth().currentUser, let thread = thread else {return}
         tableView.separatorStyle = .none
-        
         if user.uid != thread.ownerUid {
             threadLockedButton.isEnabled = false
         }
@@ -60,15 +67,15 @@ class ThreadViewController: UIViewController, UITextViewDelegate, UITableViewDel
         threadLockedStatusDidChange()
     }
     
-    func fetchUser(_ reference: DatabaseReference) {
-        networkRequests.queryUserName(reference: reference, completion: {[weak self] (user, error) in
-            guard let self = self else {return}
+    func fetchUser(_ reference: DatabaseReference, completion: @escaping (_ user: User?) -> Void) {
+        networkRequests.queryUserName(reference: reference, completion: {(user, error) in
             if let user = user {
-                self.user = user
+                completion(user)
+            } else {
+                completion(nil)
             }
         })
     }
-
     
     func fetchThreadComments() {
         guard let thread = thread else {return}
@@ -79,7 +86,8 @@ class ThreadViewController: UIViewController, UITextViewDelegate, UITableViewDel
                 self.createErrorAlert(for: error.localizedDescription)
             }
             if let comment = comment {
-                if !(thread.comments?.contains(comment) ?? false) {
+                print(self.user!.blockedUsers)
+                if !(thread.comments?.contains(comment) ?? false) && self.user!.shouldSeeContent(post: comment) {
                     self.thread?.comments?.append(comment)
                     DispatchQueue.main.async {
                         self.tableView.reloadData()
@@ -140,23 +148,57 @@ class ThreadViewController: UIViewController, UITextViewDelegate, UITableViewDel
 // MARK: CommentTableViewCellDelegate methods
 extension ThreadViewController {
     
-    func didTapReportButton(_ sender: CommentTableViewCell) {
-        guard let indexPath = tableView.indexPath(for: sender), let post =  indexPath.section == 1 ? thread!.comments![indexPath.row] : thread else { return }
-        
+    private func reportUser(of post: Comment) {
         Database.database().reference().child("ReportedUsers").child(post.ownerUid).updateChildValues([post.owner: post.post])
     }
     
-    func didTapBlockPostButton(_ sender: CommentTableViewCell) {
-        guard let indexPath = tableView.indexPath(for: sender), let post = indexPath.section == 1 ? thread!.comments![indexPath.row] : thread else { return }
-        
+    private func blockUser(of post: Comment) {
+        Database.database().reference().child("Users").child(Auth.auth().currentUser!.uid).child("BlockedUsers").updateChildValues([post.ownerUid: true])
+    }
+    
+    private func blockPost(of post: Comment) {
         Database.database().reference().child("Users").child(Auth.auth().currentUser!.uid).child("BlockedPosts").updateChildValues([post.key: true])
     }
     
-    func didTapBlockUserButton(_ sender: CommentTableViewCell) {
-        guard let indexPath = tableView.indexPath(for: sender), let post = indexPath.section == 1 ? thread!.comments![indexPath.row] : thread else { return }
-        
-        Database.database().reference().child("Users").child(Auth.auth().currentUser!.uid).child("BlockedUsers").updateChildValues([post.ownerUid: true])
+    private func createReportAlert(for post: Comment) {
+        let alert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+        let reportAction = UIAlertAction(title: "Report User", style: .default, handler: {[unowned self] (action) in
+            self.createAlertToConfirmReport(message: "You are reporting this user for the content of this post. This information will be reviewed by the moderators within 24 hours. If deemed necessary, disciplinary actions will be taken against this user. You will not be notified of any actions taken. To proceed with this report press Yes.", handler: {
+                [unowned self] in
+                self.reportUser(of: post)
+            })
+        })
+        let blockUserAction = UIAlertAction(title: "Block User", style: .default, handler: {[unowned self] action in
+            self.createAlertToConfirmReport(message: "You are blocking the user of this post. You will no longer see any content from this user. Press Yes to proceed.", handler: {
+                [unowned self] in
+                self.blockUser(of: post)
+            })
+        })
+        let blockPostAction = UIAlertAction(title: "Block Post", style: .default, handler: {[unowned self] action in
+            self.createAlertToConfirmReport(message: "You are blocking this post. You will no longer see this post, but you will still see other posts from this user. Press Yes to proceed.", handler: {
+                [unowned self] in
+                self.blockPost(of: post)
+            })
+        })
+        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
+        alert.addAction(reportAction)
+        alert.addAction(blockUserAction)
+        alert.addAction(blockPostAction)
+        alert.addAction(cancelAction)
+        self.present(alert, animated: true, completion: nil)
     }
+    
+    func didTapReportButton(_ sender: CommentTableViewCell) {
+        guard let indexPath = tableView.indexPath(for: sender), let post =  indexPath.section == 1 ? thread!.comments![indexPath.row] : thread else { return }
+        createReportAlert(for: post)
+    }
+    
+    func didTapMainPostReportButton(_ sender: MainPostTableViewCell) {
+        guard let indexPath = tableView.indexPath(for: sender), let post =  indexPath.section == 1 ? thread!.comments![indexPath.row] : thread else { return }
+        print(post.owner)
+        createReportAlert(for: post)
+    }
+    
 }
 
 // MARK: Table View
@@ -187,6 +229,7 @@ extension ThreadViewController {
             cell.postLabel.text = thread?.post
             cell.ownerLabel.text = "By: \(thread!.owner)"
             cell.dateLabel.text = thread?.date
+            cell.delegate = self
             cell.translatesAutoresizingMaskIntoConstraints = false
             cell.selectionStyle = .none
             return cell

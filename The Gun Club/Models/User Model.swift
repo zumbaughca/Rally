@@ -12,8 +12,15 @@ final class User: Codable {
     var name: String
     var location: String
     let screenName: String
-    let blockedPosts: [String]?
-    let blockedUsers: [String]?
+    let blockedPosts: [String: Bool]?
+    let blockedUsers: [String: Bool]?
+    
+    func shouldSeeContent(post: Comment) -> Bool {
+        let isPostBlocked = self.blockedPosts?[post.key] != nil
+        let isUserBlocked = self.blockedUsers?[post.ownerUid] != nil
+        return !isPostBlocked && !isUserBlocked
+    }
+    
     
     private enum CodingKeys: String, CodingKey {
         case name = "Name"
@@ -28,7 +35,7 @@ final class User: Codable {
         self.name = try valueContainer.decode(String.self, forKey: .name)
         self.location = try valueContainer.decode(String.self, forKey: .location)
         self.screenName = try valueContainer.decode(String.self, forKey: .screenName)
-        self.blockedPosts = try? valueContainer.decode([String].self, forKey: .blockedPosts)
-        self.blockedUsers = try? valueContainer.decode([String].self, forKey: .blockedUsers)
+        self.blockedPosts = try? valueContainer.decode([String: Bool].self, forKey: .blockedPosts)
+        self.blockedUsers = try? valueContainer.decode([String: Bool].self, forKey: .blockedUsers)
     }
 }

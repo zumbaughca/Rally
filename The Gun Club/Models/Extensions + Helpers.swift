@@ -128,6 +128,19 @@ extension UIViewController {
         present(alertController, animated: true, completion: nil)
     }
     
+    func createAlertToConfirmReport(message: String, handler: @escaping () -> Void) {
+        let alertController = UIAlertController(title: nil, message: message, preferredStyle: .alert)
+        let userAction = UIAlertAction(title: "Yes", style: .default, handler: {
+            _ in
+            handler()
+        })
+        let cancelAction = UIAlertAction(title: "No", style: .cancel, handler: nil)
+        
+        alertController.addAction(userAction)
+        alertController.addAction(cancelAction)
+        present(alertController, animated: true, completion: nil)
+    }
+    
     func stringForKey(_ key: String) -> String? {
         return (Bundle.main.infoDictionary?[key] as? String)?.replacingOccurrences(of: "\\", with: "")
     }
