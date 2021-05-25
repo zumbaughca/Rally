@@ -13,12 +13,14 @@ class UserProfileViewController: UIViewController {
 
     
     @IBOutlet weak var nameLabel: UILabel!
+    @IBOutlet weak var nameTitleLabel: UILabel!
     @IBOutlet weak var screenNameLabel: UILabel!
     @IBOutlet weak var scrollView: UIScrollView!
     @IBOutlet weak var contentView: UIView!
     @IBOutlet weak var changePasswordButton: UIButton!
     @IBOutlet weak var logoutButton: UIButton!
     @IBOutlet weak var logoImageView: UIImageView!
+    @IBOutlet weak var screenNameTitleLabel: UILabel!
     
     let networkRequests = Network()
     let reference = Database.database().reference().child("Users")
@@ -42,7 +44,8 @@ class UserProfileViewController: UIViewController {
             fetchUser(userReference)
             updateUI()
         } else {
-            self.returnToLoginScreen()
+            updateUI()
+            updateUIForGuest()
         }
         // AdMob Banner
         banner.rootViewController = self
@@ -73,6 +76,16 @@ class UserProfileViewController: UIViewController {
         logoImageView.backgroundColor = UIColor(named: "Red color")
         logoImageView.widthAnchor.constraint(equalToConstant: screenWidth / 2).isActive = true
         logoImageView.heightAnchor.constraint(equalToConstant: screenWidth / 2).isActive = true
+    }
+    
+    func updateUIForGuest() {
+        navigationController?.navigationBar.topItem?.title = "Welcome, Guest"
+        nameLabel.isHidden = true
+        nameTitleLabel.isHidden = true
+        screenNameTitleLabel.isHidden = true
+        screenNameLabel.text = "You are currently using Rally as a guest. Some functionality, such as contributing on the forum, may be disabled. For full functionality, please create an account."
+        changePasswordButton.isHidden = true
+        logoutButton.setTitle("Create an account", for: .normal)
     }
     
     func fetchUser(_ reference: DatabaseReference) {
@@ -108,11 +121,7 @@ class UserProfileViewController: UIViewController {
     }
     @IBAction func logoutButtonTapped(_ sender: Any) {
         networkRequests.signOutUser(completion: {[weak self] (error) in
-            if error == nil {
-                self?.returnToLoginScreen()
-            } else {
-                self?.presentLogoutErrorAlert()
-            }
+            self?.returnToLoginScreen()
         })
     }
     

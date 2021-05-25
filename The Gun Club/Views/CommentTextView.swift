@@ -42,6 +42,12 @@ class CommentTextView: UITextView {
         self.text = "This thread is locked."
     }
     
+    func lockForGuest() {
+        self.isEditable = false
+        self.text = "You must be signed in to comment."
+        self.textColor = UIColor.lightGray
+    }
+    
     func unlock() {
         self.isEditable = true
         self.text = "New comment..."

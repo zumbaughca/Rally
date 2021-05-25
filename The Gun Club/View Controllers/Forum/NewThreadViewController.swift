@@ -80,6 +80,7 @@ class NewThreadViewController: UIViewController, UITextViewDelegate {
     @IBAction func save(_ sender: Any) {
         do {
             try threadTitleTextField.validatePostTitleIsValid()
+            postTextView.removePlaceholderText(text: "Enter your post here...")
             try postTextView.validateIsNotEmpty()
             try threadTitleTextField.validateIsNotEmpty(with: TextFieldValidationError.postTitleIsEmpty)
             let dateFormatter = DateFormatter()

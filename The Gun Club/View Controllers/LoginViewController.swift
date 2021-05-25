@@ -30,6 +30,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
     @IBOutlet weak var scrollView: UIScrollView!
     
     weak var currentTextField: UITextField?
+    @IBOutlet weak var continueAsGuestButton: UIButton!
     
     let network = Network()
     
@@ -46,6 +47,8 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
         confirmPasswordTextField.isSecureTextEntry = true
         loginRegisterButton.backgroundColor = UIColor(named: "pastelBlue")
         loginRegisterButton.layer.cornerRadius = 15
+        continueAsGuestButton.backgroundColor = UIColor(named: "pastelBlue")
+        continueAsGuestButton.layer.cornerRadius = 15
         contentView.backgroundColor = UIColor(named: "pastelRed")
     }
     
@@ -111,6 +114,10 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
         default:
             fatalError("Selected index out of bounds")
         }
+    }
+    
+    @IBAction func continueAsGuestButtonPressed(_ sender: Any) {
+        navigateToHomeVC()
     }
 }
 

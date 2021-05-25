@@ -34,11 +34,15 @@ class ForumViewController: UIViewController, UITableViewDelegate, UITableViewDat
         splashScreen.isHidden = false
         splashScreenActivityIndicator.style = .large
         splashScreenActivityIndicator.startAnimating()
-        fetchUser(Database.database().reference().child("Users").child(Auth.auth().currentUser!.uid), completion: {[unowned self] user in
-            self.user = user
+        if let user = Auth.auth().currentUser {
+            fetchUser(Database.database().reference().child("Users").child(user.uid), completion: {[unowned self] user in
+                self.user = user
+                self.fetchThreads()
+            })
+        } else {
             self.fetchThreads()
-        })
-        
+            navigationItem.rightBarButtonItem?.isEnabled = false
+        }
     }
     
     func contentHasLoaded() {
@@ -70,7 +74,8 @@ class ForumViewController: UIViewController, UITableViewDelegate, UITableViewDat
             }
             if let thread = thread {
                 thread.comments = []
-                if !self.threads.contains(thread) && self.user!.shouldSeeContent(post: thread) {
+                let userShouldSee = self.user?.shouldSeeContent(post: thread) ?? true
+                if !self.threads.contains(thread) && userShouldSee {
                     if thread.title == "README" {
                         self.first = thread
                     } else {

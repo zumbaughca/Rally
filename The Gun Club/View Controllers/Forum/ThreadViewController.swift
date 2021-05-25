@@ -29,14 +29,18 @@ class ThreadViewController: UIViewController, UITextViewDelegate, UITableViewDel
     override func viewDidLoad() {
         super.viewDidLoad()
         fetchModerators()
-        fetchUser(Database.database().reference().child("Users").child(Auth.auth().currentUser!.uid)) {
-            [unowned self] user in
-            if let user = user {
-                self.user = user
-                self.fetchThreadComments()
+        if let user = Auth.auth().currentUser {
+            fetchUser(Database.database().reference().child("Users").child(user.uid)) {
+                [unowned self] user in
+                if let user = user {
+                    self.user = user
+                    self.fetchThreadComments()
+                }
             }
+        } else {
+            self.fetchThreadComments()
         }
-        //fetchThreadComments()
+        
         self.commentTextView.delegate = self
         self.tableView.delegate = self
         self.tableView.dataSource = self
@@ -49,21 +53,25 @@ class ThreadViewController: UIViewController, UITextViewDelegate, UITableViewDel
         NotificationCenter.default.addObserver(self, selector: #selector(keyboard(notification:)), name: UIResponder.keyboardWillHideNotification, object: nil)
         updateUI()
         fetchLockedStatus()
-        commentTextView.setPlaceholderText()
+        //commentTextView.setPlaceholderText()
     }
     
     func updateUI() {
-        guard let user = Auth.auth().currentUser, let thread = thread else {return}
+        guard let user = Auth.auth().currentUser, let thread = thread else {
+            configureLockedStatusForGuest()
+            return
+        }
         tableView.separatorStyle = .none
         if user.uid != thread.ownerUid {
             threadLockedButton.isEnabled = false
         }
+        /*
         if thread.locked == false {
             threadLockedButton.image = UIImage(systemName: "lock.open.fill")
         } else {
             threadLockedButton.image = UIImage(systemName: "lock.fill")
         }
-        
+        */
         threadLockedStatusDidChange()
     }
     
@@ -86,8 +94,8 @@ class ThreadViewController: UIViewController, UITextViewDelegate, UITableViewDel
                 self.createErrorAlert(for: error.localizedDescription)
             }
             if let comment = comment {
-                print(self.user!.blockedUsers)
-                if !(thread.comments?.contains(comment) ?? false) && self.user!.shouldSeeContent(post: comment) {
+                let userShouldSee = self.user?.shouldSeeContent(post: comment) ?? true
+                if !(thread.comments?.contains(comment) ?? false) && userShouldSee {
                     self.thread?.comments?.append(comment)
                     DispatchQueue.main.async {
                         self.tableView.reloadData()
@@ -230,11 +238,13 @@ extension ThreadViewController {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let user = Auth.auth().currentUser
         if indexPath.section == 0 {
             let cell = tableView.dequeueReusableCell(withIdentifier: "mainPost", for: indexPath) as! MainPostTableViewCell
+            cell.reportButton.isEnabled = user != nil ? true : false
             cell.titleLabel.text = thread?.title
             cell.postLabel.text = thread?.post
-            cell.ownerLabel.text = "By: \(thread!.owner)"
+            cell.ownerLabel.text = "By: \(thread?.owner ?? "")"
             cell.dateLabel.text = thread?.date
             cell.delegate = self
             cell.translatesAutoresizingMaskIntoConstraints = false
@@ -243,15 +253,15 @@ extension ThreadViewController {
             
         } else {
             let cell = tableView.dequeueReusableCell(withIdentifier: "comment", for: indexPath) as! CommentTableViewCell
+            cell.reportButton.isEnabled = user != nil ? true : false
             let comment = thread?.comments?[indexPath.row]
-            cell.postLabel.text = comment?.post
+            cell.postLabel.text =  comment?.post
             cell.ownerLabel.text = "By: \(comment!.owner)"
             cell.dateLabel.text = comment?.date
             cell.delegate = self
             cell.selectionStyle = .none
             return cell
         }
-        
     }
 }
 
@@ -279,7 +289,7 @@ extension ThreadViewController {
     }
     
     func fetchLockedStatus() {
-        guard let thread = thread else {return}
+        guard let thread = thread, let _ = Auth.auth().currentUser else {return}
         networkRequests.observeThreadLockedStatus(reference: reference.child(thread.category).child(thread.key).child("Locked"), completion: {[weak self](bool, error) in
             guard let self = self else {return}
             if let bool = bool {
@@ -289,13 +299,23 @@ extension ThreadViewController {
         })
     }
     
+    func configureLockedStatusForGuest() {
+        threadLockedButton.image = UIImage(systemName: "lock.fill")
+        threadLockedButton.isEnabled = false
+        commentTextView.lockForGuest()
+        postCommentButton.lock()
+    }
+    
     func threadLockedStatusDidChange() {
         if thread!.locked == true {
+            threadLockedButton.image = UIImage(systemName: "lock.fill")
             commentTextView.lock()
             postCommentButton.lock()
         } else if thread!.locked == false {
+            threadLockedButton.image = UIImage(systemName: "lock.open.fill")
             commentTextView.unlock()
             postCommentButton.unlock()
+            commentTextView.setPlaceholderText()
         }
     }
 }

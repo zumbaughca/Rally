@@ -2,8 +2,6 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>UIUserInterfaceStyle</key>
-	<string>Light</string>
 	<key>AdMob ID</key>
 	<string>$(AD_UNIT_ID)</string>
 	<key>BGTaskSchedulerPermittedIdentifiers</key>
@@ -44,7 +42,7 @@
 		<dict/>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>1</string>
+	<string>$(CURRENT_PROJECT_VERSION)</string>
 	<key>Categories</key>
 	<array>
 		<string>Pistol</string>
@@ -61,10 +59,22 @@
 		<string>Boomsticks</string>
 		<string>Some are good and some are bad, but they all affect us</string>
 		<string>Your favorite (or least favorite) places to go shooting</string>
-		<string>If it doesn&apos;t belong above, you can put it here</string>
+		<string>If it doesn't belong above, you can put it here</string>
 	</array>
 	<key>GADApplicationIdentifier</key>
 	<string>ca-app-pub-6690584690011931~7249157567</string>
+	<key>LSApplicationQueriesSchemes</key>
+	<array>
+		<string>tel</string>
+	</array>
+	<key>LSRequiresIPhoneOS</key>
+	<true/>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Your current location will be used to find rallys near you.</string>
+	<key>Propublica API Key</key>
+	<string>$(API_KEY)</string>
+	<key>Red Color</key>
+	<string>$(RED_COLOR)</string>
 	<key>SKAdNetworkItems</key>
 	<array>
 		<dict>
@@ -200,18 +210,6 @@
 			<string>3qcr597p9d.skadnetwork</string>
 		</dict>
 	</array>
-	<key>LSApplicationQueriesSchemes</key>
-	<array>
-		<string>tel</string>
-	</array>
-	<key>LSRequiresIPhoneOS</key>
-	<true/>
-	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>Your current location will be used to find rallys near you.</string>
-	<key>Propublica API Key</key>
-	<string>$(API_KEY)</string>
-	<key>Red Color</key>
-	<string>$(RED_COLOR)</string>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>
@@ -232,11 +230,7 @@
 		</dict>
 	</dict>
 	<key>UIBackgroundModes</key>
-	<array>
-		<string>fetch</string>
-		<string>processing</string>
-		<string>remote-notification</string>
-	</array>
+	<array/>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>
@@ -258,5 +252,7 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+	<key>UIUserInterfaceStyle</key>
+	<string>Light</string>
 </dict>
 </plist>
