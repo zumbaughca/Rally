@@ -89,6 +89,8 @@ class UserProfileViewController: UIViewController {
     }
     
     func fetchUser(_ reference: DatabaseReference) {
+        nameLabel.text = "Loading..."
+        screenNameLabel.text = "Loading..."
         networkRequests.queryUserName(reference: reference, completion: {[weak self] (user, error) in
             guard let self = self else {return}
             if let user = user {
