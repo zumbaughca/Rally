@@ -135,6 +135,7 @@ class ThreadViewController: UIViewController, UITextViewDelegate, UITableViewDel
             let commentRef = commentReference.child(thread.key).childByAutoId()
             commentRef.updateChildValues(["Post": text, "Owner": user.displayName!, "OwnerUid": user.uid, "Date": date, "Key": commentRef.key!])
             threadReference.updateChildValues(["LastActivity": date])
+            Database.database().reference().child("Users").child(user.uid).child("Comments").child(thread.category).child(thread.key).updateChildValues([commentRef.key!: date])
         }
     }
     

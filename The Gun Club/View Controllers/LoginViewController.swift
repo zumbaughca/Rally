@@ -8,6 +8,7 @@
 
 import UIKit
 import Firebase
+import SafariServices
 
 class LoginViewController: UIViewController, UITextFieldDelegate {
 
@@ -110,7 +111,8 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
         case 0:
             signIn()
         case 1:
-            validateAndRegister()
+            //validateAndRegister()
+        presentEULA()
         default:
             fatalError("Selected index out of bounds")
         }
@@ -210,6 +212,23 @@ extension LoginViewController {
         } catch {
             self.createErrorAlert(for: error.localizedDescription)
         }
+    }
+    
+    func presentEULA() {
+        let alertController = UIAlertController(title: "End User License Agreement", message: "By clicking accept you agree to the terms of our EULA", preferredStyle: .alert)
+        let acceptAction = UIAlertAction(title: "Accept", style: .default, handler: {[unowned self] action in
+            self.validateAndRegister()
+        })
+        let declineAction = UIAlertAction(title: "Decline", style: .cancel, handler: nil)
+        let viewAction = UIAlertAction(title: "View", style: .default, handler: {[unowned self] action in
+            let url = URL(string: self.stringForKey("EULA URL")!)!
+            let vc = SFSafariViewController(url: url)
+            present(vc, animated: true, completion: nil)
+        })
+        alertController.addAction(acceptAction)
+        alertController.addAction(declineAction)
+        alertController.addAction(viewAction)
+        present(alertController, animated: true, completion: nil)
     }
     
     /*

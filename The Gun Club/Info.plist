@@ -61,6 +61,8 @@
 		<string>Your favorite (or least favorite) places to go shooting</string>
 		<string>If it doesn't belong above, you can put it here</string>
 	</array>
+	<key>EULA URL</key>
+	<string>$(EULA_URL)</string>
 	<key>GADApplicationIdentifier</key>
 	<string>ca-app-pub-6690584690011931~7249157567</string>
 	<key>LSApplicationQueriesSchemes</key>
