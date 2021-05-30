@@ -25,6 +25,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
     @IBOutlet weak var confirmPasswordTextField: UITextField!
     @IBOutlet weak var registerAgeSwitch: UISwitch!
     @IBOutlet weak var zipCodeTextField: UITextField!
+    @IBOutlet weak var eulaButton: UIButton!
     
     @IBOutlet weak var loginRegisterButton: UIButton!
     @IBOutlet weak var contentView: UIView!
@@ -46,10 +47,9 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
         NotificationCenter.default.addObserver(self, selector: #selector(keyboard(notification:)), name: UIResponder.keyboardWillHideNotification, object: nil)
         passwordTextField.isSecureTextEntry = true
         confirmPasswordTextField.isSecureTextEntry = true
-        loginRegisterButton.backgroundColor = UIColor(named: "pastelBlue")
-        loginRegisterButton.layer.cornerRadius = 15
-        continueAsGuestButton.backgroundColor = UIColor(named: "pastelBlue")
-        continueAsGuestButton.layer.cornerRadius = 15
+        styleButton(loginRegisterButton)
+        styleButton(continueAsGuestButton)
+        styleButton(eulaButton)
         contentView.backgroundColor = UIColor(named: "pastelRed")
     }
     
@@ -86,7 +86,10 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
         self.view.window!.rootViewController = tabBarController
     }
     
-    
+    private func styleButton(_ button: UIButton) {
+        button.backgroundColor = UIColor(named: "pastelBlue")
+        button.layer.cornerRadius = 15
+    }
     
 
     
@@ -109,6 +112,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
         let selectedIndex = loginRegisterSegmentedControl.selectedSegmentIndex
         switch selectedIndex {
         case 0:
+            
             signIn()
         case 1:
             //validateAndRegister()
@@ -121,6 +125,15 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
     @IBAction func continueAsGuestButtonPressed(_ sender: Any) {
         navigateToHomeVC()
     }
+    
+    // Present the apps EULA in Safari View Controller
+    @IBAction func viewEULAButtonTapped(_ sender: Any) {
+        guard let url = URL(string: self.stringForKey("EULA URL")!) else { return }
+        let vc = SFSafariViewController(url: url)
+        present(vc, animated: true, completion: nil)
+    }
+    
+    
 }
 
 //MARK: Text Field and Keyboard methods
