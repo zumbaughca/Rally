@@ -9,19 +9,17 @@
 import UIKit
 import Firebase
 
-class ForumViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+class ForumViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, Observer {
     
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var splashScreen: UIView!
     @IBOutlet weak var splashScreenActivityIndicator: UIActivityIndicatorView!
     @IBOutlet var contentView: UIView!
     
-    var threads: [ForumThread] = []
-    var first: ForumThread?
     let reference = Database.database().reference().child("Threads")
-    var isStartup = true
-    var selectedCategory: String?
+    var selectedCategory: String
     var user: User?
+    var threadModelController: ThreadModelController
     let networkRequests = Network()
     
     override func viewDidLoad() {
@@ -34,15 +32,34 @@ class ForumViewController: UIViewController, UITableViewDelegate, UITableViewDat
         splashScreen.isHidden = false
         splashScreenActivityIndicator.style = .large
         splashScreenActivityIndicator.startAnimating()
+        threadModelController.observer = self
+
+        
         if let user = Auth.auth().currentUser {
             fetchUser(Database.database().reference().child("Users").child(user.uid), completion: {[unowned self] user in
                 self.user = user
-                self.fetchThreads()
+                print(user?.blockedUsers)
+                threadModelController.fetchThreads(for: self.user, at: reference, in: selectedCategory)
             })
         } else {
-            self.fetchThreads()
             navigationItem.rightBarButtonItem?.isEnabled = false
         }
+    }
+    
+    init?(coder: NSCoder, category: String, threadModelController: ThreadModelController, user: User?) {
+        self.selectedCategory = category
+        self.threadModelController = threadModelController
+        self.user = user
+        super.init(coder: coder)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) is not supported")
+    }
+    
+    func dataDidUpdate() {
+        self.contentHasLoaded()
+        tableView.reloadData()
     }
     
     func contentHasLoaded() {
@@ -60,39 +77,6 @@ class ForumViewController: UIViewController, UITableViewDelegate, UITableViewDat
             }
         })
     }
-    
-    func fetchThreads() {
-        guard let selectedCategory = selectedCategory else {return}
-        let firebaseRequests = Network()
-        firebaseRequests.observeChildAdded(reference: reference.child(selectedCategory), completion: {[weak self] (thread: ForumThread?, error) in
-            guard let self = self else {return}
-            if error != nil {
-                //Handle error
-                DispatchQueue.main.async {
-                    self.contentHasLoaded()
-                }
-            }
-            if let thread = thread {
-                thread.comments = []
-                let userShouldSee = self.user?.shouldSeeContent(post: thread) ?? true
-                if !self.threads.contains(thread) && userShouldSee {
-                    if thread.title == "README" {
-                        self.first = thread
-                    } else {
-                        if let insertIndex = self.threads.firstIndex(where: {$0 < thread}) {
-                            self.threads.insert(thread, at: insertIndex)
-                        } else {
-                            self.threads.append(thread)
-                        }
-                    }
-                }
-            }
-            DispatchQueue.main.async {
-                self.contentHasLoaded()
-                self.tableView.reloadData()
-            }
-        })
-    }
  
     func numberOfSections(in tableView: UITableView) -> Int {
         2
@@ -103,46 +87,59 @@ class ForumViewController: UIViewController, UITableViewDelegate, UITableViewDat
         case 0:
             return 1
         case 1:
-            return threads.count
+            return threadModelController.threadCount
         default:
             return 0
         }
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        switch indexPath.section {
+        case 0:
+            performSegue(withIdentifier: "showReadme", sender: nil)
+        case 1:
+            performSegue(withIdentifier: "threadSegue", sender: nil)
+        default:
+            break
+        }
         tableView.deselectRow(at: indexPath, animated: true)
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         if indexPath.section == 0 {
             let cell = self.tableView.dequeueReusableCell(withIdentifier: "readme")!
-            cell.textLabel?.text = first?.title
+            cell.textLabel?.text = threadModelController.first?.title
             cell.detailTextLabel?.text = "New users please read this before posting"
             return cell
         } else {
-            let thread = threads[indexPath.row]
+            let thread = threadModelController.getThread(at: indexPath.row)
             let cell = self.tableView.dequeueReusableCell(withIdentifier: "forumPost")!
-            cell.textLabel?.text = thread.title
-            cell.detailTextLabel?.text = "Last post: \(thread.lastActivityTime)"
+            cell.textLabel?.text = thread?.title
+            cell.detailTextLabel?.text = "Last post: \(thread?.lastActivityTime ?? "")"
             return cell
         }
     }
     
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if segue.identifier == "threadSegue" {
-            let indexPath = tableView.indexPathForSelectedRow!
-            let thread = threads[indexPath.row]
-            let destinationViewController = segue.destination as? ThreadViewController
-            destinationViewController?.thread = thread
-        }
-        if segue.identifier == "showReadme" {
-            let destinationViewController = segue.destination as? ThreadViewController
-            destinationViewController?.thread = first
-        }
-        if segue.identifier == "newThreadSegue" {
-            let destinationViewController = segue.destination as? NewThreadViewController
-            destinationViewController?.category = selectedCategory
-        }
+    @IBAction func newThreadButtonTapped(_ sender: Any) {
+        performSegue(withIdentifier: "newThreadSegue", sender: nil)
     }
+    
+    @IBSegueAction
+    func show(coder: NSCoder, sender: Any?, segueIdentifier: String) -> UIViewController? {
+        if segueIdentifier == "threadSegue" {
+            let indexPath = tableView.indexPathForSelectedRow!
+            let thread = threadModelController.getThread(at: indexPath.row)!
+            return ThreadViewController(coder: coder, threadModelController: ThreadModelController(networkModule: Network(), observer: nil, currentUser: nil), thread: thread)
+        }
+        if segueIdentifier == "showReadme" {
+            let thread = threadModelController.first!
+            return ThreadViewController(coder: coder, threadModelController: ThreadModelController(networkModule: Network(), observer: nil, currentUser: nil), thread: thread)
+        }
+        if segueIdentifier == "newThreadSegue" {
+            return NewThreadViewController(coder: coder, threadModelController: ThreadModelController(networkModule: Network(), observer: nil, currentUser: nil), category: self.selectedCategory)
+        }
+        return nil
+    }
+
     
 }

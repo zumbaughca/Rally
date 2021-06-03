@@ -879,9 +879,6 @@
                                             <rect key="frame" x="0.0" y="0.0" width="348" height="43.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                         </tableViewCellContentView>
-                                        <connections>
-                                            <segue destination="yFs-ld-g1i" kind="show" identifier="categorySegue" id="e13-M5-cOR"/>
-                                        </connections>
                                     </tableViewCell>
                                 </prototypes>
                             </tableView>
@@ -899,6 +896,7 @@
                     <connections>
                         <outlet property="contentView" destination="z0B-Bk-psc" id="Jc2-JQ-FXJ"/>
                         <outlet property="tableView" destination="tPB-Lo-fq5" id="oKq-xN-orQ"/>
+                        <segue destination="yFs-ld-g1i" kind="show" identifier="categorySegue" destinationCreationSelector="showWithCoder:sender:segueIdentifier:" id="x0c-VE-d0Q"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="yac-aQ-lyw" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
@@ -908,7 +906,7 @@
         <!--Forum View Controller-->
         <scene sceneID="3bV-kd-J3I">
             <objects>
-                <viewController id="yFs-ld-g1i" customClass="ForumViewController" customModule="The_Gun_Club" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="forumViewController" id="yFs-ld-g1i" customClass="ForumViewController" customModule="The_Gun_Club" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="MLN-oa-oD3">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -965,9 +963,6 @@
                                                 </label>
                                             </subviews>
                                         </tableViewCellContentView>
-                                        <connections>
-                                            <segue destination="1Oi-z5-vy6" kind="show" identifier="showReadme" id="Jey-RI-mm7"/>
-                                        </connections>
                                     </tableViewCell>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" reuseIdentifier="forumPost" textLabel="s6o-bM-m1O" detailTextLabel="3SS-kE-g7V" style="IBUITableViewCellStyleSubtitle" id="G0B-4C-txk">
                                         <rect key="frame" x="0.0" y="83.5" width="375" height="55.5"/>
@@ -992,9 +987,6 @@
                                                 </label>
                                             </subviews>
                                         </tableViewCellContentView>
-                                        <connections>
-                                            <segue destination="1Oi-z5-vy6" kind="show" identifier="threadSegue" id="BWf-Nz-6Hx"/>
-                                        </connections>
                                     </tableViewCell>
                                 </prototypes>
                             </tableView>
@@ -1015,7 +1007,7 @@
                     <navigationItem key="navigationItem" id="p9B-eq-ZzB">
                         <barButtonItem key="rightBarButtonItem" image="plus" catalog="system" id="LL7-AN-ueg">
                             <connections>
-                                <segue destination="sDE-ov-Lmg" kind="presentation" identifier="newThreadSegue" id="cHc-s5-TSU"/>
+                                <action selector="newThreadButtonTapped:" destination="yFs-ld-g1i" id="T6O-X9-cYL"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
@@ -1024,6 +1016,9 @@
                         <outlet property="splashScreen" destination="SP9-G2-8AE" id="Rwy-Kg-K6P"/>
                         <outlet property="splashScreenActivityIndicator" destination="TKf-4u-0fX" id="UbX-DJ-pTR"/>
                         <outlet property="tableView" destination="vNs-OQ-4J8" id="38b-0X-ngW"/>
+                        <segue destination="1Oi-z5-vy6" kind="show" identifier="showReadme" destinationCreationSelector="showWithCoder:sender:segueIdentifier:" id="ZmP-bq-JsG"/>
+                        <segue destination="1Oi-z5-vy6" kind="show" identifier="threadSegue" destinationCreationSelector="showWithCoder:sender:segueIdentifier:" id="9ox-X0-wKk"/>
+                        <segue destination="sDE-ov-Lmg" kind="presentation" identifier="newThreadSegue" destinationCreationSelector="showWithCoder:sender:segueIdentifier:" id="U7v-fB-myi"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="sE6-UM-xwb" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
@@ -1238,7 +1233,7 @@
         <!--Proposed Bills-->
         <scene sceneID="mmf-8e-hMe">
             <objects>
-                <tabBarController storyboardIdentifier="TabBarController" title="Proposed Bills" automaticallyAdjustsScrollViewInsets="NO" id="Y4D-98-VEP" sceneMemberID="viewController">
+                <tabBarController storyboardIdentifier="TabBarController" title="Proposed Bills" automaticallyAdjustsScrollViewInsets="NO" id="Y4D-98-VEP" customClass="TabBarViewController" customModule="The_Gun_Club" customModuleProvider="target" sceneMemberID="viewController">
                     <toolbarItems/>
                     <tabBar key="tabBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="fcq-in-sqo">
                         <rect key="frame" x="0.0" y="0.0" width="1000" height="1000"/>
@@ -1446,7 +1441,7 @@
         </scene>
     </scenes>
     <inferredMetricsTieBreakers>
-        <segue reference="Jey-RI-mm7"/>
+        <segue reference="ZmP-bq-JsG"/>
     </inferredMetricsTieBreakers>
     <resources>
         <image name="globe" catalog="system" width="128" height="121"/>

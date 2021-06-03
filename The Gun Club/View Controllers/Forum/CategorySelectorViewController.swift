@@ -51,13 +51,11 @@ class CategorySelectorViewController: UIViewController, UITableViewDelegate, UIT
         tableView.deselectRow(at: indexPath, animated: true)
     }
     
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if segue.identifier == "categorySegue" {
-            let indexPath = tableView.indexPathForSelectedRow!
-            let category = categories[indexPath.row]
-            let destinationViewController = segue.destination as! ForumViewController
-            destinationViewController.selectedCategory = category
-        }
+    @IBSegueAction
+    func show(coder: NSCoder, sender: Any?, segueIdentifier: String) -> UIViewController? {
+        let indexPath = tableView.indexPathForSelectedRow!
+        let category = categories[indexPath.row]
+        let appDelegate = UIApplication.shared.delegate as? AppDelegate
+        return ForumViewController(coder: coder, category: category, threadModelController: ThreadModelController(networkModule: Network(), observer: nil, currentUser: appDelegate?.currentUser ?? nil), user: appDelegate?.currentUser)
     }
-
 }

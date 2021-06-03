@@ -19,6 +19,7 @@ class NewThreadViewController: UIViewController, UITextViewDelegate {
     
     let reference = Database.database().reference().child("Threads")
     var category: String?
+    let threadModelController: ThreadModelController
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -28,6 +29,16 @@ class NewThreadViewController: UIViewController, UITextViewDelegate {
         NotificationCenter.default.addObserver(self, selector: #selector(keyboard(notification:)), name: UIResponder.keyboardWillShowNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboard(notification:)), name: UIResponder.keyboardWillHideNotification, object: nil)
         updateUI()
+    }
+    
+    init?(coder: NSCoder, threadModelController: ThreadModelController, category: String) {
+        self.threadModelController = threadModelController
+        self.category = category
+        super.init(coder: coder)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) is not available")
     }
     
     func updateUI() {
@@ -83,20 +94,7 @@ class NewThreadViewController: UIViewController, UITextViewDelegate {
             postTextView.removePlaceholderText(text: "Enter your post here...")
             try postTextView.validateIsNotEmpty()
             try threadTitleTextField.validateIsNotEmpty(with: TextFieldValidationError.postTitleIsEmpty)
-            let dateFormatter = DateFormatter()
-            dateFormatter.dateStyle = .medium
-            dateFormatter.timeStyle = .medium
-            dateFormatter.locale = Locale(identifier: "en_US")
-            let date = dateFormatter.string(from: Date())
-            if let title = threadTitleTextField.text,
-                let post = postTextView.text,
-                let category = category{
-                if let user = Auth.auth().currentUser {
-                    let newPostReference = reference.child(category).childByAutoId()
-                    newPostReference.updateChildValues(["Title": title, "Date": date, "Owner": user.displayName!, "OwnerUid": user.uid, "Category": category, "Post": post, "Key": newPostReference.key!, "LastActivity": date, "Locked": false])
-                    Database.database().reference().child("Users").child(user.uid).child("Posts").child(category).updateChildValues([newPostReference.key!: dateFormatter.string(from: Date())])
-                }
-            }
+            threadModelController.createNewPost(title: threadTitleTextField.text!, post: postTextView.text!, category: category!)
             dismiss(animated: true, completion: nil)
         } catch {
             self.createErrorAlert(for: error.localizedDescription)

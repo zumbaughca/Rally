@@ -8,7 +8,7 @@
 
 import UIKit
 
-class BillTableViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
+class BillTableViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, Observer {
 
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var splashScreen: UIView!
@@ -17,6 +17,7 @@ class BillTableViewController: UIViewController, UITableViewDataSource, UITableV
     
     var bills: [Bill] = []
     let restRequests = Network()
+    var billModelController: BillModelController?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -25,75 +26,35 @@ class BillTableViewController: UIViewController, UITableViewDataSource, UITableV
         self.tableView.isHidden = true
         self.tableView.register(BillTableViewCell.self, forCellReuseIdentifier: "customBillCell")
         self.splashScreen.isHidden = false
+        self.billModelController = BillModelController(networkModule: Network(), observer: self)
         navigationItem.leftBarButtonItem = UIBarButtonItem(customView: NavigationBarLogoView())
         loadingActivityIndicator.style = .large
         loadingActivityIndicator.startAnimating()
-        fetchBills(completion: {
-            [weak self] in
-            guard let self = self else { return }
-            DispatchQueue.main.async {
-                self.tableView.isHidden = false
-                self.loadingActivityIndicator.stopAnimating()
-                self.splashScreen.isHidden = true
-                self.tableView.reloadData()
-            }
-        })
         setStyle()
     }
-    
+
     func setStyle() {
         tableView.separatorStyle = .none
     }
+    
+    func dataDidUpdate() {
+        tableView.isHidden = false
+        loadingActivityIndicator.stopAnimating()
+        splashScreen.isHidden = true
+        tableView.reloadData()
+    }
 
-    func arrayForKey(_ key: String) -> [String]? {
-        return (Bundle.main.infoDictionary?[key] as? [String])
-    }
-    
-    /*
-     * Bills are added in reverse order (Bill with latest action at top of table.
-     * Once all bills are added to the array, we call completion.
-     * Then need to update the UI on the main thread after method returns.
-     */
-    func fetchBills(completion: @escaping () -> Void) {
-        guard let baseURL = self.stringForKey("Base Bill API URL"), let queries = arrayForKey("Bill API Queries"), let url = URL(string: baseURL),
-              let apiKey = self.stringForKey("Propublica API Key") else {return}
-        queries.forEach({
-            var request = URLRequest(url: url.withQueries(["query": $0])!)
-            request.addValue(apiKey, forHTTPHeaderField: "X-API-Key")
-            restRequests.restApiCall(request, completion: {[weak self] (bills: BillTopLevel?, error: Error?) in
-                guard let self = self else { return }
-                if let bills = bills?.results[0].bills {
-                    bills.forEach({
-                        if !self.bills.contains($0) && self.validateBillTitle($0.title) {
-                            self.bills.insertInReverseOrder($0)
-                        }
-                    })
-                    completion()
-                }
-            })
-        })
-        
-    }
-    
-    func validateBillTitle(_ title: String) -> Bool {
-        if title.lowercased().contains("gun") || title.lowercased().contains("firearm") {
-            return true
-        } else {
-            return false
-        }
-    }
-    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return bills.count
+        return billModelController?.count ?? 0
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "customBillCell", for: indexPath) as! BillTableViewCell
-        let bill = bills[indexPath.row]
+        let bill = billModelController?.getBill(at: indexPath.row)
         cell.selectionStyle = .none
-        cell.billTitle.text = bill.title
-        cell.introducedLabel.text = "Introduced: \(bill.dateIntroduced)"
-        cell.lastActionDateLabel.text = "Last action: \(bill.lastActionDate)"
+        cell.billTitle.text = bill?.title
+        cell.introducedLabel.text = "Introduced: \(bill?.dateIntroduced ?? "")"
+        cell.lastActionDateLabel.text = "Last action: \(bill?.lastActionDate ?? "")"
         
         return cell
     }

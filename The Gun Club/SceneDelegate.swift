@@ -18,6 +18,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         let viewController = storyboard.instantiateViewController(identifier: identifier)
         self.window?.rootViewController = viewController
     }
+    
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         self.window = self.window ?? UIWindow()
         if Auth.auth().currentUser == nil {
