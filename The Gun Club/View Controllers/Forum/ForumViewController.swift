@@ -21,6 +21,7 @@ class ForumViewController: UIViewController, UITableViewDelegate, UITableViewDat
     var user: User?
     var threadModelController: ThreadModelController
     let networkRequests = Network()
+    var stateController: StateController
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -33,23 +34,36 @@ class ForumViewController: UIViewController, UITableViewDelegate, UITableViewDat
         splashScreenActivityIndicator.style = .large
         splashScreenActivityIndicator.startAnimating()
         threadModelController.observer = self
-
+        stateController.observer = self
+        user = stateController.getCurrentUser()
         
+        /*
         if let user = Auth.auth().currentUser {
             fetchUser(Database.database().reference().child("Users").child(user.uid), completion: {[unowned self] user in
                 self.user = user
-                print(user?.blockedUsers)
                 threadModelController.fetchThreads(for: self.user, at: reference, in: selectedCategory)
             })
         } else {
             navigationItem.rightBarButtonItem?.isEnabled = false
+            threadModelController.fetchThreads(for: nil, at: reference, in: selectedCategory)
+        }
+ */
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        if let user = user {
+            threadModelController.fetchThreads(for: user, at: reference, in: selectedCategory)
+        } else {
+            navigationItem.rightBarButtonItem?.isEnabled = false
+            threadModelController.fetchThreads(for: nil, at: reference, in: selectedCategory)
         }
     }
     
-    init?(coder: NSCoder, category: String, threadModelController: ThreadModelController, user: User?) {
+    init?(coder: NSCoder, category: String, threadModelController: ThreadModelController, user: User?, stateController: StateController) {
         self.selectedCategory = category
         self.threadModelController = threadModelController
         self.user = user
+        self.stateController = stateController
         super.init(coder: coder)
     }
     
@@ -129,14 +143,14 @@ class ForumViewController: UIViewController, UITableViewDelegate, UITableViewDat
         if segueIdentifier == "threadSegue" {
             let indexPath = tableView.indexPathForSelectedRow!
             let thread = threadModelController.getThread(at: indexPath.row)!
-            return ThreadViewController(coder: coder, threadModelController: ThreadModelController(networkModule: Network(), observer: nil, currentUser: nil), thread: thread)
+            return ThreadViewController(coder: coder, threadModelController: threadModelController, thread: thread, stateController: stateController)
         }
         if segueIdentifier == "showReadme" {
             let thread = threadModelController.first!
-            return ThreadViewController(coder: coder, threadModelController: ThreadModelController(networkModule: Network(), observer: nil, currentUser: nil), thread: thread)
+            return ThreadViewController(coder: coder, threadModelController: threadModelController, thread: thread, stateController: stateController)
         }
         if segueIdentifier == "newThreadSegue" {
-            return NewThreadViewController(coder: coder, threadModelController: ThreadModelController(networkModule: Network(), observer: nil, currentUser: nil), category: self.selectedCategory)
+            return NewThreadViewController(coder: coder, threadModelController: threadModelController, category: self.selectedCategory, stateController: stateController)
         }
         return nil
     }

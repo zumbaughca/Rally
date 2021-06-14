@@ -12,13 +12,22 @@ final class User: Codable {
     var name: String
     var location: String
     let screenName: String
-    let blockedPosts: [String: Bool]?
-    let blockedUsers: [String: Bool]?
+    var blockedPosts: [String: Bool]?
+    var blockedUsers: [String: Bool]?
     
     func shouldSeeContent(post: Comment) -> Bool {
         let isPostBlocked = self.blockedPosts?[post.key] != nil
         let isUserBlocked = self.blockedUsers?[post.ownerUid] != nil
+
         return !isPostBlocked && !isUserBlocked
+    }
+    
+    private func setEmptyDict(_ dict: [String: Bool]?) -> [String: Bool] {
+        if dict == nil {
+            return [:]
+        } else {
+            return dict!
+        }
     }
     
     
@@ -37,5 +46,8 @@ final class User: Codable {
         self.screenName = try valueContainer.decode(String.self, forKey: .screenName)
         self.blockedPosts = try? valueContainer.decode([String: Bool].self, forKey: .blockedPosts)
         self.blockedUsers = try? valueContainer.decode([String: Bool].self, forKey: .blockedUsers)
+        
+        self.blockedPosts = setEmptyDict(blockedPosts)
+        self.blockedUsers = setEmptyDict(blockedUsers)
     }
 }

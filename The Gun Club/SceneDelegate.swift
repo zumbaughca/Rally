@@ -12,23 +12,33 @@ import Firebase
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     var window: UIWindow?
+    let stateController = StateController(networkModule: Network())
 
-    private func instantiateViewController(identifier: String) {
+    private func instantiateViewController(identifier: String) -> UIViewController {
         let storyboard = UIStoryboard(name: "Main", bundle: Bundle.main)
         let viewController = storyboard.instantiateViewController(identifier: identifier)
-        self.window?.rootViewController = viewController
+        stateController.attachListner()
+        return viewController
+        //self.window?.rootViewController = viewController
     }
     
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         self.window = self.window ?? UIWindow()
+        
         if Auth.auth().currentUser == nil {
-            instantiateViewController(identifier: "LoginController")
+            let vc = instantiateViewController(identifier: "LoginController") as! LoginViewController
+            vc.stateController = stateController
+            self.window?.rootViewController = vc
         } else {
             Auth.auth().currentUser?.reload(completion: {[weak self] (error) in
                 if error == nil {
-                    self?.instantiateViewController(identifier: "TabBarController")
+                    let vc = self?.instantiateViewController(identifier: "TabBarController") as! TabBarViewController
+                    vc.stateController = self?.stateController
+                    self?.window?.rootViewController = vc
                 } else {
-                    self?.instantiateViewController(identifier: "LoginController")
+                    let vc = self?.instantiateViewController(identifier: "LoginController") as! LoginViewController
+                    vc.stateController = self?.stateController
+                    self?.window?.rootViewController = vc
                 }
             })
         }

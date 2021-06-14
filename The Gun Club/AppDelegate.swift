@@ -12,24 +12,18 @@ import Firebase
 import GoogleMobileAds
 
 @UIApplicationMain
-class AppDelegate: UIResponder, UIApplicationDelegate, Observer {
+class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var restrictRotation: UIInterfaceOrientationMask = .portrait
     var currentUser: User?
-    var stateController = StateController(networkModule: Network())
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         FirebaseApp.configure()
         GADMobileAds.sharedInstance().start(completionHandler: nil)
-        if let user = Auth.auth().currentUser {
-            stateController.fetchUser(Database.database().reference().child("Users").child(user.uid))
-        }
+        
         return true
     }
-    
-    func dataDidUpdate() {
-        currentUser = stateController.getCurrentUser()
-    }
+
 
     func application(_ application: UIApplication, supportedInterfaceOrientationsFor window: UIWindow?) -> UIInterfaceOrientationMask {
         return self.restrictRotation

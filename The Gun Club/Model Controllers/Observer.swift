@@ -14,4 +14,11 @@ protocol Observer: AnyObject {
 
 protocol Observable {
     func notifyObserver()
+    var observer: Observer? { get set }
+}
+
+protocol StateControllerDelegate {
+    func didReportUser()
+    func didBlockPost()
+    func didBlockUser()
 }

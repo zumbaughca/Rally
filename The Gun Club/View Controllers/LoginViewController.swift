@@ -15,9 +15,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
     @IBOutlet var registerLabels: [UILabel]!
     @IBOutlet var registerTextFields: [UITextField]!
     @IBOutlet weak var registerStackView: UIStackView!
-    
     @IBOutlet weak var loginRegisterSegmentedControl: UISegmentedControl!
-    
     @IBOutlet weak var nameTextField: UITextField!
     @IBOutlet weak var screenNameTextField: UITextField!
     @IBOutlet weak var emailTextField: UITextField!
@@ -26,15 +24,14 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
     @IBOutlet weak var registerAgeSwitch: UISwitch!
     @IBOutlet weak var zipCodeTextField: UITextField!
     @IBOutlet weak var eulaButton: UIButton!
-    
     @IBOutlet weak var loginRegisterButton: UIButton!
     @IBOutlet weak var contentView: UIView!
     @IBOutlet weak var scrollView: UIScrollView!
-    
-    weak var currentTextField: UITextField?
     @IBOutlet weak var continueAsGuestButton: UIButton!
     
+    weak var currentTextField: UITextField?
     let network = Network()
+    var stateController: StateController?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -82,7 +79,8 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
     
     private func navigateToHomeVC() {
         let storyboard = UIStoryboard(name: "Main", bundle: Bundle.main)
-        let tabBarController = storyboard.instantiateViewController(identifier: "TabBarController")
+        let tabBarController = storyboard.instantiateViewController(identifier: "TabBarController") as TabBarViewController
+        tabBarController.stateController = stateController
         self.view.window!.rootViewController = tabBarController
     }
     

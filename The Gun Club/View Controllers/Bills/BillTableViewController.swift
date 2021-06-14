@@ -15,8 +15,6 @@ class BillTableViewController: UIViewController, UITableViewDataSource, UITableV
     @IBOutlet weak var loadingActivityIndicator: UIActivityIndicatorView!
     @IBOutlet weak var contentView: UIView!
     
-    var bills: [Bill] = []
-    let restRequests = Network()
     var billModelController: BillModelController?
     
     override func viewDidLoad() {
@@ -26,11 +24,15 @@ class BillTableViewController: UIViewController, UITableViewDataSource, UITableV
         self.tableView.isHidden = true
         self.tableView.register(BillTableViewCell.self, forCellReuseIdentifier: "customBillCell")
         self.splashScreen.isHidden = false
-        self.billModelController = BillModelController(networkModule: Network(), observer: self)
         navigationItem.leftBarButtonItem = UIBarButtonItem(customView: NavigationBarLogoView())
         loadingActivityIndicator.style = .large
         loadingActivityIndicator.startAnimating()
         setStyle()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        billModelController?.observer = self
+        billModelController?.fetchBills()
     }
 
     func setStyle() {
@@ -67,9 +69,10 @@ class BillTableViewController: UIViewController, UITableViewDataSource, UITableV
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "billDetailSegue" {
             guard let indexPath = tableView.indexPathForSelectedRow else {return}
-            let bill = bills[indexPath.row]
+            let bill = billModelController?.getBill(at: indexPath.row)
             let destinationViewController = segue.destination as? BillDetailViewController
             destinationViewController?.bill = bill
+            destinationViewController?.billModelController = billModelController
         }
     }
 }

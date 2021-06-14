@@ -10,6 +10,7 @@ import Foundation
 import Firebase
 
 class ThreadModelController: Observable {
+    
     private var threads: [ForumThread] = []
     private (set) var first: ForumThread?
     private let networkModule: Network
@@ -38,9 +39,7 @@ class ThreadModelController: Observable {
             guard let self = self else {return}
             if error != nil {
                 //Handle error
-                DispatchQueue.main.async {
-                    
-                }
+
             }
             if let thread = thread {
                 thread.comments = []

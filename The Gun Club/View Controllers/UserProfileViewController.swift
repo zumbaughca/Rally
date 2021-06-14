@@ -9,7 +9,7 @@
 import UIKit
 import Firebase
 
-class UserProfileViewController: UIViewController {
+class UserProfileViewController: UIViewController, Observer {
 
     
     @IBOutlet weak var nameLabel: UILabel!
@@ -24,9 +24,13 @@ class UserProfileViewController: UIViewController {
     
     let networkRequests = Network()
     let reference = Database.database().reference().child("Users")
-    var bills: [Bill] = []
-    var user: User?
+    var user: User? {
+        didSet {
+            updateUser()
+        }
+    }
     var adLoader: GADAdLoader!
+    var stateController: StateController?
     
     var banner: GADBannerView = {
         let banner = GADBannerView()
@@ -37,26 +41,32 @@ class UserProfileViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        if let user = Auth.auth().currentUser {
-            guard let displayName = user.displayName else {return}
-            navigationController?.navigationBar.topItem?.title = "Welcome, \(displayName)"
-            let userReference = reference.child(user.uid)
-            fetchUser(userReference)
-            updateUI()
-        } else {
-            updateUI()
-            updateUIForGuest()
-        }
+        nameLabel.text = "Loading..."
+        screenNameLabel.text = "Loading..."
+ 
         // AdMob Banner
         banner.rootViewController = self
         banner.adUnitID = self.stringForKey("AdMob ID")
         view.addSubview(banner)
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        stateController?.observer = self
+        if stateController?.inProgress == false && stateController?.getCurrentUser() == nil {
+            updateUI()
+            updateUIForGuest()
+        }
+    }
+    
     // Set up Ad Mob banner view
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         banner.frame = CGRect(x: 0, y: scrollView.frame.minY, width: view.frame.width, height: 50).integral
+    }
+    
+    func dataDidUpdate() {
+        user = stateController?.getCurrentUser()
+        updateUser()
     }
     
     func updateUI() {
@@ -87,17 +97,18 @@ class UserProfileViewController: UIViewController {
         changePasswordButton.isHidden = true
         logoutButton.setTitle("Create an account", for: .normal)
     }
-    
-    func fetchUser(_ reference: DatabaseReference) {
-        nameLabel.text = "Loading..."
-        screenNameLabel.text = "Loading..."
-        networkRequests.queryUserName(reference: reference, completion: {[weak self] (user, error) in
-            guard let self = self else {return}
-            if let user = user {
-                self.user = user
-                self.updateUI(user)
-            }
-        })
+
+    func updateUser() {
+        if let user = user {
+            let displayName = user.screenName
+            navigationController?.navigationBar.topItem?.title = "Welcome, \(displayName)"
+            nameLabel.text = user.name
+            screenNameLabel.text = user.screenName
+            updateUI()
+        } else {
+            updateUI()
+            updateUIForGuest()
+        }
     }
     
     func updateUI(_ user: User) {
@@ -114,27 +125,19 @@ class UserProfileViewController: UIViewController {
     
     private func returnToLoginScreen() {
         let storyboard = UIStoryboard(name: "Main", bundle: Bundle.main)
-        let loginController = storyboard.instantiateViewController(identifier: "LoginController")
+        let loginController = storyboard.instantiateViewController(identifier: "LoginController") as LoginViewController
+        loginController.stateController = stateController
         self.view.window!.rootViewController = loginController
     }
 
     @IBAction func changePasswordButtonTapped(_ sender: Any) {
             performSegue(withIdentifier: "changePasswordSegue", sender: self)
     }
+    
     @IBAction func logoutButtonTapped(_ sender: Any) {
         networkRequests.signOutUser(completion: {[weak self] (error) in
             self?.returnToLoginScreen()
         })
     }
-    
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
-    }
-    */
 
 }

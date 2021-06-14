@@ -9,7 +9,7 @@
 import UIKit
 import Firebase
 
-class ThreadViewController: UIViewController, UITextViewDelegate, UITableViewDelegate, UITableViewDataSource, CommentTableViewCellDelegate, MainPostTableViewCellDelegate, Observer {
+class ThreadViewController: UIViewController, UITextViewDelegate, CommentTableViewCellDelegate, MainPostTableViewCellDelegate, Observer {
     
     
     @IBOutlet weak var tableView: UITableView!
@@ -23,44 +23,42 @@ class ThreadViewController: UIViewController, UITextViewDelegate, UITableViewDel
     var moderators: [String]?
     let reference = Database.database().reference().child("Threads")
     let commentReference = Database.database().reference().child("Comments")
-    let networkRequests = Network()
     var user: User?
     let threadModelController: ThreadModelController
+    var stateController: StateController
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        fetchModerators()
         threadModelController.observer = self
-        
-        
-        self.commentTextView.delegate = self
-        self.tableView.delegate = self
-        self.tableView.dataSource = self
-        self.navigationItem.titleView = NavigationBarLogoView()
+        stateController.observer = self
+        user = stateController.getCurrentUser()
+        commentTextView.delegate = self
+        tableView.delegate = self
+        tableView.dataSource = self
+        navigationItem.titleView = NavigationBarLogoView()
         tableView.register(MainPostTableViewCell.self, forCellReuseIdentifier: "mainPost")
         tableView.register(CommentTableViewCell.self, forCellReuseIdentifier: "comment")
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(textViewEndEditing))
         self.view.addGestureRecognizer(tapGesture)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboard(notification:)), name: UIResponder.keyboardWillShowNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboard(notification:)), name: UIResponder.keyboardWillHideNotification, object: nil)
-        if let user = Auth.auth().currentUser {
-            fetchUser(Database.database().reference().child("Users").child(user.uid)) {
-                [unowned self] user in
-                if let user = user {
-                    self.user = user
-                    threadModelController.fetchThreadComments(for: self.user, of: self.thread, at: commentReference)
-                }
-            }
+
+        updateUI()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        stateController.observer = self
+        if let user = user {
+            threadModelController.fetchThreadComments(for: user, of: thread, at: commentReference)
         } else {
             threadModelController.fetchThreadComments(for: nil, of: self.thread, at: commentReference)
         }
-        updateUI()
-        fetchLockedStatus()
     }
     
-    init?(coder: NSCoder, threadModelController: ThreadModelController, thread: ForumThread) {
+    init?(coder: NSCoder, threadModelController: ThreadModelController, thread: ForumThread, stateController: StateController) {
         self.threadModelController = threadModelController
         self.thread = thread
+        self.stateController = stateController
         super.init(coder: coder)
     }
     
@@ -78,27 +76,10 @@ class ThreadViewController: UIViewController, UITextViewDelegate, UITableViewDel
             return
         }
         tableView.separatorStyle = .none
-        if user.uid != thread.ownerUid {
+        if user.uid != thread.ownerUid && !stateController.isUserModerator() {
             threadLockedButton.isEnabled = false
         }
-        /*
-        if thread.locked == false {
-            threadLockedButton.image = UIImage(systemName: "lock.open.fill")
-        } else {
-            threadLockedButton.image = UIImage(systemName: "lock.fill")
-        }
-        */
         threadLockedStatusDidChange()
-    }
-    
-    func fetchUser(_ reference: DatabaseReference, completion: @escaping (_ user: User?) -> Void) {
-        networkRequests.queryUserName(reference: reference, completion: {(user, error) in
-            if let user = user {
-                completion(user)
-            } else {
-                completion(nil)
-            }
-        })
     }
 
     /*
@@ -139,43 +120,31 @@ class ThreadViewController: UIViewController, UITextViewDelegate, UITableViewDel
 // MARK: CommentTableViewCellDelegate methods
 extension ThreadViewController {
     
-    private func reportUser(of post: Comment) {
-        Database.database().reference().child("ReportedUsers").child(post.ownerUid).updateChildValues([post.owner: post.post])
-    }
-    
-    private func blockUser(of post: Comment, at indexPath: IndexPath) {
-        Database.database().reference().child("Users").child(Auth.auth().currentUser!.uid).child("BlockedUsers").updateChildValues([post.ownerUid: true])
-        guard indexPath.section == 1 else { return }
-        thread.comments?.remove(at: indexPath.row)
-        tableView.reloadData()
-    }
-    
-    private func blockPost(of post: Comment, at indexPath: IndexPath) {
-        Database.database().reference().child("Users").child(Auth.auth().currentUser!.uid).child("BlockedPosts").updateChildValues([post.key: true])
-        guard indexPath.section == 1 else { return }
-        thread.comments?.remove(at: indexPath.row)
-        tableView.reloadData()
-    }
-    
     private func createReportAlert(for post: Comment, at indexPath: IndexPath) {
         let alert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
         let reportAction = UIAlertAction(title: "Report User", style: .default, handler: {[unowned self] (action) in
             self.createAlertToConfirmReport(message: "You are reporting this user for the content of this post. This information will be reviewed by the moderators within 24 hours. If deemed necessary, disciplinary actions will be taken against this user. You will not be notified of any actions taken. To proceed with this report press Yes.", handler: {
                 [unowned self] in
-                self.reportUser(of: post)
+                self.stateController.reportUser(of: post)
                 self.createGenericAlert(title: nil, message: "Your report has been sent to the moderators for review.")
             })
         })
         let blockUserAction = UIAlertAction(title: "Block User", style: .default, handler: {[unowned self] action in
             self.createAlertToConfirmReport(message: "You are blocking the user of this post. You will no longer see any content from this user. Press Yes to proceed.", handler: {
                 [unowned self] in
-                self.blockUser(of: post, at: indexPath)
+                self.stateController.blockUser(of: post)
+                guard indexPath.section == 1 else { return }
+                thread.comments?.remove(at: indexPath.row)
+                tableView.reloadData()
             })
         })
         let blockPostAction = UIAlertAction(title: "Block Post", style: .default, handler: {[unowned self] action in
             self.createAlertToConfirmReport(message: "You are blocking this post. You will no longer see this post, but you will still see other posts from this user. Press Yes to proceed.", handler: {
                 [unowned self] in
-                self.blockPost(of: post, at: indexPath)
+                self.stateController.blockPost(of: post)
+                guard indexPath.section == 1 else { return }
+                thread.comments?.remove(at: indexPath.row)
+                tableView.reloadData()
             })
         })
         let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
@@ -202,8 +171,8 @@ extension ThreadViewController {
     
 }
 
-// MARK: Table View
-extension ThreadViewController {
+// MARK: Table View Delegate and Data Source methods
+extension ThreadViewController: UITableViewDelegate, UITableViewDataSource {
     func numberOfSections(in tableView: UITableView) -> Int {
         return 2
     }
@@ -235,6 +204,9 @@ extension ThreadViewController {
             cell.delegate = self
             cell.translatesAutoresizingMaskIntoConstraints = false
             cell.selectionStyle = .none
+            if thread.title == "README" {
+                cell.reportButton.isEnabled = false
+            }
             return cell
             
         } else {
@@ -253,37 +225,6 @@ extension ThreadViewController {
 
 // MARK: Moderation and thread locked status
 extension ThreadViewController {
-    // Only allow moderator privilages on thread if user is on mod list.
-    func allowModeratorPrivileges() {
-        guard let user = Auth.auth().currentUser, let moderators = moderators else {return}
-        if moderators.contains(user.uid) {
-            threadLockedButton.isEnabled = true
-        }
-    }
-    
-    // Get a list of the moderators when the thread is loaded.
-    func fetchModerators() {
-        networkRequests.queryModerators(completion: {[weak self] (moderators, error) in
-            guard let self = self else {return}
-            if let moderators = moderators {
-                self.moderators = moderators
-                DispatchQueue.main.async {
-                    self.allowModeratorPrivileges()
-                }
-            }
-        })
-    }
-    
-    func fetchLockedStatus() {
-        guard let _ = Auth.auth().currentUser else {return}
-        networkRequests.observeThreadLockedStatus(reference: reference.child(thread.category).child(thread.key).child("Locked"), completion: {[weak self](bool, error) in
-            guard let self = self else {return}
-            if let bool = bool {
-                self.thread.locked = bool
-                self.threadLockedStatusDidChange()
-            }
-        })
-    }
     
     func configureLockedStatusForGuest() {
         threadLockedButton.image = UIImage(systemName: "lock.fill")

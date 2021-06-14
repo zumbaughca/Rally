@@ -15,6 +15,7 @@ class CategorySelectorViewController: UIViewController, UITableViewDelegate, UIT
     
     var categories: [String] = []
     var categoryDescriptions: [String] = []
+    var stateController: StateController?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -53,9 +54,10 @@ class CategorySelectorViewController: UIViewController, UITableViewDelegate, UIT
     
     @IBSegueAction
     func show(coder: NSCoder, sender: Any?, segueIdentifier: String) -> UIViewController? {
+        guard let stateController = stateController else { return nil}
         let indexPath = tableView.indexPathForSelectedRow!
         let category = categories[indexPath.row]
         let appDelegate = UIApplication.shared.delegate as? AppDelegate
-        return ForumViewController(coder: coder, category: category, threadModelController: ThreadModelController(networkModule: Network(), observer: nil, currentUser: appDelegate?.currentUser ?? nil), user: appDelegate?.currentUser)
+        return ForumViewController(coder: coder, category: category, threadModelController: ThreadModelController(networkModule: Network(), observer: nil, currentUser: appDelegate?.currentUser ?? nil), user: appDelegate?.currentUser, stateController: stateController)
     }
 }

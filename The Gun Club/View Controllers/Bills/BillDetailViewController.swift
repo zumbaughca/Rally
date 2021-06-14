@@ -24,14 +24,20 @@ class BillDetailViewController: UITableViewController {
     
     var bill: Bill?
     var sponsor: CongressPerson?
-    let restRequests = Network()
+    var billModelController: BillModelController?
     
     override func viewDidLoad() {
         super.viewDidLoad()
         self.tableView.separatorStyle = .none
         navigationItem.titleView = NavigationBarLogoView()
         updateUI()
-        retreiveSponsorInfo()
+        billModelController?.retreiveSponsorInfo(for: bill!, completion: {[unowned self] (sponsor) in
+            guard let sponsor = sponsor else { return }
+            self.sponsor = sponsor
+            DispatchQueue.main.async {
+                self.sponsorCell.accessoryType = .disclosureIndicator
+            }
+        })
     }
 
     func updateUI() {
@@ -51,26 +57,6 @@ class BillDetailViewController: UITableViewController {
             viewOnlineCell.accessoryType = .none
             viewOnlineLabel.isHidden = true
         }
-    }
-
-    func retreiveSponsorInfo() {
-        guard let bill = bill else {return}
-        guard let baseUrl = self.stringForKey("Base Member URL") else {return}
-        guard let apiKey = self.stringForKey("Propublica API Key") else {return}
-        let memberUrl = baseUrl + bill.sponsorId + ".json"
-        guard let url = URL(string: memberUrl) else {return}
-        var request = URLRequest(url: url)
-        request.addValue(apiKey, forHTTPHeaderField: "X-API-Key")
-        restRequests.restApiCall(request, completion: {
-            [weak self] (member: CongressPersonTopLevel?, error: Error?) in
-            guard let self = self else { return }
-            if let member = member {
-                self.sponsor = member.results[0]
-                DispatchQueue.main.async {
-                    self.sponsorCell.accessoryType = .disclosureIndicator
-                }
-            }
-        })
     }
     
     // MARK: - Table view data source

@@ -20,6 +20,7 @@ class NewThreadViewController: UIViewController, UITextViewDelegate {
     let reference = Database.database().reference().child("Threads")
     var category: String?
     let threadModelController: ThreadModelController
+    var stateController: StateController?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -31,9 +32,10 @@ class NewThreadViewController: UIViewController, UITextViewDelegate {
         updateUI()
     }
     
-    init?(coder: NSCoder, threadModelController: ThreadModelController, category: String) {
+    init?(coder: NSCoder, threadModelController: ThreadModelController, category: String, stateController: StateController?) {
         self.threadModelController = threadModelController
         self.category = category
+        self.stateController = stateController
         super.init(coder: coder)
     }
     
