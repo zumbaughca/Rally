@@ -20,7 +20,6 @@ class ForumViewController: UIViewController, UITableViewDelegate, UITableViewDat
     var selectedCategory: String
     var user: User?
     var threadModelController: ThreadModelController
-    let networkRequests = Network()
     var stateController: StateController
     
     override func viewDidLoad() {
@@ -33,24 +32,12 @@ class ForumViewController: UIViewController, UITableViewDelegate, UITableViewDat
         splashScreen.isHidden = false
         splashScreenActivityIndicator.style = .large
         splashScreenActivityIndicator.startAnimating()
-        threadModelController.observer = self
-        stateController.observer = self
         user = stateController.getCurrentUser()
-        
-        /*
-        if let user = Auth.auth().currentUser {
-            fetchUser(Database.database().reference().child("Users").child(user.uid), completion: {[unowned self] user in
-                self.user = user
-                threadModelController.fetchThreads(for: self.user, at: reference, in: selectedCategory)
-            })
-        } else {
-            navigationItem.rightBarButtonItem?.isEnabled = false
-            threadModelController.fetchThreads(for: nil, at: reference, in: selectedCategory)
-        }
- */
     }
     
     override func viewWillAppear(_ animated: Bool) {
+        threadModelController.observer = self
+        stateController.observer = self
         if let user = user {
             threadModelController.fetchThreads(for: user, at: reference, in: selectedCategory)
         } else {
@@ -80,16 +67,6 @@ class ForumViewController: UIViewController, UITableViewDelegate, UITableViewDat
         splashScreenActivityIndicator.stopAnimating()
         splashScreen.isHidden = true
         tableView.isHidden = false
-    }
-    
-    func fetchUser(_ reference: DatabaseReference, completion: @escaping (_ user: User?) -> Void) {
-        networkRequests.queryUserName(reference: reference, completion: {(user, error) in
-            if let user = user {
-                completion(user)
-            } else {
-                completion(nil)
-            }
-        })
     }
  
     func numberOfSections(in tableView: UITableView) -> Int {
