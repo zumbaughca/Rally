@@ -43,7 +43,7 @@ class UserProfileViewController: UIViewController, Observer {
         super.viewDidLoad()
         nameLabel.text = "Loading..."
         screenNameLabel.text = "Loading..."
- 
+        
         // AdMob Banner
         banner.rootViewController = self
         banner.adUnitID = self.stringForKey("AdMob ID")
@@ -55,6 +55,8 @@ class UserProfileViewController: UIViewController, Observer {
         if stateController?.inProgress == false && stateController?.getCurrentUser() == nil {
             updateUI()
             updateUIForGuest()
+        } else {
+            dataDidUpdate()
         }
     }
     

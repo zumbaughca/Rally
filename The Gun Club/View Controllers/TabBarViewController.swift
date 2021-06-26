@@ -15,9 +15,12 @@ class TabBarViewController: UITabBarController, UITabBarControllerDelegate, Obse
     override func viewDidLoad() {
         super.viewDidLoad()
         setupChildViews()
-        stateController?.observer = self
         //setupChildViews()
         // Do any additional setup after loading the view.
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        stateController?.observer = self
     }
     
     func setupChildViews() {
@@ -37,7 +40,6 @@ class TabBarViewController: UITabBarController, UITabBarControllerDelegate, Obse
             case let childVC as CategorySelectorViewController:
                 childVC.stateController = stateController
             case let childVC as BillTableViewController:
-                print("VC loaded")
                 childVC.billModelController = BillModelController(networkModule: Network(), observer: nil)
             default:
                 break

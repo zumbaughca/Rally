@@ -9,7 +9,7 @@
 import Foundation
 import UIKit
 
-protocol CommentTableViewCellDelegate: class {
+protocol CommentTableViewCellDelegate: AnyObject {
     func didTapReportButton(_ sender: CommentTableViewCell)
 }
 

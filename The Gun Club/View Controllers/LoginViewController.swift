@@ -11,6 +11,10 @@ import Firebase
 import SafariServices
 
 class LoginViewController: UIViewController, UITextFieldDelegate {
+    
+    deinit {
+        print("Login deinit")
+    }
 
     @IBOutlet var registerLabels: [UILabel]!
     @IBOutlet var registerTextFields: [UITextField]!
@@ -110,11 +114,10 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
         let selectedIndex = loginRegisterSegmentedControl.selectedSegmentIndex
         switch selectedIndex {
         case 0:
-            
             signIn()
         case 1:
             //validateAndRegister()
-        presentEULA()
+            presentEULA()
         default:
             fatalError("Selected index out of bounds")
         }
@@ -184,10 +187,23 @@ extension LoginViewController {
 
 // MARK: Sign in and User Registration
 extension LoginViewController {
+    
+    func createLoadingAlert() {
+        let alert = UIAlertController(title: nil, message: "Please wait...", preferredStyle: .alert)
+        let loadingIndicator = UIActivityIndicatorView(frame: CGRect(x: 0, y: 0, width: 75, height: 75))
+        loadingIndicator.hidesWhenStopped = true
+        loadingIndicator.style = UIActivityIndicatorView.Style.medium
+        loadingIndicator.startAnimating()
+        
+        alert.view.addSubview(loadingIndicator)
+        self.view.isUserInteractionEnabled = false
+        present(alert, animated: true, completion: nil)
+    }
     // Sign in with Firebase
     func signIn() {
      if let email = emailTextField.text,
             let password = passwordTextField.text {
+        createLoadingAlert()
             Auth.auth().signIn(withEmail: email, password: password, completion: { [weak self ] (authResult, error) in
                 if error != nil {
                     self?.createErrorAlert(for: "Either the password is incorrect or this user does not have an account.")
@@ -208,6 +224,7 @@ extension LoginViewController {
      */
     private func validateAndRegister() {
         do {
+            createLoadingAlert()
             try validateRegistration()
             network.validateUsername(screenNameTextField.text!, completion: {[weak self] (error, bool) in
                 if let _ = error {
