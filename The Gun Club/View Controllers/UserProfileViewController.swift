@@ -99,6 +99,14 @@ class UserProfileViewController: UIViewController, Observer {
         changePasswordButton.isHidden = true
         logoutButton.setTitle("Create an account", for: .normal)
     }
+    
+    func updateUIForUser() {
+        nameLabel.isHidden = false
+        nameTitleLabel.isHidden = false
+        screenNameTitleLabel.isHidden = false
+        changePasswordButton.isHidden = false
+        logoutButton.setTitle("Logout", for: .normal)
+    }
 
     func updateUser() {
         if let user = user {
@@ -106,6 +114,7 @@ class UserProfileViewController: UIViewController, Observer {
             navigationController?.navigationBar.topItem?.title = "Welcome, \(displayName)"
             nameLabel.text = user.name
             screenNameLabel.text = user.screenName
+            updateUIForUser()
             updateUI()
         } else {
             updateUI()
